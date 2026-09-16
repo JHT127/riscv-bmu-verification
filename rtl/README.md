@@ -12,7 +12,7 @@ locally, to keep DUT and verification environment cleanly separated.
 
 ## Expected contents (internal)
 
-```
+```text
 rtl/
 ├── Bit_Manipulation_Unit.sv
 ├── rtl_defines.sv

@@ -6,6 +6,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+
 - Initial professional repository scaffold: docs structure, UVM
   testbench directory layout, sim/regression/results/waveforms folders.
 - Spec clarifications log (`docs/03_clarifications_log/`) seeded with
@@ -16,6 +17,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Markdown-lint CI workflow.
 
 ### Planned
+
 - Verification plan (Excel) — `docs/01_verification_plan/`
 - Test plan (Excel) — `docs/02_test_plan/`
 - Reference model implementation — `tb/env/reference_model/`

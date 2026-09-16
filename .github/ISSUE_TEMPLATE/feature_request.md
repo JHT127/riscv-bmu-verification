@@ -9,6 +9,7 @@ assignees: ''
 ## What's missing / could be better?
 
 ## Which component does this affect?
+
 - [ ] Reference model
 - [ ] Scoreboard
 - [ ] Sequences

@@ -6,7 +6,7 @@ see [`../rtl/README.md`](../rtl/README.md)).
 
 ## Layout
 
-```
+```text
 sim/
 ├── Makefile              Top-level entry point (compile / run / regress)
 ├── filelists/             Per-simulator .f filelists (rtl + tb sources)

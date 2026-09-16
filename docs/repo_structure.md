@@ -1,6 +1,6 @@
 # Annotated Repository Structure
 
-```
+```text
 BMU_Verification_Project/
 │
 ├── README.md                          Project overview / entry point
@@ -76,7 +76,7 @@ BMU_Verification_Project/
     └── utils/                          Misc helper scripts (log parsing, report generation, etc.)
 ```
 
-### Design notes
+## Design notes
 
 - **Reference model lives in the testbench (`tb/env/reference_model/`),
   not derived from the RTL.** Since the goal is to verify the RTL, the

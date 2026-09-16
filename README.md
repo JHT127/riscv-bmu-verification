@@ -1,8 +1,8 @@
 # BMU (Bit Manipulation Unit) — Functional Verification Project
 
-[![Status](https://img.shields.io/badge/status-in--progress-yellow)]()
-[![Methodology](https://img.shields.io/badge/methodology-UVM-blue)]()
-[![License](https://img.shields.io/badge/license-see%20LICENSE-lightgrey)]()
+![Status](https://img.shields.io/badge/status-in--progress-yellow)
+![Methodology](https://img.shields.io/badge/methodology-UVM-blue)
+![License](https://img.shields.io/badge/license-see%20LICENSE-lightgrey)
 
 > A UVM-based functional verification environment for a RISC-V BitManip
 > (Zbb / Zbs / Zbp / Zba) execution unit, built as part of a design
@@ -39,7 +39,7 @@ The BMU supports:
 
 ## 2. Repository Structure
 
-```
+```text
 BMU_Verification_Project/
 ├── docs/                     # Verification plan, test plan, bug log, presentation, sign-off
 ├── rtl/                      # DUT RTL placeholder (not included — see rtl/README.md)
