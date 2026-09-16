@@ -4,7 +4,7 @@ Diagrams to add here (as `.png`/`.svg`, exported from draw.io, Visio,
 or hand-drawn + scanned — doesn't need to be fancy, needs to be clear):
 
 - **BMU block diagram** — ports, `ap` struct fields, combinational core
-  + `result_ff` register
+  and `result_ff` register
 - **Timing diagram** — `valid_in` / `result_ff` / `error` relationship
   across cycles, including hold and reset cases
 - **UVM testbench architecture** — agent, driver, monitor, sequencer,
