@@ -1,0 +1,18 @@
+# Normalize line endings for all text files
+* text=auto eol=lf
+
+*.sv   text eol=lf
+*.svh  text eol=lf
+*.v    text eol=lf
+*.md   text eol=lf
+*.sh   text eol=lf
+*.f    text eol=lf
+
+# Binary/office files — do not touch
+*.xlsx binary
+*.pptx binary
+*.pdf  binary
+*.png  binary
+*.fsdb binary
+*.vcd  binary
+*.wlf  binary

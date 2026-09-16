@@ -1,0 +1,41 @@
+name: Docs Lint
+
+# Lints all Markdown documentation on every push/PR so the docs stay
+# consistent as the project grows. Intentionally simulator-free — no
+# EDA tool license is available in a public CI runner, so RTL/UVM
+# compile checks are run locally / on the design team's infrastructure
+# instead. This workflow exists to keep the *documentation* honest.
+
+on:
+  push:
+    paths:
+      - "**/*.md"
+  pull_request:
+    paths:
+      - "**/*.md"
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint Markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            **/*.md
+            !**/node_modules/**
+
+      - name: Check for accidental confidential file additions
+        run: |
+          echo "Scanning for spec/RTL files that should never be committed..."
+          if find docs/00_spec -type f \( -iname "*.pdf" -o -iname "*.docx" \) | grep -q .; then
+            echo "::error::A spec file was found in docs/00_spec/ — this must not be committed."
+            exit 1
+          fi
+          if find rtl -type f \( -iname "*.sv" -o -iname "*.v" -o -iname "*.svh" \) | grep -q .; then
+            echo "::error::An RTL source file was found in rtl/ — this must not be committed."
+            exit 1
+          fi
+          echo "OK — no confidential files detected."

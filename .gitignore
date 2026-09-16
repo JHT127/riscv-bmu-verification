@@ -1,0 +1,65 @@
+# ===== Simulation / Regression outputs =====
+regression/logs/*
+!regression/logs/.gitkeep
+results/logs/*
+!results/logs/.gitkeep
+results/coverage/*
+!results/coverage/.gitkeep
+waveforms/*
+!waveforms/.gitkeep
+
+# ===== Simulator artifacts (VCS / Questa / Xcelium / Verilator) =====
+csrc/
+simv*
+*.daidir
+*.vdb
+*.vpd
+*.shm/
+*.shm.db/
+ucli.key
+DVEfiles/
+*.log
+*.trn
+*.wlf
+*.wlft
+transcript
+work/
+*.fsdb
+*.vcd
+*.vcd.gz
+covhtmlreport/
+urgReport/
+*.cov
+*.ucdb
+
+# ===== UVM / build junk =====
+*.o
+*.so
+*.obj
+*.dylib
+*.dll
+xrun.*
+xcelium.d/
+.simvision/
+*.history
+
+# ===== Office temp files (Excel/PowerPoint lock files) =====
+~$*.xlsx
+~$*.docx
+~$*.pptx
+*.tmp
+
+# ===== OS / editor junk =====
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# ===== Never commit confidential spec/RTL if accidentally dropped in =====
+docs/00_spec/*.pdf
+docs/00_spec/*.docx
+rtl/*.sv
+rtl/*.svh
+rtl/*.v
+!rtl/README.md

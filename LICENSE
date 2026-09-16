@@ -1,0 +1,32 @@
+MIT License (scope-limited)
+
+Copyright (c) 2026 [Your Name]
+
+This license applies ONLY to the original verification infrastructure,
+documentation, and planning artifacts authored by [Your Name] within
+this repository (including, but not limited to: the UVM testbench code
+under `tb/`, simulation scripts under `sim/` and `scripts/`, and the
+documentation under `docs/`).
+
+It explicitly DOES NOT apply to, and no rights are granted over:
+  - The BMU design specification (not included in this repository)
+  - The BMU RTL source code (not included in this repository)
+  - Any other confidential or third-party material referenced but not
+    reproduced in this repository
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of the original verification infrastructure and documentation
+described above, to deal in it without restriction, including without
+limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the covered material.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
