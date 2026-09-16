@@ -7,6 +7,7 @@ summary pages) — not the raw coverage databases, which belong in
 Suggested naming: `coverage_report_<date>_<regression-tag>.pdf`
 
 Keep at least:
+
 - The final coverage report used for sign-off
 - One earlier snapshot showing coverage trend/progress, if you want to
   tell that story in the presentation
