@@ -9,10 +9,11 @@
 +incdir+../../tb/interface
 
 # ----- Packages (compile order matters) -----
+../../tb/packages/bmu_types_package.sv
 ../../tb/packages/dut_test_package.sv
 
 # ----- Interface -----
-../../tb/interface/Bit_Manipulation_intf.sv
+../../tb/interface/bmu_interface.sv
 
 # ----- Testbench top -----
 ../../tb/top/top_tb.sv
