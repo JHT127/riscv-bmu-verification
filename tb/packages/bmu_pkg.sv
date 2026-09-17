@@ -26,4 +26,8 @@ package bmu_pkg;
         `include "../env/agents/bmu_agent/bmu_agent.sv"
 
 
+        // reference model ----------------------------------------
+        `include "../env/reference_model/bmu_reference_model.sv"
+
+
 endpackage : bmu_pkg
