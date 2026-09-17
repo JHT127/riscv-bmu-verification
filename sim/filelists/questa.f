@@ -16,4 +16,4 @@
 ../../tb/interface/bmu_interface.sv
 
 # ----- Testbench top -----
-../../tb/top/top_tb.sv
+../../tb/top/bmu_tb_top.sv
