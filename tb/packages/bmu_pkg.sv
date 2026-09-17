@@ -13,4 +13,9 @@ package bmu_pkg;
         `include "../env/agents/bmu_agent/bmu_sequence_item.sv"
 
 
+        // sequencer + driver ----------------------------------------
+        `include "../env/agents/bmu_agent/sequencer/bmu_sequencer.sv"
+        `include "../env/agents/bmu_agent/driver/bmu_driver.sv"
+
+
 endpackage : bmu_pkg
