@@ -116,6 +116,7 @@ package bmu_pkg;
         `include "../sequences/csr_ops/csr_bypass_read_seq.sv"
         `include "../sequences/csr_ops/csr_write_imm_seq.sv"
         `include "../sequences/csr_ops/csr_write_reg_seq.sv"
+        `include "../sequences/csr_ops/csr_bitmanip_conflict_seq.sv"
 
 
         // zba sequences ----------------------------------------
