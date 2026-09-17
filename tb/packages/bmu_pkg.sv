@@ -30,4 +30,9 @@ package bmu_pkg;
         `include "../env/reference_model/bmu_reference_model.sv"
 
 
+        // checker + scoreboard ----------------------------------------
+        `include "../env/scoreboard/bmu_checker.sv"
+        `include "../env/scoreboard/bmu_scoreboard.sv"
+
+
 endpackage : bmu_pkg
