@@ -35,4 +35,8 @@ package bmu_pkg;
         `include "../env/scoreboard/bmu_scoreboard.sv"
 
 
+        // environment ----------------------------------------
+        `include "../env/bmu_environment.sv"
+
+
 endpackage : bmu_pkg
