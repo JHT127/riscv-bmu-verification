@@ -34,11 +34,13 @@ Completed:
 - Common sequence base and family sequence bases.
 - All 61 concrete sequences listed in the test plan.
 - Package include order for all current UVM components and sequences.
+- Compile-safe top-level testbench shell.
+- Reusable base UVM test.
 
 Not completed:
 
-- DUT binding and top-level testbench module.
-- UVM test classes.
+- Actual DUT binding in the top-level testbench.
+- Concrete UVM test classes that start the sequences.
 - Subscriber and functional coverage.
 - Simulator-specific compile and run targets.
 - Regression execution and coverage reports.
@@ -163,8 +165,8 @@ The scoreboard aligns actual and expected streams. The checker compares
 | `tb/env/bmu_environment.sv` | Component construction and connections. |
 | `tb/sequences/base/` | Common base and plan-level base sequences. |
 | `tb/sequences/*/` | Concrete sequences grouped by operation family. |
-| `tb/tests/` | Future UVM tests. |
-| `tb/top/` | Future clock, DUT, interface, and run wiring. |
+| `tb/tests/` | Base test and future concrete UVM tests. |
+| `tb/top/` | Clock, interface, UVM startup, and future DUT binding. |
 | `sim/filelists/` | Simulator source ordering. |
 
 ## 7. Sequence Inventory
@@ -206,11 +208,12 @@ test because the DUT top-level binding and UVM tests are not implemented yet.
 
 ## 9. Next Implementation Steps
 
-1. Add `tb/top/bmu_tb_top.sv` with the clock, interface, DUT instance, config
-   database setup, and `run_test()`.
-2. Confirm the design-team DUT module name and port connection from the actual
-   integration environment. Do not infer them from RTL source.
-3. Add the first UVM test in `tb/tests/` and run one directed OR sequence.
+1. Confirm the design-team DUT module name and port connection from the actual
+  integration environment. Do not infer them from RTL source.
+2. Add the DUT instance to `tb/top/bmu_tb_top.sv` after that interface is
+  confirmed.
+3. Add the first concrete UVM test in `tb/tests/` and start one directed OR
+  sequence from the base test.
 4. Add test classes that map the 61 sequences to the test-plan IDs.
 5. Add the subscriber and functional coverage only after transactions run.
 6. Complete simulator-specific commands in `sim/Makefile` and filelists.
