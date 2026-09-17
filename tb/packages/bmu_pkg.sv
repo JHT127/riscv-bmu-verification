@@ -22,4 +22,8 @@ package bmu_pkg;
         `include "../env/agents/bmu_agent/monitor/bmu_monitor.sv"
 
 
+        // agent ----------------------------------------
+        `include "../env/agents/bmu_agent/bmu_agent.sv"
+
+
 endpackage : bmu_pkg
