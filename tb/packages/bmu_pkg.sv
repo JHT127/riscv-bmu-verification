@@ -18,4 +18,8 @@ package bmu_pkg;
         `include "../env/agents/bmu_agent/driver/bmu_driver.sv"
 
 
+        // monitor ----------------------------------------
+        `include "../env/agents/bmu_agent/monitor/bmu_monitor.sv"
+
+
 endpackage : bmu_pkg
