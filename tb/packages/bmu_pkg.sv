@@ -157,4 +157,8 @@ package bmu_pkg;
         `include "../sequences/base/random_corner_weighted_seq.sv"
 
 
+        // tests ----------------------------------------
+        `include "../tests/bmu_base_test.sv"
+
+
 endpackage : bmu_pkg
