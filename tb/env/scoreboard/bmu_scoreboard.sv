@@ -14,7 +14,7 @@ class bmu_scoreboard extends uvm_scoreboard;
                 uvm_analysis_imp_expected #(bmu_sequence_item, bmu_scoreboard) expected_port;
                 bmu_sequence_item actual_queue[$];
                 bmu_sequence_item expected_queue[$];
-                bmu_checker checker;
+                bmu_checker result_checker;
 
 
 
@@ -36,7 +36,7 @@ class bmu_scoreboard extends uvm_scoreboard;
                 super.build_phase(phase);
                 actual_port = new("actual_port", this);
                 expected_port = new("expected_port", this);
-                checker = bmu_checker::type_id::create("checker");
+                result_checker = bmu_checker::type_id::create("result_checker");
 
         endfunction : build_phase
 
@@ -68,7 +68,7 @@ class bmu_scoreboard extends uvm_scoreboard;
                         actual_item = actual_queue.pop_front();
                         expected_item = expected_queue.pop_front();
 
-                        if (checker.compare(actual_item, expected_item, message))
+                        if (result_checker.compare(actual_item, expected_item, message))
                                 `uvm_info(get_type_name(), message, UVM_HIGH)
                         else
                                 `uvm_error(get_type_name(), message)
