@@ -10,7 +10,7 @@
 
 # ----- Packages (compile order matters) -----
 ../../tb/packages/bmu_types_package.sv
-../../tb/packages/dut_test_package.sv
+../../tb/packages/bmu_pkg.sv
 
 # ----- Interface -----
 ../../tb/interface/bmu_interface.sv
