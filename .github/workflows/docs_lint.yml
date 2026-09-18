@@ -10,9 +10,15 @@ on:
   push:
     paths:
       - "**/*.md"
+      - ".github/workflows/docs_lint.yml"
+      - "docs/00_spec/**"
+      - "rtl/**"
   pull_request:
     paths:
       - "**/*.md"
+      - ".github/workflows/docs_lint.yml"
+      - "docs/00_spec/**"
+      - "rtl/**"
 
 jobs:
   markdown-lint:
