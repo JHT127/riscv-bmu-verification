@@ -109,10 +109,10 @@ make regression
 | Verification plan | ⏳ Review captured; spreadsheet pending |
 | Testbench skeleton | ✅ Scaffolded |
 | Reference model | ✅ Implemented; runtime review pending |
-| Directed sequences (per operation) | ✅ Sequence inventory; concrete tests pending |
-| Constrained-random regression | ⏳ Not started |
-| Functional coverage closure | ⏳ Not started |
-| Bug log | ✅ Static review recorded; runtime confirmation pending |
+| Directed sequences (per operation) | ✅ Implemented, including explicit gap-plan tests |
+| Constrained-random regression | ✅ Executed; open DUT findings remain |
+| Functional coverage closure | ✅ 100% on the dedicated in-scope closure test |
+| Bug log | ✅ Runtime findings documented |
 | Final sign-off report | ⏳ Not started |
 
 ---
