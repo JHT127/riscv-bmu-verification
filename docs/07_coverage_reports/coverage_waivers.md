@@ -4,7 +4,7 @@
 
 This document records the exact scope of the BMU coverage model and the exclusion rules for unsupported or untestable behavior.
 
-The goal is to make the final sign-off honest:
+The goal is to make the bug-finding coverage claim honest:
 
 - Functional coverage is measured only over the supported legal behavior domain.
 - Unsupported functionality is explicitly excluded or waived.
@@ -46,7 +46,7 @@ These values are based on the latest Xcelium reports currently checked into the 
 | `bmu_corner_random_test` | 57.24% |
 | `bmu_error_random_test` | 47.57% |
 
-These numbers are not a final sign-off result. They are the current measured baseline and reflect the fact that the DUT still has open runtime findings.
+The dedicated `bmu_coverage_closure_test`, seed 4, reaches 100.00% functional coverage with zero uncovered covergroup bins reported by IMC. Its 62 UVM errors remain separate DUT bug evidence.
 
 ## 5. Code coverage status
 
@@ -54,7 +54,7 @@ The repository contains coverage databases under [results/coverage](../../result
 
 The correct status is:
 
-- functional coverage: measured, not complete
+- functional coverage: 100.00% for the declared in-scope model
 - code coverage: not yet closed; no final pass/fail statement exists
 
 ## 6. Closure rule
@@ -64,7 +64,7 @@ A coverage item is closed only when all of the following are true:
 1. It is in the supported legal scope.
 2. The corresponding test is executable and reproducible.
 3. The DUT behavior matches the specification under the current reference model.
-4. There is no open bug or accepted-risk note contradicting the expected result.
-5. The item is included in the final sign-off report with its observed coverage or waiver status.
+4. Any DUT mismatch remains visible as a bug; it does not invalidate stimulus coverage.
+5. The item is included in the coverage report with its observed coverage or waiver status.
 
-This project is therefore in a professional pre-closure state, not a final sign-off state.
+This project has functional coverage closure for the declared model, while remaining unsuitable for RTL sign-off because open DUT findings remain.
