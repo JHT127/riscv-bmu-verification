@@ -55,7 +55,7 @@ The coverage model currently reports the following functional coverage values fr
 | `bmu_corner_random_test` | 57.24% |
 | `bmu_error_random_test` | 47.57% |
 
-This is not a final closure result. It is the current measured baseline.
+These are regression baselines. The dedicated `bmu_coverage_closure_test`, seed 4, reaches 100.00% functional coverage with zero uncovered covergroup bins; the open UVM errors remain DUT findings.
 
 ## 4. Code coverage status
 
@@ -63,7 +63,7 @@ The repo contains Xcelium coverage databases under [results/coverage](../../resu
 
 Correct status:
 
-- functional coverage: measured and not complete
+- functional coverage: 100.00% for the declared in-scope model
 - code coverage: not yet closed and no final sign-off statement exists
 
 ## 5. Open bug status
@@ -109,7 +109,7 @@ It is ready for:
 It is not ready for a final sign-off claim because:
 
 - open runtime-confirmed issues remain,
-- functional coverage is below the required closure target,
+- open DUT findings remain despite functional coverage closure,
 - code coverage remains unreported as a final result,
 - there is no final design-owner sign-off on the accepted-risk items.
 
