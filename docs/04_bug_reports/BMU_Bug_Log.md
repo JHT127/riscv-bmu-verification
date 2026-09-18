@@ -16,18 +16,12 @@ Status meanings:
 
 - `Open - static finding`: implementation evidence exists; simulation is still
   required.
-- `Open - runtime confirmed`: the scoreboard reproduced the specification
   mismatch on the delivered DUT.
-- `Withdrawn`: the original claim is not supported by the current RTL or was a
   documentation error; the associated test remains required when applicable.
-- `Accepted`: written design/specification approval accepts the behavior.
-- `Accepted project risk`: the design team is unavailable; the behavior is
-  frozen using the safest documented interpretation, tested, and disclosed as
   residual risk at sign-off. This status does not claim design approval.
-- `Fixed`: a new DUT revision passes the reproducer and relevant regression.
 
 Severity meanings:
-
+## 4. Runtime evidence from current baseline
 - `Critical`: blocks sign-off or permits broad invalid behavior.
 - `Major`: incorrect result or error behavior under a plausible condition.
 - `Minor`: limited impact or low-risk boundary issue.
@@ -36,19 +30,19 @@ Severity meanings:
 
 | ID | Severity | Area | Reproducer | Status |
 |---|---|---|---|---|
-| `BMU-BUG-001` | Major | CPOP width | `TC_CPOP_004` | Open - static finding |
-| `BMU-BUG-002` | Major | PACK ordering | `TC_PACK_001` | Open - static finding |
-| `BMU-BUG-003` | Major | CSR write source | `TC_CSR_002`, `TC_CSR_003` | Open - static finding |
-| `BMU-BUG-004` | N/A | CSR bypass documentation | `TC_CSR_001` | Withdrawn; runtime check pending |
-| `BMU-BUG-005` | Major | GREV byte ordering | `TC_GREV_001` | Open - static finding |
-| `BMU-BUG-006` | Critical | Invalid/conflicting controls | `TC_GUARD_001` through `TC_GUARD_004` | Open - static finding |
-| `BMU-BUG-007` | Major | SLT/MAX co-requisites | `TC_SLT_005`, `TC_MAX_005` | Open - static finding |
-| `BMU-BUG-008` | Major | GREV undefined encoding | `TC_GREV_002` | Open - static finding; assumption-tagged |
-| `BMU-BUG-009` | Major | CTZ bit reversal | `TC_CTZ_005` | Open - static finding |
+| `BMU-BUG-001` | Major | CPOP width | `TC_CPOP_004` | Open - runtime confirmed |
+| `BMU-BUG-002` | Major | PACK ordering | `TC_PACK_001` | Open - runtime confirmed |
+| `BMU-BUG-003` | Major | CSR write source | `TC_CSR_002`, `TC_CSR_003` | Open - runtime confirmed |
+| `BMU-BUG-004` | N/A | CSR bypass documentation | `TC_CSR_001` | Withdrawn; runtime check passed |
+| `BMU-BUG-005` | Major | GREV byte ordering | `TC_GREV_001` | Open - runtime confirmed |
+| `BMU-BUG-006` | Critical | Invalid/conflicting controls | `TC_GUARD_001` through `TC_GUARD_004` | Open - runtime confirmed |
+| `BMU-BUG-007` | Major | SLT/MAX co-requisites | `TC_SLT_005`, `TC_MAX_005` | Open - runtime confirmed |
+| `BMU-BUG-008` | Major | GREV undefined encoding | `TC_GREV_002` | Open - runtime confirmed; assumption-tagged |
+| `BMU-BUG-009` | Major | CTZ bit reversal | `TC_CTZ_005` | Open - runtime confirmed |
 
-No finding is runtime-confirmed in this repository snapshot. The lack of
-runtime status is a verification-readiness gap, not evidence that the DUT is
-correct.
+Runtime confirmation is based on Xcelium `25.03-s006` at RTL/testbench
+revision `17d2a31` before documentation-only disposition updates. The current
+RTL has not been fixed; these statuses are open DUT findings, not closures.
 
 ## 3. Detailed findings
 
@@ -62,6 +56,7 @@ correct.
 - **Expected:** `result=32`, `error=0`.
 - **Likely DUT result:** `result=0`, `error=0`.
 - **Impact:** All CPOP results dependent on upper-half bits can be wrong.
+## 5. Required confirmation record
 - **Required evidence:** Run `TC_CPOP_004` with high-half-only, low-half-only,
   all-zero, all-one, and mixed patterns.
 
@@ -158,7 +153,25 @@ correct.
   counts; `a_in=0x00000001` is an immediate discriminating case.
 - **Impact:** CTZ is broadly incorrect for nonzero operands.
 
-## 4. Required confirmation record
+## 4. Runtime evidence from current baseline
+
+| Run | Seed | Result | Evidence |
+|---|---:|---|---|
+| `bmu_gap_checks_test` | 1 | 131 matches, 41 mismatches, 0 fatals | `results/logs/bmu_gap_checks_test_1.log` |
+| `bmu_nominal_directed_test` | 1 | 7 mismatches, 0 fatals | `results/logs/bmu_nominal_directed_test_1.log` |
+| `bmu_error_directed_test` | 1 | 7 mismatches, 0 fatals | `results/logs/bmu_error_directed_test_1.log` |
+
+The gap suite confirmed `BMU-BUG-001`, `BMU-BUG-006`, `BMU-BUG-007`, and
+`BMU-BUG-009`. The nominal suite confirmed the PACK, CSR-write, and GREV
+ordering findings. The error suite confirmed invalid GREV behavior and the
+remaining invalid-control cases. `TC_CSR_001` passed, so `BMU-BUG-004` remains
+withdrawn rather than being reopened.
+
+The failing logs are runtime evidence and must be retained with the regression
+record. A new RTL revision requires rerunning the exact seeds and affected
+suites before any status changes.
+
+## 5. Required confirmation record
 
 For every candidate or confirmed bug, record:
 
