@@ -113,7 +113,7 @@ It is not ready for a final sign-off claim because:
 
 - open runtime-confirmed issues remain,
 - open DUT findings remain despite functional coverage closure,
-- code coverage remains unreported as a final result,
+- code coverage is measured but remains a baseline rather than a closed result,
 - there is no final design-owner sign-off on the accepted-risk items.
 
 ## 8. Recommended next step
