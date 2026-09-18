@@ -161,12 +161,14 @@ package bmu_pkg;
         // composite suite sequences ----------------------------------------
         `include "../sequences/smoke/bmu_directed_suite_sequences.sv"
         `include "../sequences/smoke/bmu_gap_checks_seq.sv"
+        `include "../sequences/smoke/bmu_gap_plan_sequences.sv"
 
         // tests ----------------------------------------
         `include "../tests/bmu_base_test.sv"
         `include "../tests/bmu_or_valid_test.sv"
         `include "../tests/bmu_directed_suite_tests.sv"
         `include "../tests/bmu_gap_checks_test.sv"
+        `include "../tests/bmu_gap_plan_tests.sv"
         `include "../tests/bmu_random_tests.sv"
 
 
