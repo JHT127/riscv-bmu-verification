@@ -4,6 +4,11 @@ The current specification-based DUT review is documented in
 [`bug_report_review.md`](bug_report_review.md). Findings remain open until
 runtime reproduction, disposition, and retest evidence are recorded.
 
+The implementation-ready Markdown handoff is
+[`BMU_Bug_Log.md`](BMU_Bug_Log.md). It contains the nine tracked findings,
+the withdrawn CSR-bypass claim, the CTZ finding, reproducers, and closure
+evidence requirements.
+
 The team tracks bugs officially in ClickUp. This folder is a personal,
 versioned mirror kept alongside the code — useful for the final report,
 for showing bug-finding trends over time, and so the repository is
