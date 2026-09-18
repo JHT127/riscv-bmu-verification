@@ -56,8 +56,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# ===== Never commit confidential spec/RTL if accidentally dropped in =====
-docs/00_spec/*.pdf
+# ===== Keep restricted source material out unless approved =====
 docs/00_spec/*.docx
 rtl/*.sv
 rtl/*.svh
