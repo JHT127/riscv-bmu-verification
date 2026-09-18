@@ -162,6 +162,7 @@ package bmu_pkg;
         `include "../sequences/smoke/bmu_directed_suite_sequences.sv"
         `include "../sequences/smoke/bmu_gap_checks_seq.sv"
         `include "../sequences/smoke/bmu_gap_plan_sequences.sv"
+        `include "../sequences/smoke/bmu_coverage_closure_seq.sv"
 
         // tests ----------------------------------------
         `include "../tests/bmu_base_test.sv"
@@ -169,6 +170,7 @@ package bmu_pkg;
         `include "../tests/bmu_directed_suite_tests.sv"
         `include "../tests/bmu_gap_checks_test.sv"
         `include "../tests/bmu_gap_plan_tests.sv"
+        `include "../tests/bmu_coverage_closure_test.sv"
         `include "../tests/bmu_random_tests.sv"
 
 
