@@ -76,4 +76,16 @@ class bmu_scoreboard extends uvm_scoreboard;
         endfunction : compare_available
 
 
+        // check_phase ----------------------------------------
+        function void check_phase(uvm_phase phase);
+                super.check_phase(phase);
+                compare_available();
+                if ((actual_queue.size() != 0) || (expected_queue.size() != 0)) begin
+                        `uvm_error(get_type_name(), $sformatf(
+                                "unmatched transactions: actual=%0d expected=%0d",
+                                actual_queue.size(), expected_queue.size()))
+                end
+        endfunction : check_phase
+
+
 endclass : bmu_scoreboard
