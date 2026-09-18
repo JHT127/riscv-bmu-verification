@@ -1,0 +1,52 @@
+Test_ID,Category,Function,Stimulus_Pattern,Input_Control_Fields,Expected_Result,Error_Expectation,Coverage_Target,Status,Evidence_File
+TP-001,Directed-valid,OR,legal OR with no ZBB,"a_in=0x12345678; b_in=0x0F0F0F0F; ap.lor=1","result = a_in",0,OR bin,Planned,log TBD
+TP-002,Directed-valid,OR + ZBB,OR with inversion enabled,"ap.lor=1; ap.zbb=1; b_in=~b_in","result = a_in",0,OR x ZBB,Planned,log TBD
+TP-003,Directed-valid,XOR,legal XOR,"a_in,b_in random; ap.lxor=1","result = a_in ^ b_in",0,XOR bin,Planned,log TBD
+TP-004,Directed-valid,XOR + ZBB,XOR with invert path,"ap.lxor=1; ap.zbb=1","correct inverted XOR",0,XOR x ZBB,Planned,log TBD
+TP-005,Directed-valid,SRL,logical right shift,"a_in=0x80000000; b_in[4:0]=5","result = 0x04000000",0,shift amount bins,Planned,log TBD
+TP-006,Directed-valid,SRA,arithmetic right shift,"a_in=0x80000000; b_in[4:0]=5","result = 0xC0000000",0,shift amount bins,Planned,log TBD
+TP-007,Directed-valid,ROR,rotate right,"a_in=0x00000001; b_in[4:0]=1","result = 0x80000000",0,rotate bins,Planned,log TBD
+TP-008,Directed-valid,BINV,invert selected bit,"a_in=0xFFFFFFFF; b_in[4:0]=7","toggle bit 7 only",0,BINV 0..31,Planned,log TBD
+TP-009,Directed-valid,SH2ADD,ZBA legal mode,"ap.sh2add=1; ap.zba=1","result = (a_in << 2) + b_in",0,ZBA legal bin,Planned,log TBD
+TP-010,Directed-valid,SUB,arithmetic subtract,"a_in=0x00000010; b_in=0x00000003","result = 13",0,SUB bin,Planned,log TBD
+TP-011,Directed-valid,SLT signed,signed compare,"a_in=0x80000000; b_in=0x7FFFFFFF; ap.slt=1; ap.sub=1","signed compare result",0,SLT signed bin,Planned,log TBD
+TP-012,Directed-valid,SLTU unsigned,unsigned compare,"ap.slt=1; ap.unsign=1","correct unsigned ordering",0,SLT unsigned bin,Planned,log TBD
+TP-013,Directed-valid,MAX signed,signed max selection,"ap.max=1; ap.sub=1","max(a_in,b_in)",0,MAX signed bin,Planned,log TBD
+TP-014,Directed-valid,MAX unsigned,unsigned max selection,"ap.max=1; ap.sub=1; ap.unsign=1","max unsigned",0,MAX unsigned bin,Planned,log TBD
+TP-015,Directed-valid,CTZ,trailing-zero count,"a_in = 1 << bit_n","result = bit_n",0,CTZ 0..31,Planned,log TBD
+TP-016,Directed-valid,CTZ zero case,zero operand,"a_in=0","result=32",0,CTZ(0)=32,Planned,log TBD
+TP-017,Directed-valid,CPOP,set-bit count,"a_in=0xF0F0F0F0","result=16",0,CPOP bins,Planned,log TBD
+TP-018,Directed-valid,SEXT.B,sign-extend byte,"a_in=0x000000FF","result=0xFFFFFFFF",0,sign extension bin,Planned,log TBD
+TP-019,Directed-valid,PACK,half-word concatenation,"a_in=0x12345678; b_in=0x9ABCDEF0","{b_in[15:0],a_in[15:0]}",0,PACK half-word bin,Planned,log TBD
+TP-020,Directed-valid,GREV valid encoding,supported GREV byte reverse,"b_in[4:0]=24","byte-reversed result",0,GREV valid bin,Planned,log TBD
+TP-021,Directed-valid,CSR read,pure bypass read,"csr_ren_in=1; ap=0","result = csr_rddata_in",0,CSR bypass bin,Planned,log TBD
+TP-022,Directed-valid,CSR write immediate,write from b_in,"ap.csr_write=1; ap.csr_imm=1","result = b_in",0,CSR write imm bin,Planned,log TBD
+TP-023,Directed-valid,CSR write register,write from a_in,"ap.csr_write=1; ap.csr_imm=0","result = a_in",0,CSR write reg bin,Planned,log TBD
+TP-024,Directed-corner,Result hold,valid_in=0 hold,"valid_in=0 after valid op","previous result remains",0,valid gating,Planned,log TBD
+TP-025,Directed-corner,Live error under hold,invalid mode while idle,"valid_in=0; invalid ap","error reflects current controls",as per mode,error live bin,Planned,log TBD
+TP-026,Directed-corner,Reset during valid,reset high priority,"rst_l=0 while valid_in=1","result cleared",0,reset bin,Planned,log TBD
+TP-027,Directed-corner,Scan mode idle,scan mode no-op,"scan_mode=1","no functional change",0,scan bin,Planned,log TBD
+TP-028,Directed-error,Empty request,no primary op set,"ap=0; csr_ren_in=0","result=0",1,invalid op bin,Planned,log TBD
+TP-029,Directed-error,Stray ZBB mode,zbb without OR/XOR,"ap.zbb=1; ap.lor=0; ap.lxor=0","result=0",1,guard bin,Planned,log TBD
+TP-030,Directed-error,Stray ZBA mode,zba without valid SHxADD,"ap.zba=1 but no sh1/2/3add","result=0",1,guard bin,Planned,log TBD
+TP-031,Directed-error,Invalid CSR mode,csr_ren_in with active ap,"ap.csr_write + ap.lor","result=0",1,CSR conflict bin,Planned,log TBD
+TP-032,Directed-error,SLT without SUB,missing subtractor co-requisite,"ap.slt=1; ap.sub=0","result=0",1,SLT guard bin,Planned,log TBD
+TP-033,Directed-error,MAX without SUB,missing subtractor co-requisite,"ap.max=1; ap.sub=0","result=0",1,MAX guard bin,Planned,log TBD
+TP-034,Directed-error,GREV invalid encoding,undefined GREV encoding,"ap.grev=1; b_in[4:0]=5","result=0",1,invalid GREV encoding,Planned,log TBD
+TP-035,Directed-error,Multiple primary ops,multiple valid primary ops asserted,"ap.lor=1; ap.lxor=1","result=0",1,multi-op guard,Planned,log TBD
+TP-036,Random-legal,Legal random sweep,constrained legal random,"legal op subset only","matches ref model",expected legal error state,random coverage,Planned,log TBD
+TP-037,Random-illegal,Invalid random sweep,random invalid op combinations,"guard and conflict patterns","result=0 with error=1",1,invalid-mode coverage,Planned,log TBD
+TP-038,Regression,Full gap closure,closure run,"all 13 required additions","all rows covered",all expected error states,closure coverage,Planned,log TBD
+TC_BINV_004,BINV sweep,Custom BINV sweep,"Sweep b_in[4:0] 0..31","ap.binv=1","toggle selected bit only",0,BINV 0..31,Required,log TBD
+TC_SHIFT_004,Shift sweep,SRL/SRA/ROR sweep,"Sweep all 0..31 shift amounts","ap.srl/sra/ror","ref model result",0,shift amount bins,Required,log TBD
+TC_CPOP_004,CPOP sweep,high/low half patterns,"full width population count","ap.cpop=1","full 32-bit count",0,CPOP bins,Required,log TBD
+TC_CTZ_005,CTZ sweep,one-hot across all bits,"a_in = 1 << n","ap.ctz=1","n for n=0..31; 32 for zero",0,CTZ bins,Required,log TBD
+TC_GUARD_001,Guard check,Empty request,"no operation field asserted","ap=0","result=0",1,empty request,Required,log TBD
+TC_GUARD_002,Guard check,Stray ZBB mode,"zbb with no OR/XOR","ap.zbb=1","result=0",1,stray mode,Required,log TBD
+TC_GUARD_003,Guard check,Stray CSR mode,"csr_imm without csr_write","ap.csr_imm=1","result=0",1,stray CSR mode,Required,log TBD
+TC_GUARD_004,Guard check,Stray ZBA mode,"zba without SH2ADD or valid co-requisite","ap.zba=1","result=0",1,stray Zba mode,Required,log TBD
+TC_SLT_005,Guard check,SLT without SUB,"ap.slt=1, ap.sub=0","ap.slt=1","result=0",1,missing subtractor co-requisite,Required,log TBD
+TC_MAX_005,Guard check,MAX without SUB,"ap.max=1, ap.sub=0","ap.max=1","result=0",1,missing subtractor co-requisite,Required,log TBD
+TC_CSR_005,CSR check,CSR read valid with valid_in=0,"csr_ren_in=1 and valid_in=0","result holds","live error follows controls",CSR read x valid gating,Required,log TBD
+TC_TIME_004,Timing check,invalid input while valid_in=0,"invalid command while idle","valid_in=0","result holds; error follows input",0 or 1 by mode,valid gating,Required,log TBD
+TC_RESET_004,Reset check,reset with conflict during valid,"rst_l=0 and valid_in=1","reset dominates","result cleared and error reset",reset x valid x conflict,Required,log TBD
