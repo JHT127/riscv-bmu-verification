@@ -82,6 +82,11 @@ test-to-coverage traceability.
 remains mandatory because the current RTL contains a CSR bypass datapath; it is
 a runtime confirmation check, not an open bug assertion.
 
+All 13 additions are now executable through `bmu_gap_checks_test` and
+`regression/configs/gaps.cfg`. The current RTL is expected to fail selected
+rows; those failures are retained as bug evidence and do not reduce the
+planned coverage obligation.
+
 ## 5. Expected-value and timing rules
 
 Every executed row must record:
