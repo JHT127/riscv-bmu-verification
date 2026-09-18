@@ -10,6 +10,7 @@ SEED        ?= 1
 VERBOSITY   ?= UVM_MEDIUM
 FILELIST    := filelists/$(SIMULATOR).f
 RESULTS_DIR := ../results/logs
+COVERAGE_DIR := ../results/coverage
 WAVES_DIR   := ../waveforms
 XRUN        ?= xrun
 
@@ -40,8 +41,11 @@ compile:
 
 run: compile
 	@mkdir -p $(RESULTS_DIR)
+	@mkdir -p $(COVERAGE_DIR)/$(TEST)_$(SEED)
 	@echo "[run] TEST=$(TEST) SEED=$(SEED) VERBOSITY=$(VERBOSITY)"
-	$(XRUN_BASE) +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
+	$(XRUN_BASE) -coverage all -covoverwrite \
+		-covworkdir $(COVERAGE_DIR)/$(TEST)_$(SEED) \
+		+UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
 		+UVM_VERBOSITY=$(VERBOSITY) -l $(RESULTS_DIR)/$(TEST)_$(SEED).log
 	@if grep -Eq 'UVM_(ERROR|FATAL) :[[:space:]]+[1-9]' $(RESULTS_DIR)/$(TEST)_$(SEED).log; then \
 		echo "[run] FAIL: UVM errors or fatals recorded" >&2; \
