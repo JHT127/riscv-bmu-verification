@@ -8,7 +8,7 @@ The goal is to make the bug-finding coverage claim honest:
 
 - Functional coverage is measured only over the supported legal behavior domain.
 - Unsupported functionality is explicitly excluded or waived.
-- Code coverage is reported only when a final, reproducible coverage database with a valid report exists.
+- Code coverage is reported from a reproducible merged Xcelium database; it is not treated as closed merely because a percentage exists.
 
 ## 2. In-scope behavior
 
@@ -50,12 +50,16 @@ The dedicated `bmu_coverage_closure_test`, seed 4, reaches 100.00% functional co
 
 ## 5. Code coverage status
 
-The repository contains coverage databases under [results/coverage](../../results/coverage), but there is no final code-coverage report that can honestly be presented as a sign-off result.
+The distinct Xcelium runs are merged in `results/coverage/overall_code_coverage`.
+The measured aggregate code coverage is 17.74% (2,587/14,581), with a
+23.54% type-hierarchy view. Assertion status is 53.85%; FSM coverage is not
+applicable because no FSMs were extracted. These are measurement results, not
+RTL sign-off criteria.
 
 The correct status is:
 
 - functional coverage: 100.00% for the declared in-scope model
-- code coverage: not yet closed; no final pass/fail statement exists
+- code coverage: measured baseline, not closed
 
 ## 6. Closure rule
 
