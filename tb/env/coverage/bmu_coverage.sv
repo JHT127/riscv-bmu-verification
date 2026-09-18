@@ -39,7 +39,7 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                 cp_binv_position: coverpoint item.b_in[4:0] iff item.ap.binv {
                         bins all[] = {[0:31]};
                 }
-                cp_count_result: coverpoint item.result_ff[5:0] iff
+                cp_count_result: coverpoint expected_count(item) iff
                         (item.ap.ctz || item.ap.cpop) {
                         bins all[] = {[0:32]};
                 }
@@ -74,11 +74,14 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                         bins functional = {0};
                         bins scan = {1};
                 }
-                cp_error: coverpoint item.error {
+                cp_error: coverpoint expected_error(item) {
                         bins clean = {0};
                         bins rejected = {1};
                 }
-                operation_x_error: cross cp_operation, cp_error;
+                operation_x_error: cross cp_operation, cp_error {
+                        ignore_bins csr_read = binsof(cp_operation.csr_read);
+                        ignore_bins invalid = binsof(cp_operation.invalid);
+                }
                 operation_x_valid: cross cp_operation, cp_valid;
         endgroup
 
@@ -142,6 +145,42 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                         return 2;
                 return 0;
         endfunction : csr_mode
+
+        function int expected_count(bmu_sequence_item item);
+                int index;
+
+                if (item.ap.ctz) begin
+                        expected_count = 32;
+                        for (index = 0; index < 32; index++) begin
+                                if (item.a_in[index]) begin
+                                        expected_count = index;
+                                        break;
+                                end
+                        end
+                end
+                else begin
+                        expected_count = 0;
+                        for (index = 0; index < 32; index++)
+                                expected_count += item.a_in[index];
+                end
+        endfunction : expected_count
+
+        function bit expected_error(bmu_sequence_item item);
+                expected_error = 1'b0;
+                if (item.csr_ren_in && (|item.ap))
+                        expected_error = 1'b1;
+                else if (!item.csr_ren_in && (operation_code(item) == 17))
+                        expected_error = 1'b1;
+                else if (!item.csr_ren_in && (primary_count(item.ap) != 1))
+                        expected_error = 1'b1;
+        endfunction : expected_error
+
+        function int primary_count(bmu_ctrl_t ap);
+                primary_count = ap.lor + ap.lxor + ap.srl + ap.sra + ap.ror +
+                                ap.binv + ap.sh2add + ap.slt + ap.ctz + ap.cpop +
+                                ap.siext_b + ap.max + ap.pack + ap.grev +
+                                ap.csr_write + (ap.sub && !ap.slt && !ap.max);
+        endfunction : primary_count
 
         function void report_phase(uvm_phase phase);
                 super.report_phase(phase);
