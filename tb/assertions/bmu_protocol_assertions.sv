@@ -28,6 +28,12 @@ module bmu_protocol_assertions
         assert property (reset_suppresses_error)
                 else $error("BMU reset must suppress error");
 
+        property reset_clears_result;
+                @(posedge clk) !rst_l |=> result_ff == '0;
+        endproperty
+        assert property (reset_clears_result)
+                else $error("BMU reset did not clear result_ff");
+
         property result_holds_when_invalid;
                 @(posedge clk) disable iff (!rst_l) !valid_in |=> $stable(result_ff);
         endproperty
@@ -53,6 +59,13 @@ module bmu_protocol_assertions
         endproperty
         assert property (empty_valid_request)
                 else $error("BMU empty valid request was not rejected");
+
+        property live_error_when_invalid;
+                @(posedge clk) disable iff (!rst_l)
+                (!valid_in && primary_count(ap) > 1) |-> error;
+        endproperty
+        assert property (live_error_when_invalid)
+                else $error("BMU error did not update for an idle invalid request");
 
         property csr_conflict;
                 @(posedge clk) disable iff (!rst_l)
