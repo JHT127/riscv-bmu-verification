@@ -11,35 +11,40 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                 cp_operation: coverpoint operation_code(item) {
                         bins lor = {0};
                         bins lxor = {1};
-                        bins sll = {2};
-                        bins srl = {3};
-                        bins sra = {4};
-                        bins ror = {5};
-                        bins bset = {6};
-                        bins bclr = {7};
-                        bins binv = {8};
-                        bins bext = {9};
-                        bins sh1add = {10};
-                        bins sh2add = {11};
-                        bins sh3add = {12};
-                        bins sub = {13};
-                        bins slt = {14};
-                        bins ctz = {15};
-                        bins cpop = {16};
-                        bins siext_b = {17};
-                        bins max = {18};
-                        bins pack = {19};
-                        bins grev = {20};
-                        bins csr_write = {21};
-                        bins csr_read = {22};
-                        bins invalid = {23};
+                        bins land = {2};
+                        bins sll = {3};
+                        bins srl = {4};
+                        bins sra = {5};
+                        bins ror = {6};
+                        bins bset = {7};
+                        bins bclr = {8};
+                        bins binv = {9};
+                        bins bext = {10};
+                        bins sh1add = {11};
+                        bins sh2add = {12};
+                        bins sh3add = {13};
+                        bins sub = {14};
+                        bins slt = {15};
+                        bins ctz = {16};
+                        bins cpop = {17};
+                        bins siext_b = {18};
+                        bins max = {19};
+                        bins pack = {20};
+                        bins grev = {21};
+                        bins csr_write = {22};
+                        bins csr_read = {23};
+                        bins invalid = {24};
                 }
                 cp_zbb: coverpoint item.ap.zbb iff (item.ap.lor || item.ap.lxor) {
                         bins disabled = {0};
                         bins enabled = {1};
                 }
+                cp_zba: coverpoint item.ap.zba iff (item.ap.sh1add || item.ap.sh2add || item.ap.sh3add) {
+                        bins disabled = {0};
+                        bins enabled = {1};
+                }
                 cp_shift_amount: coverpoint item.b_in[4:0] iff
-                        (item.ap.srl || item.ap.sra || item.ap.ror) {
+                        (item.ap.sll || item.ap.srl || item.ap.sra || item.ap.ror || item.ap.bset || item.ap.bclr || item.ap.binv || item.ap.bext) {
                         bins all[] = {[0:31]};
                 }
                 cp_binv_position: coverpoint item.b_in[4:0] iff item.ap.binv {
@@ -50,7 +55,7 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                         bins all[] = {[0:32]};
                 }
                 cp_operand_sign: coverpoint item.a_in[31] iff
-                        (item.ap.siext_b || item.ap.slt || item.ap.max) {
+                        (item.ap.siext_b || item.ap.slt || item.ap.max || item.ap.sub) {
                         bins positive = {0};
                         bins negative = {1};
                 }
@@ -104,52 +109,54 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
 
         function int operation_code(bmu_sequence_item item);
                 if (item.csr_ren_in && item.ap == '0)
-                        return 22;
+                        return 23;
                 if (item.ap.csr_write)
-                        return 21;
+                        return 22;
                 if (item.ap.lor)
                         return 0;
                 if (item.ap.lxor)
                         return 1;
-                if (item.ap.sll)
+                if (item.ap.land)
                         return 2;
-                if (item.ap.srl)
+                if (item.ap.sll)
                         return 3;
-                if (item.ap.sra)
+                if (item.ap.srl)
                         return 4;
-                if (item.ap.ror)
+                if (item.ap.sra)
                         return 5;
-                if (item.ap.bset)
+                if (item.ap.ror)
                         return 6;
-                if (item.ap.bclr)
+                if (item.ap.bset)
                         return 7;
-                if (item.ap.binv)
+                if (item.ap.bclr)
                         return 8;
-                if (item.ap.bext)
+                if (item.ap.binv)
                         return 9;
-                if (item.ap.sh1add)
+                if (item.ap.bext)
                         return 10;
-                if (item.ap.sh2add)
+                if (item.ap.sh1add)
                         return 11;
-                if (item.ap.sh3add)
+                if (item.ap.sh2add)
                         return 12;
-                if (item.ap.sub)
+                if (item.ap.sh3add)
                         return 13;
-                if (item.ap.slt)
+                if (item.ap.sub)
                         return 14;
-                if (item.ap.ctz)
+                if (item.ap.slt)
                         return 15;
-                if (item.ap.cpop)
+                if (item.ap.ctz)
                         return 16;
-                if (item.ap.siext_b)
+                if (item.ap.cpop)
                         return 17;
-                if (item.ap.max)
+                if (item.ap.siext_b)
                         return 18;
-                if (item.ap.pack)
+                if (item.ap.max)
                         return 19;
-                if (item.ap.grev)
+                if (item.ap.pack)
                         return 20;
-                return 23;
+                if (item.ap.grev)
+                        return 21;
+                return 24;
         endfunction : operation_code
 
         function int csr_mode(bmu_sequence_item item);
@@ -194,10 +201,10 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
         endfunction : expected_error
 
         function int primary_count(bmu_ctrl_t ap);
-                primary_count = ap.lor + ap.lxor + ap.srl + ap.sra + ap.ror +
-                                ap.binv + ap.sh2add + ap.slt + ap.ctz + ap.cpop +
-                                ap.siext_b + ap.max + ap.pack + ap.grev +
-                                ap.csr_write + (ap.sub && !ap.slt && !ap.max);
+                primary_count = ap.lor + ap.lxor + ap.land + ap.sll + ap.srl + ap.sra + ap.ror +
+                                ap.bset + ap.bclr + ap.binv + ap.bext + ap.sh1add + ap.sh2add + ap.sh3add +
+                                ap.slt + ap.ctz + ap.cpop + ap.siext_b + ap.max + ap.pack + ap.grev +
+                                ap.csr_write + (ap.sub && !ap.slt && !ap.max) + ap.zbb + ap.zba;
         endfunction : primary_count
 
         function void report_phase(uvm_phase phase);
