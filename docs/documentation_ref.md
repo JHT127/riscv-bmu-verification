@@ -36,6 +36,8 @@ Completed:
 - Package include order for all current UVM components and sequences.
 - Compile-safe top-level testbench shell.
 - Reusable base UVM test.
+- Approved delivered RTL snapshot and corrected specification PDF.
+- RTL parameter include wrapper and simulator filelist.
 
 Not completed:
 
@@ -167,6 +169,7 @@ The scoreboard aligns actual and expected streams. The checker compares
 | `tb/sequences/*/` | Concrete sequences grouped by operation family. |
 | `tb/tests/` | Base test and future concrete UVM tests. |
 | `tb/top/` | Clock, interface, UVM startup, and future DUT binding. |
+| `rtl/` | Approved delivered DUT RTL and compile support files. |
 | `sim/filelists/` | Simulator source ordering. |
 
 ## 7. Sequence Inventory
@@ -203,23 +206,27 @@ xrun -64bit -uvm -sv -compile \
   tb/packages/bmu_pkg.sv
 ```
 
-This checks the complete package and all current sequences. It does not run a
-test because the DUT top-level binding and UVM tests are not implemented yet.
+For the canonical Xcelium compile, run from `sim/`:
+
+```bash
+rm -rf xcelium.d INCA_libs
+xrun -64bit -uvm -sv -compile -f filelists/xcelium.f
+```
+
+This compiles the delivered RTL, complete package, top module, base test, and
+all current sequences. It does not run a test until a concrete test selects a
+sequence.
 
 ## 9. Next Implementation Steps
 
-1. Confirm the design-team DUT module name and port connection from the actual
-  integration environment. Do not infer them from RTL source.
-2. Add the DUT instance to `tb/top/bmu_tb_top.sv` after that interface is
-  confirmed.
-3. Add the first concrete UVM test in `tb/tests/` and start one directed OR
+1. Add the first concrete UVM test in `tb/tests/` and start one directed OR
   sequence from the base test.
-4. Add test classes that map the 61 sequences to the test-plan IDs.
-5. Add the subscriber and functional coverage only after transactions run.
-6. Complete simulator-specific commands in `sim/Makefile` and filelists.
-7. Run directed, corner, error, timing, reset, CSR, and random regressions.
-8. Record failures in `docs/04_bug_reports/` and track clarification changes.
-9. Close coverage and complete the sign-off documents.
+2. Add test classes that map the 61 sequences to the test-plan IDs.
+3. Add the subscriber and functional coverage only after transactions run.
+4. Complete simulator-specific run commands in `sim/Makefile`.
+5. Run directed, corner, error, timing, reset, CSR, and random regressions.
+6. Record failures in `docs/04_bug_reports/` and track clarification changes.
+7. Close coverage and complete the sign-off documents.
 
 ## 10. Working Rules
 
