@@ -12,6 +12,11 @@ VERBOSITY="${3:-UVM_MEDIUM}"
 RESULTS_DIR="$(dirname "$0")/../../results/logs"
 mkdir -p "$RESULTS_DIR"
 
+if grep -q 'TODO: invoke' "$(dirname "$0")/../Makefile"; then
+	echo "ERROR: simulator compile/run commands are not configured" >&2
+	exit 2
+fi
+
 echo "Running TEST=${TEST} SEED=${SEED} VERBOSITY=${VERBOSITY}"
 make -C "$(dirname "$0")/.." run TEST="$TEST" SEED="$SEED" VERBOSITY="$VERBOSITY"
 
