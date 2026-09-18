@@ -159,6 +159,7 @@ package bmu_pkg;
 
         // tests ----------------------------------------
         `include "../tests/bmu_base_test.sv"
+        `include "../tests/bmu_or_valid_test.sv"
 
 
 endpackage : bmu_pkg
