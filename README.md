@@ -27,13 +27,11 @@ The BMU supports:
 | Zba | SH1ADD, SH2ADD, SH3ADD |
 | Misc | CSR bypass read/write, logic ops (OR/XOR), shifts (SLL/SRL/SRA), SLT |
 
-> **Note on confidentiality:** the original design specification and RTL
-> source were provided by the design team as part of a training
-> engagement and are **not included** in this public repository. See
-> [`docs/00_spec/README.md`](docs/00_spec/README.md) and
-> [`rtl/README.md`](rtl/README.md) for details. Everything in this repo
-> — testbench, plans, and documentation — is original work produced
-> during the verification effort.
+> **Verification inputs:** Specification v1.2 and the delivered RTL snapshot
+> are controlled inputs for this repository. The specification remains the
+> behavior authority; the RTL is never used to create expected values. See
+> [`docs/00_spec/verification_input_baseline.md`](docs/00_spec/verification_input_baseline.md)
+> for the frozen revision, simulator, and assumption record.
 
 ---
 
@@ -42,7 +40,7 @@ The BMU supports:
 ```text
 BMU_Verification_Project/
 ├── docs/                     # Verification plan, test plan, bug log, presentation, sign-off
-├── rtl/                      # DUT RTL placeholder (not included — see rtl/README.md)
+├── rtl/                      # Delivered DUT RTL snapshot and compile support
 ├── tb/                       # UVM testbench (env, agents, sequences, tests)
 ├── sim/                      # Simulation scripts, Makefile, filelists
 ├── regression/               # Regression configs and logs
@@ -88,17 +86,17 @@ design team — a key part of the verification record, not just an aside.
 git clone <repo-url>
 cd BMU_Verification_Project
 
-# Run a single test after simulator commands are wired (see sim/scripts)
+# Run the concrete Xcelium smoke test
 cd sim
-make TEST=bmu_or_valid_test
+make TEST=bmu_or_valid_test SEED=1 VERBOSITY=UVM_HIGH
 
 # Run the full regression
 make regression
 ```
 
-> Simulator-specific setup notes live in `sim/README.md` (add your
-> simulator of choice — VCS, Questa, Xcelium — once environment access
-> is available).
+> The checked-in simulation baseline supports Cadence Xcelium. See
+> [`sim/README.md`](sim/README.md) for compile, smoke-test, and regression
+> commands.
 
 ---
 
@@ -107,6 +105,7 @@ make regression
 | Milestone | Status |
 |---|---|
 | Spec review & clarification log | ✅ In progress |
+| Verification input baseline | ✅ Frozen for Xcelium smoke execution |
 | Verification plan | ⏳ Review captured; spreadsheet pending |
 | Testbench skeleton | ✅ Scaffolded |
 | Reference model | ✅ Implemented; runtime review pending |
