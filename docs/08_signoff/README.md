@@ -17,15 +17,15 @@ The final status report for this project is kept in
 
 At the current repository state, the project is not ready for final sign-off.
 The repo contains real verified bug evidence and open runtime findings. The
-final report documents the exact reason: the DUT still fails the directed,
-random, and guard-based checks, and functional coverage is not yet at the
-required closure level for a final sign-off claim.
+dedicated coverage closure test reaches 100% functional coverage, but the DUT
+still fails directed, random, and guard-based checks, so this is not an RTL
+sign-off claim.
 
 ## Summary table
 
 | Metric | Target | Current status |
 |---|---|---|
-| Functional coverage | 100% on supported in-scope legal behavior | Not yet achieved |
+| Functional coverage | 100% on supported in-scope legal behavior | Achieved by closure test |
 | Code coverage | Maximize and document exclusions | Not yet closed |
 | Regression pass rate | 100% | Not yet achieved |
 | Critical/Major bugs open | 0 | Open DUT findings remain |
