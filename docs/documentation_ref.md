@@ -198,39 +198,35 @@ helpers, and map to a test-plan ID.
 
 ## 8. Compile Check
 
-Run this from the repository root:
+The controlled baseline uses Cadence Xcelium `xrun(64) 25.03-s006`. From the
+repository root, run the executable Makefile target:
 
 ```bash
-rm -rf xcelium.d INCA_libs
-xrun -64bit -uvm -sv -compile \
-  -incdir tb/include \
-  -incdir tb/interface \
-  tb/packages/bmu_types_package.sv \
-  tb/interface/bmu_interface.sv \
-  tb/packages/bmu_pkg.sv
+make -C sim compile
 ```
 
-For the canonical Xcelium compile, run from `sim/`:
+Run the concrete smoke test with scoreboard evidence:
 
 ```bash
-rm -rf xcelium.d INCA_libs
-xrun -64bit -uvm -sv -compile -f filelists/xcelium.f
+make -C sim run TEST=bmu_or_valid_test SEED=1 VERBOSITY=UVM_HIGH
 ```
 
-This compiles the delivered RTL, complete package, top module, base test, and
-all current sequences. It does not run a test until a concrete test selects a
-sequence.
+This compiles and elaborates the delivered RTL, complete package, top module,
+and current sequences, then runs the concrete smoke test. Acceptance requires
+zero compile errors, zero UVM errors/fatals, and a scoreboard
+`result and error match` message. The source order is controlled by
+`sim/filelists/xcelium.f`; logs are written under `results/logs/`.
 
 ## 9. Next Implementation Steps
 
-1. Add the first concrete UVM test in `tb/tests/` and start one directed OR
-  sequence from the base test.
-2. Add test classes that map the 61 sequences to the test-plan IDs.
-3. Add the subscriber and functional coverage only after transactions run.
-4. Complete simulator-specific run commands in `sim/Makefile`.
-5. Run directed, corner, error, timing, reset, CSR, and random regressions.
-6. Record failures in `docs/04_bug_reports/` and track clarification changes.
-7. Close coverage and complete the sign-off documents.
+1. Add concrete test classes that map the remaining sequence inventory to the
+  77 test-plan checks.
+2. Add the subscriber and functional coverage only after each planned test is
+  executable.
+3. Run directed, corner, error, timing, reset, CSR, and random regressions.
+4. Reproduce and disposition the findings in `docs/04_bug_reports/`.
+5. Resolve or explicitly accept the clarification risks.
+6. Close coverage and complete the sign-off documents.
 
 ## 10. Working Rules
 
