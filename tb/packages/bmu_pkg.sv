@@ -157,9 +157,13 @@ package bmu_pkg;
         `include "../sequences/base/random_corner_weighted_seq.sv"
 
 
+        // composite suite sequences ----------------------------------------
+        `include "../sequences/smoke/bmu_directed_suite_sequences.sv"
+
         // tests ----------------------------------------
         `include "../tests/bmu_base_test.sv"
         `include "../tests/bmu_or_valid_test.sv"
+        `include "../tests/bmu_directed_suite_tests.sv"
 
 
 endpackage : bmu_pkg
