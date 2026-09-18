@@ -1,5 +1,8 @@
 # Test Plan
 
+The reviewed baseline and proposed additions are documented in
+[`test_plan_review.md`](test_plan_review.md).
+
 **File to add here:** `BMU_Test_Plan.xlsx`
 
 ## Recommended sheet structure
