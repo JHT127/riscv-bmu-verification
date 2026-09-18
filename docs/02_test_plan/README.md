@@ -3,6 +3,11 @@
 The reviewed baseline and proposed additions are documented in
 [`test_plan_review.md`](test_plan_review.md).
 
+The implementation-ready Markdown handoff is
+[`BMU_Test_Plan.md`](BMU_Test_Plan.md). It preserves the 64-case baseline,
+defines the 13 required additions, and records the assumptions and evidence
+needed before coverage reporting.
+
 **File to add here:** `BMU_Test_Plan.xlsx`
 
 ## Recommended sheet structure
