@@ -57,7 +57,7 @@ waves: compile
 
 regression:
 	@echo "[regression] delegating to scripts/run_regression.sh"
-	@bash scripts/run_regression.sh
+	@bash scripts/run_regression.sh $(CONFIG)
 
 clean:
 	@echo "[clean] removing simulator artifacts"
