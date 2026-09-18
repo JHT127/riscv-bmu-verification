@@ -1,3 +1,7 @@
+# ===== Local tooling / package manager artifacts =====
+node_modules/
+package-lock.json
+
 # ===== Simulation / Regression outputs =====
 regression/logs/*
 !regression/logs/.gitkeep

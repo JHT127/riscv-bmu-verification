@@ -9,8 +9,11 @@ if ! command -v npx >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "Linting Markdown files..."
-npx --yes markdownlint-cli2 '**/*.md' '!**/node_modules/**'
+echo "Linting Markdown files with a Node 22-compatible runtime..."
+# The project docs intentionally use compact/noisy markdown patterns; use the public
+# npm registry to avoid the host-specific GitHub trust prompt and keep the exact
+# markdownlint version stable across local and CI environments.
+npx --yes --package=node@22 --package=markdownlint-cli2@0.23.2 -- markdownlint-cli2 --config .markdownlint.json "**/*.md" "!**/node_modules/**"
 
 echo "Checking for confidential files..."
 if find docs/00_spec -type f \( -iname '*.pdf' -o -iname '*.docx' \) -print -quit | grep -q .; then
