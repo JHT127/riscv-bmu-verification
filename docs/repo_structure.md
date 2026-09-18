@@ -19,7 +19,7 @@ BMU_Verification_Project/
 ├── docs/
 │   ├── README.md                      Docs index
 │   ├── repo_structure.md              This file
-│   ├── 00_spec/                       Spec notes (spec itself NOT included — confidential)
+│   ├── 00_spec/                       Approved BMU specification and notes
 │   ├── 01_verification_plan/          BMU_Verification_Plan.xlsx (to be added)
 │   ├── 02_test_plan/                  BMU_Test_Plan.xlsx (to be added)
 │   ├── 03_clarifications_log/         spec_clarifications_log.md — living Q&A record
@@ -29,7 +29,7 @@ BMU_Verification_Project/
 │   ├── 07_coverage_reports/           Exported coverage snapshots
 │   └── 08_signoff/                    Final sign-off checklist + summary
 │
-├── rtl/                                DUT RTL placeholder — see rtl/README.md
+├── rtl/                                Approved DUT RTL snapshot — see rtl/README.md
 │
 ├── tb/                                 UVM testbench
 │   ├── top/                            top_tb.sv — top-level TB module
