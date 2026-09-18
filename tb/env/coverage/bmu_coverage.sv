@@ -11,22 +11,28 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                 cp_operation: coverpoint operation_code(item) {
                         bins lor = {0};
                         bins lxor = {1};
-                        bins srl = {2};
-                        bins sra = {3};
-                        bins ror = {4};
-                        bins binv = {5};
-                        bins sh2add = {6};
-                        bins sub = {7};
-                        bins slt = {8};
-                        bins ctz = {9};
-                        bins cpop = {10};
-                        bins siext_b = {11};
-                        bins max = {12};
-                        bins pack = {13};
-                        bins grev = {14};
-                        bins csr_write = {15};
-                        bins csr_read = {16};
-                        bins invalid = {17};
+                        bins sll = {2};
+                        bins srl = {3};
+                        bins sra = {4};
+                        bins ror = {5};
+                        bins bset = {6};
+                        bins bclr = {7};
+                        bins binv = {8};
+                        bins bext = {9};
+                        bins sh1add = {10};
+                        bins sh2add = {11};
+                        bins sh3add = {12};
+                        bins sub = {13};
+                        bins slt = {14};
+                        bins ctz = {15};
+                        bins cpop = {16};
+                        bins siext_b = {17};
+                        bins max = {18};
+                        bins pack = {19};
+                        bins grev = {20};
+                        bins csr_write = {21};
+                        bins csr_read = {22};
+                        bins invalid = {23};
                 }
                 cp_zbb: coverpoint item.ap.zbb iff (item.ap.lor || item.ap.lxor) {
                         bins disabled = {0};
@@ -98,40 +104,52 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
 
         function int operation_code(bmu_sequence_item item);
                 if (item.csr_ren_in && item.ap == '0)
-                        return 16;
+                        return 22;
                 if (item.ap.csr_write)
-                        return 15;
+                        return 21;
                 if (item.ap.lor)
                         return 0;
                 if (item.ap.lxor)
                         return 1;
-                if (item.ap.srl)
+                if (item.ap.sll)
                         return 2;
-                if (item.ap.sra)
+                if (item.ap.srl)
                         return 3;
-                if (item.ap.ror)
+                if (item.ap.sra)
                         return 4;
-                if (item.ap.binv)
+                if (item.ap.ror)
                         return 5;
-                if (item.ap.sh2add)
+                if (item.ap.bset)
                         return 6;
-                if (item.ap.slt)
-                        return 8;
-                if (item.ap.sub)
+                if (item.ap.bclr)
                         return 7;
-                if (item.ap.ctz)
+                if (item.ap.binv)
+                        return 8;
+                if (item.ap.bext)
                         return 9;
-                if (item.ap.cpop)
+                if (item.ap.sh1add)
                         return 10;
-                if (item.ap.siext_b)
+                if (item.ap.sh2add)
                         return 11;
-                if (item.ap.max)
+                if (item.ap.sh3add)
                         return 12;
-                if (item.ap.pack)
+                if (item.ap.sub)
                         return 13;
-                if (item.ap.grev)
+                if (item.ap.slt)
                         return 14;
-                return 17;
+                if (item.ap.ctz)
+                        return 15;
+                if (item.ap.cpop)
+                        return 16;
+                if (item.ap.siext_b)
+                        return 17;
+                if (item.ap.max)
+                        return 18;
+                if (item.ap.pack)
+                        return 19;
+                if (item.ap.grev)
+                        return 20;
+                return 23;
         endfunction : operation_code
 
         function int csr_mode(bmu_sequence_item item);
