@@ -5,6 +5,7 @@
 interface bmu_interface (input logic clk);
 
         import bmu_types_package::*;
+        import rtl_pkg::*;
 
 
         // Declaring ------------------------------
@@ -15,12 +16,39 @@ interface bmu_interface (input logic clk);
                 logic [31:0] a_in;
                 logic [31:0] b_in;
                 bmu_ctrl_t   ap;
+                rtl_alu_pkt_t dut_ap;
                 logic        csr_ren_in;
                 logic [31:0] csr_rddata_in;
 
                 // bmu outputs
                 logic [31:0] result_ff;
                 logic        error;
+
+
+
+        // rtl control adapter ----------------------------------------
+                always_comb begin
+                        dut_ap = '0;
+                        dut_ap.ctz = ap.ctz;
+                        dut_ap.cpop = ap.cpop;
+                        dut_ap.siext_b = ap.siext_b;
+                        dut_ap.max = ap.max;
+                        dut_ap.pack = ap.pack;
+                        dut_ap.grev = ap.grev;
+                        dut_ap.ror = ap.ror;
+                        dut_ap.binv = ap.binv;
+                        dut_ap.sh2add = ap.sh2add;
+                        dut_ap.zba = ap.zba;
+                        dut_ap.sub = ap.sub;
+                        dut_ap.slt = ap.slt;
+                        dut_ap.unsign = ap.unsign;
+                        dut_ap.lor = ap.lor;
+                        dut_ap.lxor = ap.lxor;
+                        dut_ap.srl = ap.srl;
+                        dut_ap.sra = ap.sra;
+                        dut_ap.csr_write = ap.csr_write;
+                        dut_ap.csr_imm = ap.csr_imm;
+                end
 
 
 
@@ -75,7 +103,7 @@ interface bmu_interface (input logic clk);
                 input valid_in,
                 input a_in,
                 input b_in,
-                input ap,
+                input dut_ap,
                 input csr_ren_in,
                 input csr_rddata_in,
                 output result_ff,
