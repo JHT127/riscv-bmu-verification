@@ -59,12 +59,15 @@ These are regression baselines. The dedicated `bmu_coverage_closure_test`, seed 
 
 ## 4. Code coverage status
 
-The repo contains Xcelium coverage databases under [results/coverage](../../results/coverage), but there is no final code-coverage report or line/branch sign-off report that can be responsibly claimed as complete.
+The merged Xcelium database reports 17.74% aggregate code coverage
+(2,587/14,581), 23.54% in the type-hierarchy view, and 53.85% assertion
+status. No FSMs were extracted. These are measured baselines, not RTL
+sign-off results.
 
 Correct status:
 
 - functional coverage: 100.00% for the declared in-scope model
-- code coverage: not yet closed and no final sign-off statement exists
+- code coverage: measured baseline, not closed
 
 ## 5. Open bug status
 
