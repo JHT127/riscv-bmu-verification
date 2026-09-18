@@ -82,6 +82,27 @@ Impact on reference model.**
   field as an error — this is the interpretation that stays consistent
   with all known worked examples.
 
+## Project closure policy — design-team clarification unavailable
+
+The design team is unavailable for the remainder of this verification
+project. Pending clarifications must therefore be closed using the safest
+interpretation supported by the specification text, worked examples, and
+architectural conventions. This is a verification project decision, not a
+claim that the design team confirmed the behavior.
+
+For closure, each pending item must record:
+
+- the adopted expected behavior;
+- the evidence and rationale for choosing it;
+- the affected model, tests, coverage, and bug records;
+- the residual risk and exact sign-off disclosure.
+
+Under this policy, `CLARIF-001`, `CLARIF-004`, and `CLARIF-005` remain
+assumption-tagged and are reported as accepted project risk unless later
+evidence inside the repository disproves the adopted interpretation. A
+future design owner may reopen them, but that is outside this project's
+verification closure gate.
+
 ---
 
 ## Template for new entries
