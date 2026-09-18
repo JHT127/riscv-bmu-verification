@@ -7,8 +7,8 @@ Read it before adding RTL, UVM components, sequences, tests, or simulation
 scripts.
 
 The project verifies the BMU from the verification-ready functional
-specification. The RTL is not included in this repository and must not be used
-as the source of expected behavior.
+specification. The delivered RTL snapshot is present for DUT integration and
+risk review, but it must not be used as the source of expected behavior.
 
 The formal behavior source is Specification v1.2:
 
@@ -36,17 +36,17 @@ Completed:
 - Package include order for all current UVM components and sequences.
 - Compile-safe top-level testbench shell.
 - Reusable base UVM test.
-- Approved delivered RTL snapshot and corrected specification PDF.
+- Approved delivered RTL snapshot and specification summary.
 - RTL parameter include wrapper and simulator filelist.
 
 Not completed:
 
-- Actual DUT binding in the top-level testbench.
-- Concrete UVM test classes that start the sequences.
+- Complete runtime DUT/testbench integration and regression evidence.
+- Concrete UVM test classes that start all planned sequences.
 - Subscriber and functional coverage.
 - Simulator-specific compile and run targets.
 - Regression execution and coverage reports.
-- Bug reports and final sign-off.
+- Runtime bug confirmation and final sign-off.
 
 The current source package compiles with Cadence Xcelium with zero errors.
 The unused include-directory warning is expected while the top-level and RTL
@@ -172,7 +172,9 @@ The scoreboard aligns actual and expected streams. The checker compares
 | `rtl/` | Approved delivered DUT RTL and compile support files. |
 | `sim/filelists/` | Simulator source ordering. |
 | `docs/02_test_plan/test_plan_review.md` | Reviewed baseline and expanded test plan. |
+| `docs/02_test_plan/BMU_Test_Plan.md` | Implementation-ready Markdown test-plan handoff. |
 | `docs/04_bug_reports/bug_report_review.md` | Specification-based DUT findings and evidence requirements. |
+| `docs/04_bug_reports/BMU_Bug_Log.md` | Implementation-ready Markdown bug-log handoff. |
 
 ## 7. Sequence Inventory
 
