@@ -23,7 +23,10 @@ Impact on reference model.**
   anywhere in the formal spec document — only relayed informally.
 - **Question raised:** Requested these be added to the spec as a
   written addendum rather than relying on informal communication.
-- **Resolution:** *(update once confirmed by design team)*
+- **Resolution:** Design-team confirmation is unavailable. The project adopts
+  the conservative model behavior as a closure assumption: one-cycle result
+  capture, result hold when `valid_in=0`, live combinational `error`,
+  synchronous active-low reset, and no functional `scan_mode` effect.
 - **Impact on reference model:** Reference model assumes: 1-cycle
   latency (combinational compute, registered on `valid_in`-enabled
   flop), `error` is purely combinational (not registered, not gated by
@@ -60,7 +63,10 @@ Impact on reference model.**
   correction.
 - **Question raised:** Should `b_in != 24` also force `error=1`, or is
   it intentionally a non-error "unsupported variant" case?
-- **Resolution:** *(pending — see outgoing clarification email)*
+- **Resolution:** Design-team confirmation is unavailable. The project adopts
+  the safe invalid-control interpretation: GREV with `b_in[4:0] != 24` is
+  `result=0`, `error=1`. This remains an accepted project risk, not a
+  design-team confirmation.
 - **Impact on reference model:** Currently modeled as `result=0`,
   `error=0` pending confirmation. **Flagged as a risk** — will require
   a reference-model + testcase update if resolved the other way.
@@ -75,7 +81,11 @@ Impact on reference model.**
   local to each operation's own table (i.e., only applies when that
   operation's primary enable field is also asserted), rather than a
   global rule that `csr_ren_in=1` is always invalid?
-- **Resolution:** *(pending — see outgoing clarification email)*
+- **Resolution:** Design-team confirmation is unavailable. The project adopts
+  the worked-example interpretation: pure CSR bypass with no active BMU
+  operation is valid, while CSR combined with an active BMU operation is an
+  error. This remains an accepted project risk, not a design-team
+  confirmation.
 - **Impact on reference model:** Reference model currently treats
   `csr_ren_in=1` with all bit-manip fields deasserted as a valid
   bypass read, and `csr_ren_in=1` combined with any bit-manip enable
