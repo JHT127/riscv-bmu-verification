@@ -29,11 +29,12 @@ The verification team must not patch the delivered RTL locally to close a bug.
 | `BMU-BUG-001` | Major | CPOP width | Open - static finding |
 | `BMU-BUG-002` | Major | PACK ordering | Open - static finding |
 | `BMU-BUG-003` | Major | CSR write source | Open - static finding |
-| `BMU-BUG-004` | Critical | CSR bypass read | Open - static finding |
+| `BMU-BUG-004` | N/A | CSR bypass read | Withdrawn - RTL path present; runtime pending |
 | `BMU-BUG-005` | Major | GREV byte ordering | Open - static finding |
 | `BMU-BUG-006` | Critical | Invalid and conflicting controls | Open - static finding |
 | `BMU-BUG-007` | Major | SLT/MAX co-requisites | Open - static finding |
 | `BMU-BUG-008` | Major | GREV undefined encoding error | Open - static finding |
+| `BMU-BUG-009` | Major | CTZ bit reversal | Open - static finding |
 
 ## 4. Detailed Findings
 
@@ -127,18 +128,19 @@ b_in=0x11112222
 **Disposition:** `TC_CSR_002` and `TC_CSR_003` must run independently so both
 forms are covered.
 
-### BMU-BUG-004 — Pure CSR bypass read does not drive CSR read data
+### BMU-BUG-004 — Pure CSR bypass read requires runtime confirmation
 
-**Severity:** Critical
+**Severity:** N/A
 
-**Status:** Open - static finding
+**Status:** Withdrawn - RTL path present; runtime pending
 
 **Specification expectation:** Specification v1.2 Section 6.9.1 defines a
 valid bypass mode when `csr_ren_in=1` and all `ap` fields are zero. The result
 must equal `csr_rddata_in` and `error=0`.
 
-**RTL evidence:** The delivered result expression includes `ap.csr_write` but
-has no `csr_ren_in` / `csr_rddata_in` result path.
+**RTL evidence:** The current RTL `lout` expression explicitly includes
+`csr_ren_in & csr_rddata_in`, so the original static claim that the bypass
+path is absent is not supported by this RTL revision.
 
 **Reproducer:** `TC_CSR_001`:
 
@@ -150,13 +152,16 @@ csr_rddata_in=0xABCD1234
 
 **Expected result:** `0xABCD1234`, `error=0`.
 
-**Likely DUT result:** `0x00000000`, `error=0` unless another datapath term is
-selected.
+**Likely DUT result:** Must be determined by `TC_CSR_001`; static inspection is
+insufficient because the bypass term is present and the final result is a
+wide OR of datapath terms.
 
-**Impact:** The valid CSR bypass read mode is functionally absent.
+**Impact:** The stale finding could incorrectly report a critical defect. The
+pure bypass read remains a required runtime check, but it is not an open bug
+until the scoreboard reproduces a mismatch.
 
-**Disposition:** Run the pure bypass test before any CSR conflict test; file as
-a high-priority DUT bug if reproduced.
+**Disposition:** Run the pure bypass test before any CSR conflict test. Reopen
+as a DUT bug only if the current revision fails the specification result.
 
 ### BMU-BUG-005 — GREV byte-reverse result ordering is incorrect
 
@@ -286,6 +291,43 @@ b_in[4:0]=5
 **Disposition:** Keep this test assumption-tagged. If the design owner later
 changes the behavior, update the spec, reference model, and test plan together.
 
+### BMU-BUG-009 — CTZ input reversal swaps adjacent bits only
+
+**Severity:** Major
+
+**Status:** Open - static finding
+
+**Specification expectation:** Specification v1.2 Section 6.5.1 defines CTZ
+as the number of consecutive zero bits starting at bit 0 of the complete
+32-bit operand. A one-hot input at bit `n` must return `n`; CTZ(0) must return
+32.
+
+**RTL evidence:** The CTZ path uses `bitmanip_a_reverse_ff`, but that mapping
+only swaps each adjacent pair (`a[1]` with `a[0]`, `a[3]` with `a[2]`, and so
+on). It does not reverse the complete 32-bit operand before the leading-zero
+encoder.
+
+**Reproducer:** `TC_CTZ_005`, one-hot sweep:
+
+```text
+ap.ctz=1
+a_in=1 << n, for n = 0 through 31
+```
+
+**Expected result:** `n`, `error=0` for every one-hot input. The existing
+`TC_CTZ_001` zero case must also remain `32`, `error=0`.
+
+**Likely DUT result:** Adjacent-bit positions are transformed incorrectly;
+for example, `a_in=0x00000001` is not presented to the encoder as a bit at the
+required reversed position, so the result is not 0.
+
+**Impact:** CTZ results are incorrect for normal nonzero operands, not merely
+for an unsupported corner. This can affect every instruction using the count
+result.
+
+**Disposition:** Run the one-hot sweep against the reference model. File
+against the DUT revision if any position mismatches.
+
 ## 5. Additional Review Risks
 
 These are not filed as DUT bugs yet because they require either runtime
@@ -298,6 +340,8 @@ reproduction or scope clarification:
 - The DUT emits compile warnings for its inline parameter include syntax. This
   is a packaging/style warning, not currently a behavioral bug.
 - The adopted GREV and CSR assumptions remain risks until formally confirmed.
+- `BMU-BUG-004` is a documentation correction, not an open DUT defect, until
+  the pure CSR bypass test fails.
 
 ## 6. Required Bug Evidence
 
