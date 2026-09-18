@@ -9,6 +9,10 @@ set -euo pipefail
 CONFIG="${1:-$(dirname "$0")/../../regression/configs/nightly.cfg}"
 SUMMARY_DIR="$(dirname "$0")/../../results/reports"
 mkdir -p "$SUMMARY_DIR"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+SIMULATOR="${SIMULATOR:-xcelium}"
+RTL_REVISION="$(git -C "$REPO_ROOT" rev-parse --short HEAD)"
+SIMULATOR_VERSION="$(xrun -version 2>&1 | head -1)"
 
 if [ ! -f "$CONFIG" ]; then
   echo "Regression config not found: $CONFIG"
@@ -21,6 +25,10 @@ FAIL=0
 SUMMARY_FILE="${SUMMARY_DIR}/regression_summary_$(date +%Y%m%d_%H%M%S).txt"
 
 echo "Regression run started: $(date)" | tee "$SUMMARY_FILE"
+echo "Configuration: $CONFIG" | tee -a "$SUMMARY_FILE"
+echo "Simulator: $SIMULATOR_VERSION" | tee -a "$SUMMARY_FILE"
+echo "RTL revision: $RTL_REVISION" | tee -a "$SUMMARY_FILE"
+echo "Coverage root: $REPO_ROOT/results/coverage" | tee -a "$SUMMARY_FILE"
 
 while IFS= read -r line; do
   # skip comments/blank lines
@@ -35,6 +43,8 @@ while IFS= read -r line; do
     echo "   FAIL" | tee -a "$SUMMARY_FILE"
     FAIL=$((FAIL + 1))
   fi
+  echo "   Log: $REPO_ROOT/results/logs/${TEST_NAME}_${SEED}.log" | tee -a "$SUMMARY_FILE"
+  echo "   Coverage: $REPO_ROOT/results/coverage/${TEST_NAME}_${SEED}" | tee -a "$SUMMARY_FILE"
 done < "$CONFIG"
 
 echo "==============================" | tee -a "$SUMMARY_FILE"
