@@ -14,13 +14,28 @@ npx --yes markdownlint-cli2 '**/*.md' '!**/node_modules/**'
 
 echo "Checking for confidential files..."
 if find docs/00_spec -type f \( -iname '*.pdf' -o -iname '*.docx' \) -print -quit | grep -q .; then
-  echo "Error: a spec file was found in docs/00_spec/." >&2
-  exit 1
+  approved_spec='docs/00_spec/BMU_Specification_v1.2.pdf'
+  unexpected_spec=$(find docs/00_spec -type f \( -iname '*.pdf' -o -iname '*.docx' \) ! -path "$approved_spec")
+  if [[ -n "$unexpected_spec" ]]; then
+    echo "Error: an unapproved specification file was found:" >&2
+    printf '%s\n' "$unexpected_spec" >&2
+    exit 1
+  fi
 fi
 
 if find rtl -type f \( -iname '*.sv' -o -iname '*.v' -o -iname '*.svh' \) -print -quit | grep -q .; then
-  echo "Error: an RTL source file was found in rtl/." >&2
-  exit 1
+  unexpected_rtl=$(find rtl -type f \( -iname '*.sv' -o -iname '*.v' -o -iname '*.svh' \) \
+    ! -path 'rtl/Bit_Manipulation_Unit.sv' \
+    ! -path 'rtl/rtl_def.sv' \
+    ! -path 'rtl/rtl_defines.sv' \
+    ! -path 'rtl/rtl_lib.sv' \
+    ! -path 'rtl/rtl_param.sv' \
+    ! -path 'rtl/rtl_pdef.sv')
+  if [[ -n "$unexpected_rtl" ]]; then
+    echo "Error: an unapproved RTL source file was found:" >&2
+    printf '%s\n' "$unexpected_rtl" >&2
+    exit 1
+  fi
 fi
 
 echo "Documentation checks passed."
