@@ -57,3 +57,16 @@ waivers:
 The detailed reproducers and dispositions are tracked in
 `docs/04_bug_reports/BMU_Bug_Log.md`. A model change requires re-running the
 focused timing suite and the affected directed suite before any bug is closed.
+
+## Gap-check and assertion evidence
+
+The executable `bmu_gap_checks_test` now covers all 13 added test-plan IDs,
+including the full BINV and shift sweeps. At seed 1 on Xcelium, it produced
+131 matching result/error comparisons and 41 mismatches. The mismatches are
+consistent with the open CPOP, CTZ, guard, and SLT/MAX DUT findings; they are
+not model waivers.
+
+The protocol assertion module is bound through the simulator filelists. The
+timing/reset suite passed with all assertions enabled. The gap suite detected
+the adopted empty-request, SLT-without-SUB, and MAX-without-SUB violations in
+addition to the scoreboard evidence.
