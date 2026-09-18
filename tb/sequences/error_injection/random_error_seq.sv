@@ -22,12 +22,18 @@ class bmu_random_error_sequence extends bmu_error_injection_base_sequence;
                                 `uvm_fatal(get_type_name(), "error randomization failed")
                         req.ap = '0;
                         req.csr_ren_in = 1'b0;
-                        violation = $urandom_range(0, 3);
+                        violation = $urandom_range(0, 9);
                         case (violation)
                                 0: begin req.ap.lor = 1'b1; req.ap.lxor = 1'b1; end
                                 1: begin req.ap.srl = 1'b1; req.ap.sra = 1'b1; end
                                 2: begin req.ap.pack = 1'b1; req.csr_ren_in = 1'b1; end
-                                default: begin req.ap.sub = 1'b1; req.ap.zba = 1'b1; end
+                                3: begin req.ap.sub = 1'b1; req.ap.zba = 1'b1; end
+                                4: begin req.ap.zbb = 1'b1; end
+                                5: begin req.ap.csr_imm = 1'b1; end
+                                6: begin req.ap.zba = 1'b1; end
+                                7: begin req.ap.slt = 1'b1; end
+                                8: begin req.ap.max = 1'b1; end
+                                default: begin req.ap.grev = 1'b1; req.b_in[4:0] = 5'd5; end
                         endcase
                         send_item(req);
                 end

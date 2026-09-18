@@ -14,6 +14,7 @@ class bmu_random_corner_weighted_sequence extends bmu_base_sequence;
         task body();
                 bmu_sequence_item req;
                 int unsigned corner;
+                int unsigned operation;
 
                 reset_dut();
                 repeat (scenario_count) begin
@@ -28,7 +29,25 @@ class bmu_random_corner_weighted_sequence extends bmu_base_sequence;
                                 default: begin req.a_in = 32'h7FFF_FFFF; req.b_in = 32'h0000_0001; end
                         endcase
                         req.ap = '0;
-                        req.ap.lor = 1'b1;
+                        operation = $urandom_range(0, 15);
+                        case (operation)
+                                0: req.ap.lor = 1'b1;
+                                1: req.ap.lxor = 1'b1;
+                                2: req.ap.srl = 1'b1;
+                                3: req.ap.sra = 1'b1;
+                                4: req.ap.ror = 1'b1;
+                                5: req.ap.binv = 1'b1;
+                                6: begin req.ap.sh2add = 1'b1; req.ap.zba = 1'b1; end
+                                7: req.ap.sub = 1'b1;
+                                8: begin req.ap.slt = 1'b1; req.ap.sub = 1'b1; end
+                                9: req.ap.ctz = 1'b1;
+                                10: req.ap.cpop = 1'b1;
+                                11: req.ap.siext_b = 1'b1;
+                                12: begin req.ap.max = 1'b1; req.ap.sub = 1'b1; end
+                                13: req.ap.pack = 1'b1;
+                                14: begin req.ap.csr_write = 1'b1; req.ap.csr_imm = $urandom_range(0, 1); end
+                                default: begin req.ap.grev = 1'b1; req.b_in[4:0] = 5'd24; end
+                        endcase
                         send_item(req);
                 end
         endtask : body

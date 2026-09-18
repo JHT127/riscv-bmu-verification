@@ -21,10 +21,10 @@ class bmu_random_legal_sequence extends bmu_base_sequence;
                         if (!req.randomize() with { rst_l == 1'b1; valid_in == 1'b1; scan_mode == 1'b0; csr_ren_in == 1'b0; })
                                 `uvm_fatal(get_type_name(), "legal randomization failed")
                         req.ap = '0;
-                        operation = $urandom_range(0, 14);
+                        operation = $urandom_range(0, 15);
                         case (operation)
-                                0: req.ap.lor = 1'b1;
-                                1: req.ap.lxor = 1'b1;
+                                0: begin req.ap.lor = 1'b1; req.ap.zbb = $urandom_range(0, 1); end
+                                1: begin req.ap.lxor = 1'b1; req.ap.zbb = $urandom_range(0, 1); end
                                 2: req.ap.srl = 1'b1;
                                 3: req.ap.sra = 1'b1;
                                 4: req.ap.ror = 1'b1;
@@ -37,6 +37,7 @@ class bmu_random_legal_sequence extends bmu_base_sequence;
                                 11: req.ap.siext_b = 1'b1;
                                 12: begin req.ap.max = 1'b1; req.ap.sub = 1'b1; end
                                 13: req.ap.pack = 1'b1;
+                                14: begin req.ap.csr_write = 1'b1; req.ap.csr_imm = $urandom_range(0, 1); end
                                 default: req.ap.grev = 1'b1;
                         endcase
                         if (req.ap.grev)

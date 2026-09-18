@@ -167,6 +167,7 @@ package bmu_pkg;
         `include "../tests/bmu_or_valid_test.sv"
         `include "../tests/bmu_directed_suite_tests.sv"
         `include "../tests/bmu_gap_checks_test.sv"
+        `include "../tests/bmu_random_tests.sv"
 
 
 endpackage : bmu_pkg
