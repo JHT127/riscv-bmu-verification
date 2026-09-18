@@ -26,6 +26,12 @@ make TEST=bmu_or_valid_test SEED=1 VERBOSITY=UVM_HIGH
 # Full regression
 make regression
 
+# Coverage-driven random suites
+make regression CONFIG=../regression/configs/legal_random.cfg
+make regression CONFIG=../regression/configs/corner_random.cfg
+make regression CONFIG=../regression/configs/error_random.cfg
+make regression CONFIG=../regression/configs/full.cfg
+
 # Clean sim artifacts
 make clean
 ```
@@ -39,3 +45,6 @@ placeholder commands.
 Compile and run logs are written under `../results/logs/`. The smoke test must
 show a scoreboard `result and error match` message at `UVM_HIGH`; a zero-exit
 simulator process without a scoreboard comparison is not sufficient evidence.
+Coverage-enabled runs write per-test/seed databases under
+`../results/coverage/<test>_<seed>/`, and regression summaries are written under
+`../results/reports/` with simulator, RTL revision, log, and coverage metadata.
