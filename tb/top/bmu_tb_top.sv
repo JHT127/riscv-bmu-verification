@@ -37,6 +37,23 @@ module bmu_tb_top;
 
 
 
+        // dut instance ----------------------------------------
+        Bit_Manipulation_Unit dut (
+                .clk           (clk),
+                .rst_l         (bmu_if.rst_l),
+                .scan_mode     (bmu_if.scan_mode),
+                .valid_in      (bmu_if.valid_in),
+                .ap            (bmu_if.dut_ap),
+                .csr_ren_in    (bmu_if.csr_ren_in),
+                .csr_rddata_in (bmu_if.csr_rddata_in),
+                .a_in          (bmu_if.a_in),
+                .b_in          (bmu_if.b_in),
+                .result_ff     (bmu_if.result_ff),
+                .error         (bmu_if.error)
+        );
+
+
+
         // uvm configuration and run ----------------------------------------
         initial begin
                 uvm_config_db #(virtual bmu_interface)::set(null, "*", "vif", bmu_if);
