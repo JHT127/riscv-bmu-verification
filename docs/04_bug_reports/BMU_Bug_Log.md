@@ -21,6 +21,9 @@ Status meanings:
 - `Withdrawn`: the original claim is not supported by the current RTL or was a
   documentation error; the associated test remains required when applicable.
 - `Accepted`: written design/specification approval accepts the behavior.
+- `Accepted project risk`: the design team is unavailable; the behavior is
+  frozen using the safest documented interpretation, tested, and disclosed as
+  residual risk at sign-off. This status does not claim design approval.
 - `Fixed`: a new DUT revision passes the reproducer and relevant regression.
 
 Severity meanings:
@@ -169,5 +172,8 @@ For every candidate or confirmed bug, record:
 8. Fixed-revision retest result and regression impact.
 
 An assumption-dependent mismatch must not be closed by changing the expected
-value locally. Resolve the clarification, then update the reference model,
-test plan, coverage bins, and bug status as one change set.
+value locally. Under the project closure policy, it may be marked `Accepted
+project risk` only after the conservative interpretation is documented, the
+affected tests pass against the model, and the residual risk is included in
+the sign-off report. Update the reference model, test plan, coverage bins,
+and bug status as one change set.
