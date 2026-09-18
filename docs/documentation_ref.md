@@ -234,5 +234,7 @@ test because the DUT top-level binding and UVM tests are not implemented yet.
 - Commit every meaningful file or fix independently.
 - Push every commit immediately.
 - Use short, lowercase, meaningful commit messages.
-- Do not commit RTL, confidential specifications, simulator databases, or
-  generated reports unless the project documentation explicitly requires it.
+- Commit RTL and project-owned specification documents when they are approved
+  for this repository and needed for verification.
+- Do not commit confidential or restricted material, simulator databases, or
+  generated reports unless they are explicitly approved and documented.
