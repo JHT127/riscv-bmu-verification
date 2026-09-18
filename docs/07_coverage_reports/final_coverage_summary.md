@@ -44,15 +44,24 @@ functions (`expected_count` and `expected_error`). This prevents an incorrect
 DUT output from either hiding stimulus coverage or manufacturing a false
 coverage result. The scoreboard and assertions remain the correctness checks.
 
-## Code coverage status
+## Overall code coverage status
 
-The repository includes Xcelium coverage databases under `results/coverage/`, but there is no final code-coverage report with a full line/branch sign-off statement.
+The distinct Xcelium run databases were merged with IMC into
+`results/coverage/overall_code_coverage`. The merge reported zero conflicts and
+zero unmerged items. The committed extraction record is
+`results/reports/overall_code_coverage_summary.txt`.
 
-The appropriate status remains:
+| Metric | Result | Evidence |
+|---|---:|---|
+| Aggregate code coverage | 17.74% (2,587/14,581) | IMC merged report |
+| Type-hierarchy code view | 23.54% (1,228/5,217) | IMC merged report |
+| Assertion status | 53.85% | IMC merged report |
+| FSM | N/A; no FSMs extracted | Xcelium elaboration logs |
 
-- code coverage is not yet closed,
-- no final project-wide code-coverage percentage is claimed,
-- code coverage is separate from the 100.00% functional coverage result and is not claimed closed here.
+The code result is a measured baseline, not a closure claim. The merged model
+includes the delivered RTL library hierarchy, much of which is not exercised
+by the BMU tests. The BMU DUT instance itself is reported separately in the
+IMC hierarchy and remains subject to the open bug findings.
 
 ## Final training-project assessment
 
