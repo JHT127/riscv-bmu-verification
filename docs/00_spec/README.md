@@ -1,20 +1,19 @@
-# Specification — Not Included
+# Specification
 
-The original BMU design specification document (and the RTL it
-describes) was provided by the design team for an internal training
-engagement and is **confidential**. It is intentionally **not included**
-in this public repository.
+The controlled BMU Specification v1.2 PDF is present in this repository for
+the verification baseline. The specification is the behavior authority; RTL
+is never used to create expected values.
 
-This folder is kept as a placeholder so the repo structure reflects the
-real project layout used internally. If you're reviewing this repo as
-part of an evaluation and need spec context, please ask — a redacted
-summary or a private walkthrough can be arranged.
+The current verification input baseline is documented in
+[`verification_input_baseline.md`](verification_input_baseline.md). It records
+the specification revision, RTL snapshot, simulator version, test-plan
+baseline, and assumption status used for simulation.
 
-## What would normally live here (internally)
+## Controlled inputs
 
-- `BMU_Specification_v1.1.pdf` — functional spec, port list, per-operation
-  behavior tables
-- `spec_errata.md` — tracked corrections to the spec found during review
-  (see the public [clarifications log](../03_clarifications_log/spec_clarifications_log.md)
-  instead, which documents *questions and resolutions* without
-  reproducing confidential spec content)
+- `BMU_Specification_v1.2.pdf` — functional behavior, port list, and
+  per-operation behavior tables.
+- [`../03_clarifications_log/spec_clarifications_log.md`](../03_clarifications_log/spec_clarifications_log.md)
+  — tracked questions, assumptions, and resolutions.
+- [`verification_input_baseline.md`](verification_input_baseline.md) — frozen
+  execution inputs and change-control rules.
