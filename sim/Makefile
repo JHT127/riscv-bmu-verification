@@ -43,6 +43,10 @@ run: compile
 	@echo "[run] TEST=$(TEST) SEED=$(SEED) VERBOSITY=$(VERBOSITY)"
 	$(XRUN_BASE) +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
 		+UVM_VERBOSITY=$(VERBOSITY) -l $(RESULTS_DIR)/$(TEST)_$(SEED).log
+	@if grep -Eq 'UVM_(ERROR|FATAL) :[[:space:]]+[1-9]' $(RESULTS_DIR)/$(TEST)_$(SEED).log; then \
+		echo "[run] FAIL: UVM errors or fatals recorded" >&2; \
+		exit 1; \
+	fi
 
 waves: compile
 	@mkdir -p $(WAVES_DIR)
