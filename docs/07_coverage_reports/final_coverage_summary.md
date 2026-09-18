@@ -26,10 +26,23 @@ The closure test reports 62 UVM errors and zero UVM fatals. Those failures are r
 
 The correct professional statement is:
 
-- functional coverage is measured and tracked per run,
-- the dedicated closure test reaches 100.00%,
-- the coverage model uses expected count/error intent for scenario coverage, so DUT bugs cannot hide planned bins,
-- the scoreboard and assertions still report the DUT failures independently.
+
+## Coverage model audit
+
+The declared model contains 206 cover bins and the seed-4 closure database
+reports zero uncovered bins. The audited scope includes:
+
+- all 18 operation classifications represented by `bmu_ctrl_t` and CSR read,
+- OR/XOR ZBB modes, all 32 shift amounts, and all 32 BINV positions,
+- CTZ/CPOP expected values 0 through 32,
+- operand sign, signed/unsigned SLT, GREV valid/invalid encoding, and all CSR modes,
+- reset, valid, scan, and expected-error states,
+- operation x valid and operation x expected-error crosses.
+
+Count and error coverage intentionally use independent specification-derived
+functions (`expected_count` and `expected_error`). This prevents an incorrect
+DUT output from either hiding stimulus coverage or manufacturing a false
+coverage result. The scoreboard and assertions remain the correctness checks.
 
 ## Code coverage status
 
