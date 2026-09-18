@@ -3,6 +3,7 @@
 
 # ----- RTL (design team supplied, not modified) -----
 -f ../rtl/rtl_filelist.f
+../tb/assertions/bmu_protocol_assertions.sv
 
 # ----- Include directories -----
 +incdir+../tb/include
