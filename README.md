@@ -88,9 +88,9 @@ design team — a key part of the verification record, not just an aside.
 git clone <repo-url>
 cd BMU_Verification_Project
 
-# Run a single test (see sim/scripts for wrappers)
+# Run a single test after simulator commands are wired (see sim/scripts)
 cd sim
-make TEST=dut_reg_test
+make TEST=bmu_or_valid_test
 
 # Run the full regression
 make regression
@@ -107,13 +107,13 @@ make regression
 | Milestone | Status |
 |---|---|
 | Spec review & clarification log | ✅ In progress |
-| Verification plan | ⏳ Drafting |
+| Verification plan | ⏳ Review captured; spreadsheet pending |
 | Testbench skeleton | ✅ Scaffolded |
-| Reference model | ⏳ Not started |
-| Directed tests (per operation) | ⏳ Not started |
+| Reference model | ✅ Implemented; runtime review pending |
+| Directed sequences (per operation) | ✅ Sequence inventory; concrete tests pending |
 | Constrained-random regression | ⏳ Not started |
 | Functional coverage closure | ⏳ Not started |
-| Bug log | ⏳ Not started |
+| Bug log | ✅ Static review recorded; runtime confirmation pending |
 | Final sign-off report | ⏳ Not started |
 
 ---
