@@ -61,7 +61,10 @@ zero unmerged items. The committed extraction record is
 The code result is a measured baseline, not a closure claim. The merged model
 includes the delivered RTL library hierarchy, much of which is not exercised
 by the BMU tests. The BMU DUT instance itself is reported separately in the
-IMC hierarchy and remains subject to the open bug findings.
+IMC hierarchy and remains subject to the open bug findings. The current BMU
+DUT value is not a proven maximum: additional legal stimulus or a narrower
+coverage scope could raise it. Open bugs affect correctness, but do not by
+themselves define a code-coverage ceiling.
 
 ## Final training-project assessment
 
