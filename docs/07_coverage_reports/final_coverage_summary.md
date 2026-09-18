@@ -2,7 +2,7 @@
 
 ## Scope and status
 
-This document records the final measured coverage status for the BMU training project. The project is not a final sign-off exercise and must not be presented as fully closed.
+This document records the measured functional coverage status for the BMU training project. The goal is functional scenario closure for bug-finding; RTL correctness is assessed separately by the scoreboard and assertions.
 
 The values below are the current measured runtime coverage baselines from the repository's simulator logs. They are evidence of current verification status, not a final closure claim.
 
@@ -16,37 +16,31 @@ The values below are the current measured runtime coverage baselines from the re
 | `bmu_legal_random_test` | 101 | 66.39% | `results/logs/bmu_legal_random_test_101.log` |
 | `bmu_corner_random_test` | 201 | 57.24% | `results/logs/bmu_corner_random_test_201.log` |
 | `bmu_error_random_test` | 301 | 47.57% | `results/logs/bmu_error_random_test_301.log` |
+| `bmu_coverage_closure_test` | 4 | 100.00% | `results/logs/bmu_coverage_closure_test_4.log` |
 
 ## Overall functional coverage statement
 
-The best current measured functional coverage is 66.39%, from the legal-random run with seed 101.
+The dedicated coverage closure test reaches 100.00% functional coverage with seed 4. IMC reports zero uncovered covergroup bins in the corresponding Xcelium database under `results/coverage/bmu_coverage_closure_test_4/`.
 
-This is not a final project-wide coverage closure number. The repository does not contain a merged overall functional coverage report across all legal bins, because the project is still in a pre-closure state and the current DUT still has open runtime findings.
+The closure test reports 62 UVM errors and zero UVM fatals. Those failures are retained as DUT bug evidence; they do not reduce the scenario coverage result.
 
 The correct professional statement is:
 
 - functional coverage is measured and tracked per run,
-- the highest current measured value is 66.39%,
-- the project is not yet at the final functional coverage target,
-- the current state is a measured coverage baseline, not a closed metric.
+- the dedicated closure test reaches 100.00%,
+- the coverage model uses expected count/error intent for scenario coverage, so DUT bugs cannot hide planned bins,
+- the scoreboard and assertions still report the DUT failures independently.
 
 ## Code coverage status
 
 The repository includes Xcelium coverage databases under `results/coverage/`, but there is no final code-coverage report with a full line/branch sign-off statement.
 
-The appropriate status is:
+The appropriate status remains:
 
 - code coverage is not yet closed,
 - no final project-wide code-coverage percentage is claimed,
-- the project remains in a pre-closure state until the open DUT findings are fixed or formally accepted.
+- code coverage is separate from the 100.00% functional coverage result and is not claimed closed here.
 
 ## Final training-project assessment
 
-This document is the final coverage statement for the training project.
-
-It intentionally stops at a professional pre-closure level:
-
-- measured coverage exists,
-- evidence exists,
-- open findings remain,
-- no false final sign-off claim is made.
+This is functional coverage closure for the current bug-finding scope, not RTL sign-off. Open DUT findings remain intentionally visible in the regression evidence.
