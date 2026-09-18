@@ -35,3 +35,11 @@ accepted as project risk.
 A failure is reproducible only when the test name, seed, simulator version,
 RTL revision, and configuration are preserved. A corrected RTL revision must
 rerun the original seed before a bug disposition changes.
+
+## Full regression baseline
+
+The full configuration was executed on Xcelium `25.03-s006` at repository
+revision `d319eba`. It completed with 2 passing tests and 4 failing tests:
+smoke and timing/reset passed; gap, legal-random, corner-random, and
+error-random failed with documented open DUT findings. The generated summary
+records the exact log and coverage paths under `results/reports/`.
