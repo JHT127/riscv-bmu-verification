@@ -93,18 +93,32 @@ class bmu_reference_model extends uvm_component;
                 end
 
                 if (item.ap.lor) begin
-                        if (!only_zbb(item.ap)) begin
+                        if (!only_zbb(item.ap) && !item.ap.land) begin
                                 error = 1'b1;
                                 return;
                         end
                         result = item.a_in | (item.ap.zbb ? ~item.b_in : item.b_in);
                 end
                 else if (item.ap.lxor) begin
-                        if (!only_zbb(item.ap)) begin
+                        if (!only_zbb(item.ap) && !item.ap.land) begin
                                 error = 1'b1;
                                 return;
                         end
                         result = item.a_in ^ (item.ap.zbb ? ~item.b_in : item.b_in);
+                end
+                else if (item.ap.land) begin
+                        if (!no_modes(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = item.a_in & item.b_in;
+                end
+                else if (item.ap.sll) begin
+                        if (!no_modes(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = item.a_in << shift_amount;
                 end
                 else if (item.ap.srl) begin
                         if (!no_modes(item.ap)) begin
@@ -128,6 +142,20 @@ class bmu_reference_model extends uvm_component;
                         result = (item.a_in >> shift_amount) |
                                  (item.a_in << ((32 - shift_amount) & 5'h1f));
                 end
+                else if (item.ap.bset) begin
+                        if (!no_modes(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = item.a_in | (32'b1 << shift_amount);
+                end
+                else if (item.ap.bclr) begin
+                        if (!no_modes(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = item.a_in & ~(32'b1 << shift_amount);
+                end
                 else if (item.ap.binv) begin
                         if (!no_modes(item.ap)) begin
                                 error = 1'b1;
@@ -135,12 +163,33 @@ class bmu_reference_model extends uvm_component;
                         end
                         result = item.a_in ^ (32'b1 << shift_amount);
                 end
+                else if (item.ap.bext) begin
+                        if (!no_modes(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = {{31{1'b0}}, item.a_in[shift_amount]};
+                end
+                else if (item.ap.sh1add) begin
+                        if (!only_zba(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = (item.a_in << 1) + item.b_in;
+                end
                 else if (item.ap.sh2add) begin
                         if (!only_zba(item.ap)) begin
                                 error = 1'b1;
                                 return;
                         end
                         result = (item.a_in << 2) + item.b_in;
+                end
+                else if (item.ap.sh3add) begin
+                        if (!only_zba(item.ap)) begin
+                                error = 1'b1;
+                                return;
+                        end
+                        result = (item.a_in << 3) + item.b_in;
                 end
                 else if (item.ap.slt && item.ap.sub) begin
                         if (!only_unsign(item.ap)) begin
@@ -228,10 +277,10 @@ class bmu_reference_model extends uvm_component;
 
         // control helpers ----------------------------------------
         function automatic int unsigned operation_count(bmu_ctrl_t ap);
-                operation_count = ap.lor + ap.lxor + ap.srl + ap.sra + ap.ror +
-                                   ap.binv + ap.sh2add + ap.slt + ap.ctz + ap.cpop +
-                                   ap.siext_b + ap.max + ap.pack + ap.grev +
-                                   ap.csr_write + (ap.sub && !ap.slt && !ap.max);
+                operation_count = ap.lor + ap.lxor + ap.land + ap.sll + ap.srl + ap.sra + ap.ror +
+                                   ap.bset + ap.bclr + ap.binv + ap.bext + ap.sh1add + ap.sh2add + ap.sh3add +
+                                   ap.slt + ap.ctz + ap.cpop + ap.siext_b + ap.max + ap.pack + ap.grev +
+                                   ap.csr_write + (ap.sub && !ap.slt && !ap.max) + ap.zba + ap.zbb + ap.packu + ap.packh;
         endfunction : operation_count
 
 
