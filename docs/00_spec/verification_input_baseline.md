@@ -59,7 +59,10 @@ The Xcelium source order is controlled by `sim/filelists/xcelium.f`.
 ## Assumption lock
 
 These behaviors remain assumption-tagged and must not be silently changed in a
-test or report:
+test or report. Because the design team is unavailable, the project adopts
+these interpretations for closure using the safest reading of the
+specification and worked examples. They are accepted project risks, not
+design-team confirmations:
 
 - GREV with `b_in[4:0] != 24` is treated as invalid with `result=0` and
   `error=1` pending `CLARIF-004`.
@@ -69,8 +72,10 @@ test or report:
 - One-cycle result timing, live `error`, synchronous reset, and scan behavior
   follow the current model pending written confirmation under `CLARIF-001`.
 
-Any resolution that changes these rules requires a coordinated update to the
-reference model, test plan, sequences, coverage, and bug dispositions.
+Any new repository evidence that disproves these rules requires a coordinated
+update to the reference model, test plan, sequences, coverage, and bug
+dispositions. External confirmation is not a prerequisite for this project's
+closure gate, but the residual risk must remain visible in sign-off.
 
 ## Change control
 
