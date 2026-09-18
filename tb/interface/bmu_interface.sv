@@ -44,6 +44,7 @@ interface bmu_interface (input logic clk);
                         dut_ap.unsign = ap.unsign;
                         dut_ap.lor = ap.lor;
                         dut_ap.lxor = ap.lxor;
+                        dut_ap.zbb = ap.zbb;
                         dut_ap.srl = ap.srl;
                         dut_ap.sra = ap.sra;
                         dut_ap.csr_write = ap.csr_write;
