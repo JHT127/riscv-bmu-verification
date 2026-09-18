@@ -13,8 +13,10 @@ Section 8 controls.
 | Property | Requirement |
 |---|---|
 | `reset_suppresses_error` | Reset forces `error=0`. |
+| `reset_clears_result` | Synchronous reset clears `result_ff`. |
 | `result_holds_when_invalid` | `result_ff` holds when `valid_in=0`. |
 | `valid_result_is_registered` | A valid transaction does not leave an unknown registered result. |
+| `live_error_when_invalid` | Invalid controls still update `error` while `valid_in=0`. |
 | `one_primary_operation` | Multiple primary controls assert `error`. |
 | `empty_valid_request` | An empty valid request asserts `error`. |
 | `csr_conflict` | CSR read combined with a primary operation asserts `error`. |
@@ -26,7 +28,7 @@ Section 8 controls.
 
 ## Validation evidence
 
-- `bmu_timing_reset_test`, seed 2: assertions compiled and ran with zero
+- `bmu_timing_reset_test`, seed 3: assertions compiled and ran with zero
   UVM errors/fatals and 15 scoreboard matches.
 - `bmu_gap_checks_test`, seed 2: assertions detected the empty-request,
   SLT-without-SUB, and MAX-without-SUB violations on the current RTL. The
