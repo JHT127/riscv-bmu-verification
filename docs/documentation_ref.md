@@ -171,6 +171,8 @@ The scoreboard aligns actual and expected streams. The checker compares
 | `tb/top/` | Clock, interface, UVM startup, and future DUT binding. |
 | `rtl/` | Approved delivered DUT RTL and compile support files. |
 | `sim/filelists/` | Simulator source ordering. |
+| `docs/02_test_plan/test_plan_review.md` | Reviewed baseline and expanded test plan. |
+| `docs/04_bug_reports/bug_report_review.md` | Specification-based DUT findings and evidence requirements. |
 
 ## 7. Sequence Inventory
 
