@@ -1,16 +1,23 @@
 # ==============================================================================
 # BMU Verification — Simulation Makefile
-# Simulator-agnostic template. Fill in the tool-specific invocations for the
-# simulator available to you (VCS / Questa / Xcelium).
+# Xcelium execution entry point for the checked-in BMU verification baseline.
+# VCS and Questa remain unsupported until simulator-specific commands are added.
 # ==============================================================================
 
-SIMULATOR   ?= vcs
-TEST        ?= dut_base_test
+SIMULATOR   ?= xcelium
+TEST        ?= bmu_or_valid_test
 SEED        ?= 1
 VERBOSITY   ?= UVM_MEDIUM
 FILELIST    := filelists/$(SIMULATOR).f
 RESULTS_DIR := ../results/logs
 WAVES_DIR   := ../waveforms
+XRUN        ?= xrun
+
+ifeq ($(SIMULATOR),xcelium)
+XRUN_BASE   := $(XRUN) -64bit -uvm -sv -f $(FILELIST)
+else
+$(error Unsupported SIMULATOR=$(SIMULATOR); use SIMULATOR=xcelium)
+endif
 
 .PHONY: all compile run regression waves clean help
 
@@ -24,23 +31,25 @@ help:
 	@echo "  make waves TEST=<name>    - run a test with waveform dumping enabled"
 	@echo "  make clean                - remove simulator artifacts"
 	@echo ""
-	@echo "Variables: SIMULATOR (default: vcs), TEST, SEED, VERBOSITY"
+	@echo "Variables: SIMULATOR (default: xcelium), TEST, SEED, VERBOSITY"
 
 compile:
+	@mkdir -p $(RESULTS_DIR)
 	@echo "[compile] SIMULATOR=$(SIMULATOR) FILELIST=$(FILELIST)"
-	@echo "TODO: invoke $(SIMULATOR) compile step using $(FILELIST)"
+	$(XRUN_BASE) -compile -l $(RESULTS_DIR)/compile_$(SIMULATOR).log
 
 run: compile
 	@mkdir -p $(RESULTS_DIR)
 	@echo "[run] TEST=$(TEST) SEED=$(SEED) VERBOSITY=$(VERBOSITY)"
-	@echo "TODO: invoke $(SIMULATOR) run step, e.g.:"
-	@echo "  simv +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) +UVM_VERBOSITY=$(VERBOSITY) \\"
-	@echo "       -l $(RESULTS_DIR)/$(TEST)_$(SEED).log"
+	$(XRUN_BASE) +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
+		+UVM_VERBOSITY=$(VERBOSITY) -l $(RESULTS_DIR)/$(TEST)_$(SEED).log
 
 waves: compile
 	@mkdir -p $(WAVES_DIR)
-	@echo "[waves] TEST=$(TEST) -> dumping to $(WAVES_DIR)/$(TEST).fsdb (or .vcd)"
-	@echo "TODO: invoke run step with waveform dumping enabled"
+	@echo "[waves] TEST=$(TEST) -> enabling Xcelium waveform access"
+	$(XRUN_BASE) +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
+		+UVM_VERBOSITY=$(VERBOSITY) -access +rwc \
+		-l $(RESULTS_DIR)/$(TEST)_$(SEED)_waves.log
 
 regression:
 	@echo "[regression] delegating to scripts/run_regression.sh"
@@ -49,4 +58,4 @@ regression:
 clean:
 	@echo "[clean] removing simulator artifacts"
 	@rm -rf csrc simv* *.daidir *.vdb *.log ucli.key DVEfiles *.shm *.shm.db work \
-	        xcelium.d xrun.* .simvision
+		xcelium.d INCA_libs .simvision
