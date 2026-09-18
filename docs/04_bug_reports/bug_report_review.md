@@ -6,10 +6,10 @@ This document records defects found by reviewing the delivered DUT against BMU
 Specification v1.2. The specification defines expected behavior. The RTL is
 only the implementation under review.
 
-The findings below are static review findings until the corresponding UVM
-sequence is run through the bound DUT. They must not be closed based only on
-code inspection. Each finding has a planned reproducer and an expected result
-from the specification.
+The findings below originated as static review findings and are now updated
+with the runtime evidence from the bound UVM environment. They must not be
+closed based only on code inspection. Each finding has a reproducer and an
+expected result from the specification.
 
 ## 2. Disposition Rules
 
@@ -26,15 +26,15 @@ The verification team must not patch the delivered RTL locally to close a bug.
 
 | ID | Severity | Area | Status |
 |---|---|---|---|
-| `BMU-BUG-001` | Major | CPOP width | Open - static finding |
-| `BMU-BUG-002` | Major | PACK ordering | Open - static finding |
-| `BMU-BUG-003` | Major | CSR write source | Open - static finding |
-| `BMU-BUG-004` | N/A | CSR bypass read | Withdrawn - RTL path present; runtime pending |
-| `BMU-BUG-005` | Major | GREV byte ordering | Open - static finding |
-| `BMU-BUG-006` | Critical | Invalid and conflicting controls | Open - static finding |
-| `BMU-BUG-007` | Major | SLT/MAX co-requisites | Open - static finding |
-| `BMU-BUG-008` | Major | GREV undefined encoding error | Open - static finding |
-| `BMU-BUG-009` | Major | CTZ bit reversal | Open - static finding |
+| `BMU-BUG-001` | Major | CPOP width | Open - runtime confirmed |
+| `BMU-BUG-002` | Major | PACK ordering | Open - runtime confirmed |
+| `BMU-BUG-003` | Major | CSR write source | Open - runtime confirmed |
+| `BMU-BUG-004` | N/A | CSR bypass read | Withdrawn; runtime check passed |
+| `BMU-BUG-005` | Major | GREV byte ordering | Open - runtime confirmed |
+| `BMU-BUG-006` | Critical | Invalid and conflicting controls | Open - runtime confirmed |
+| `BMU-BUG-007` | Major | SLT/MAX co-requisites | Open - runtime confirmed |
+| `BMU-BUG-008` | Major | GREV undefined encoding error | Open - runtime confirmed; assumption-tagged |
+| `BMU-BUG-009` | Major | CTZ bit reversal | Open - runtime confirmed |
 
 ## 4. Detailed Findings
 
@@ -42,7 +42,7 @@ The verification team must not patch the delivered RTL locally to close a bug.
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** Specification v1.2 Section 6.5.2 defines CPOP
 as the number of set bits in the complete 32-bit `a_in` operand.
@@ -72,7 +72,7 @@ revision if reproduced.
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** Specification v1.2 Section 6.8.1 defines:
 `result = {b_in[15:0], a_in[15:0]}`.
@@ -100,7 +100,7 @@ b_in=0x00005678
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** Specification v1.2 Section 6.9.2 defines:
 
@@ -132,7 +132,7 @@ forms are covered.
 
 **Severity:** N/A
 
-**Status:** Withdrawn - RTL path present; runtime pending
+**Status:** Withdrawn; runtime check passed
 
 **Specification expectation:** Specification v1.2 Section 6.9.1 defines a
 valid bypass mode when `csr_ren_in=1` and all `ap` fields are zero. The result
@@ -167,7 +167,7 @@ as a DUT bug only if the current revision fails the specification result.
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** For the supported GREV encoding
 `b_in[4:0]=24`, Specification v1.2 requires full byte reversal:
@@ -197,7 +197,7 @@ waveform/result pair in the report.
 
 **Severity:** Critical
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** Specification v1.2 Sections 4 and 5 require
 invalid combinations to force `result=0` and `error=1`. This includes multiple
@@ -233,7 +233,7 @@ into narrower DUT reports if the matrix shows different root causes.
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** Specification v1.2 Sections 6.4.2 and 6.7.1
 require `ap.sub=1` together with `ap.slt=1` or `ap.max=1`.
@@ -264,7 +264,7 @@ operations.
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed; assumption-tagged
 
 **Specification expectation:** Under the adopted Specification v1.2 Section
 7.1 assumption, `ap.grev=1` with `b_in[4:0] != 24` must produce `result=0`,
@@ -295,7 +295,7 @@ changes the behavior, update the spec, reference model, and test plan together.
 
 **Severity:** Major
 
-**Status:** Open - static finding
+**Status:** Open - runtime confirmed
 
 **Specification expectation:** Specification v1.2 Section 6.5.1 defines CTZ
 as the number of consecutive zero bits starting at bit 0 of the complete
