@@ -2,7 +2,7 @@
 
 | Folder | Purpose |
 |---|---|
-| [`00_spec/`](00_spec) | Notes on the (confidential, not-included) design specification |
+| [`00_spec/`](00_spec) | Approved BMU specification and related notes |
 | [`01_verification_plan/`](01_verification_plan) | Formal verification plan (Excel) — features to verify, strategy, environment architecture |
 | [`02_test_plan/`](02_test_plan) | Formal test plan (Excel) — test list, stimulus, expected results, traceability to verification plan |
 | [`03_clarifications_log/`](03_clarifications_log) | Running log of spec ambiguities/questions raised to the design team and their resolutions |
