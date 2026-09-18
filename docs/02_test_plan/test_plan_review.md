@@ -84,7 +84,7 @@ The current plan correctly includes:
    in the same cycle as the inputs.
 5. Repeated transactions must not be deduplicated by the monitor.
 
-### Readiness status
+### Readiness status at initial review
 
 | Area | Current repository evidence | Status before coverage work |
 |---|---|---|
@@ -92,14 +92,15 @@ The current plan correctly includes:
 | Reference model | Independent model and scoreboard compare result and error | Ready for review; runtime evidence pending |
 | Directed tests | Sequence inventory exists; only smoke test is a concrete test | Not ready |
 | Error matrix | Error-injection sequence is incomplete for the added guards | Not ready |
-| Functional coverage | No coverage subscriber or covergroups are present | Not ready |
+| Functional coverage | Coverage subscriber and covergroups are implemented; closure test reaches 100% | Ready for bug-finding |
 | Simulator execution | Makefile compile/run targets are placeholders | Blocked |
 | Regression configuration | Nightly names tests that do not exist | Blocked |
 | Reporting inputs | No coverage database or regression summary exists | Blocked |
 
-The next implementation step is to make the test IDs executable and repair
-the simulator and regression entry points. Do not generate a coverage
-percentage from the current sequence inventory.
+This table is retained as the initial review snapshot. The current repository
+has executable gap-plan tests, a working Xcelium entry point, a coverage
+subscriber, and measured coverage evidence documented in
+`docs/07_coverage_reports/final_coverage_summary.md`.
 
 ## 4. Required Additions
 
@@ -163,7 +164,8 @@ Functional coverage must include:
 - GREV encoding 24 and the adopted invalid-encoding case.
 - CSR bypass, immediate write, register write, and conflict.
 - Valid, invalid, `valid_in=0`, and reset conditions.
-- Crosses of operation x corner class x valid/error condition.
+- Operation x valid and operation x expected-error crosses; corner/state bins
+   are covered independently.
 
 Coverage must not claim closure for Section 8 fields.
 
