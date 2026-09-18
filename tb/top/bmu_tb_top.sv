@@ -18,7 +18,7 @@ module bmu_tb_top;
         // clock generation ----------------------------------------
         initial begin
                 clk = 1'b0;
-                forever #5 clk = ~clk;
+                forever #5 clk <= ~clk;
         end
 
 
