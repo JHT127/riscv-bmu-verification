@@ -9,6 +9,7 @@ class bmu_environment extends uvm_env;
                 bmu_agent            agent;
                 bmu_reference_model  reference_model;
                 bmu_scoreboard       scoreboard;
+                bmu_coverage         coverage;
 
 
 
@@ -31,6 +32,7 @@ class bmu_environment extends uvm_env;
                 agent = bmu_agent::type_id::create("agent", this);
                 reference_model = bmu_reference_model::type_id::create("reference_model", this);
                 scoreboard = bmu_scoreboard::type_id::create("scoreboard", this);
+                coverage = bmu_coverage::type_id::create("coverage", this);
 
         endfunction : build_phase
 
@@ -43,6 +45,7 @@ class bmu_environment extends uvm_env;
                 agent.monitor.port.connect(reference_model.input_port);
                 agent.monitor.port.connect(scoreboard.actual_port);
                 reference_model.expected_port.connect(scoreboard.expected_port);
+                agent.monitor.port.connect(coverage.analysis_export);
 
         endfunction : connect_phase
 

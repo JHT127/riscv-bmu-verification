@@ -36,6 +36,7 @@ package bmu_pkg;
 
 
         // environment ----------------------------------------
+        `include "../env/coverage/bmu_coverage.sv"
         `include "../env/bmu_environment.sv"
 
 
