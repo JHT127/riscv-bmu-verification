@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
-# Auto-capture a waveform PNG for a BMU bug reproducer.
+# Open a focused SimVision waveform window for a BMU bug reproducer.
 #
 # Usage:
-#   ./sim/scripts/auto_wave_capture.sh <test_name> [seed] [png_name] [bug_key]
+#   ./sim/scripts/auto_wave_capture.sh <test_name> [seed] [label] [bug_key]
 #
 # Examples:
 #   ./sim/scripts/auto_wave_capture.sh bmu_gap_checks_test 1
-#   ./sim/scripts/auto_wave_capture.sh bmu_gap_checks_test 1 bug_006_guard.png invalid
-#   ./sim/scripts/auto_wave_capture.sh bmu_gap_checks_test 1 bug_009_ctz.png ctz
+#   ./sim/scripts/auto_wave_capture.sh bmu_gap_checks_test 1 bug_006_invalid invalid
+#   ./sim/scripts/auto_wave_capture.sh bmu_gap_checks_test 1 bug_009_ctz ctz
 #
 # This script:
 #   1. reuses the SHM database if it already exists,
 #   2. finds the first mismatch time from the log,
 #   3. uses a BMU bug-specific signal list to keep the waveform focused,
-#   4. launches SimVision snapshot export to a PNG in waveforms/
+#   4. launches the SimVision GUI for manual PNG export in MobaXterm
+#
+# IMPORTANT:
+# Cadence does not support direct command-line PNG snapshot export with
+# simvision -snapshot <png>. The validated workflow is: open the waveform GUI,
+# then save the window as an image manually from the SimVision UI.
 
 set -euo pipefail
 
@@ -211,14 +216,16 @@ wave -cursor "${MATCH_TIME} ns"
 wave -zoom range "${START_NS} ns" "${END_NS} ns"
 EOF
 
-SIMVISION_CMD=(simvision -64 -input "${TMP_TCL}" -snapshot "${PNG_FILE}")
+SIMVISION_CMD=(simvision -64 -waves -input "${TMP_TCL}")
 
 echo "[auto_wave] signal group: ${SIG_GROUP}"
-echo "[auto_wave] generating PNG: ${PNG_FILE}"
+echo "[auto_wave] opening GUI waveform window for: ${PNG_FILE}"
 echo "[auto_wave] command: ${SIMVISION_CMD[*]}"
+
+echo "[auto_wave] NOTE: save the waveform as PNG from the SimVision GUI menu after it opens."
 
 "${SIMVISION_CMD[@]}"
 
 rm -f "${TMP_TCL}"
 
-echo "[auto_wave] done: ${PNG_FILE}"
+echo "[auto_wave] GUI launched; save the waveform image manually from SimVision"
