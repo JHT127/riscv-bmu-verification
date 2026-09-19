@@ -3,15 +3,16 @@
 | Folder | Purpose |
 |---|---|
 | [`00_spec/`](00_spec) | Approved BMU specification and related notes |
-| [`01_verification_plan/`](01_verification_plan) | Formal verification plan (Excel) — features to verify, strategy, environment architecture |
-| [`02_test_plan/`](02_test_plan) | Formal test plan (Excel) — test list, stimulus, expected results, traceability to verification plan |
-| [`03_clarifications_log/`](03_clarifications_log) | Running log of spec ambiguities/questions raised to the design team and their resolutions |
-| [`04_bug_reports/`](04_bug_reports) | Local bug log/document (mirrors the team's ClickUp board for personal tracking & the final report) |
-| [`05_presentation/`](05_presentation) | Final kickoff/results presentation slides and supporting assets |
-| [`06_architecture_diagrams/`](06_architecture_diagrams) | Block diagrams, testbench architecture diagrams, pipeline/timing diagrams |
-| [`07_coverage_reports/`](07_coverage_reports) | Exported functional/code coverage reports (HTML/PDF snapshots) |
-| [`08_signoff/`](08_signoff) | Final verification sign-off checklist and summary report |
+| [`01_verification_plan/`](01_verification_plan) | Verification strategy, environment architecture, and plan for the training project |
+| [`02_test_plan/`](02_test_plan) | Test list, stimulus, expected results, and traceability across the bug-finding work |
+| [`03_clarifications_log/`](03_clarifications_log) | Spec ambiguities raised during verification and the recorded project assumptions |
+| [`04_bug_reports/`](04_bug_reports) | Bug log and supporting evidence for runtime-confirmed defects |
+| [`05_presentation/`](05_presentation) | Project walkthrough, findings summary, and results presentation |
+| [`06_architecture_diagrams/`](06_architecture_diagrams) | Block diagrams and verification architecture views |
+| [`07_coverage_reports/`](07_coverage_reports) | Functional and code coverage evidence collected during the training exercise |
+| [`08_signoff/`](08_signoff) | Training verification summary and closure record, not a production sign-off package |
 
-Numbered prefixes keep the folders in the natural order you'd walk
-through them when reviewing the project end-to-end — spec understanding
-→ planning → execution/tracking → results → sign-off.
+The numbered structure mirrors the working flow of the project: spec understanding
+→ planning → execution → bug capture → coverage review → final training summary.
+
+This repository is intentionally structured for bug discovery and documentation. It is not a production RTL sign-off package, and it does not require a fixed DUT revision.
