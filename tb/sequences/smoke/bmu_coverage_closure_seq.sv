@@ -10,6 +10,15 @@ class bmu_coverage_closure_sequence extends bmu_base_sequence;
 
         task body();
                 int operation_index;
+                static bit [31:0] edge_values[7];
+
+                edge_values[0] = 32'h00000000;
+                edge_values[1] = 32'h00000001;
+                edge_values[2] = 32'h80000000;
+                edge_values[3] = 32'h7FFFFFFF;
+                edge_values[4] = 32'hFFFFFFFF;
+                edge_values[5] = 32'hAAAAAAAA;
+                edge_values[6] = 32'h12345678;
 
                 bmu_nominal_directed_sequence::type_id::create("nominal").start(m_sequencer);
                 bmu_timing_reset_sequence::type_id::create("timing_reset").start(m_sequencer);
@@ -27,19 +36,26 @@ class bmu_coverage_closure_sequence extends bmu_base_sequence;
                 bmu_sh2add_no_zba_sequence::type_id::create("sh2add_no_zba").start(m_sequencer);
 
                 for (operation_index = 0; operation_index < 17; operation_index++) begin
-                        send_operation_case(operation_index, 1'b0, 1'b0);
+                        send_operation_case(operation_index, 1'b0, 1'b0, edge_values[0], edge_values[0]);
+                        send_operation_case(operation_index, 1'b1, 1'b1, edge_values[1], edge_values[5]);
+                        send_operation_case(operation_index, 1'b1, 1'b0, edge_values[2], edge_values[3]);
+                        send_operation_case(operation_index, 1'b1, 1'b0, edge_values[4], edge_values[6]);
+                        send_operation_case(operation_index, 1'b1, 1'b0, edge_values[5], edge_values[4]);
                         if (operation_index < 16)
-                                send_operation_case(operation_index, 1'b1, 1'b1);
+                                send_operation_case(operation_index, 1'b1, 1'b1, edge_values[6], edge_values[1]);
                 end
         endtask : body
 
-        task send_operation_case(int operation_index, bit valid_in, bit csr_ren_in);
+        task send_operation_case(int operation_index, bit valid_in, bit csr_ren_in,
+                                bit [31:0] a_val, bit [31:0] b_val);
                 bmu_sequence_item req;
 
                 req = bmu_sequence_item::type_id::create("coverage_cross");
                 initialize_item(req);
                 req.valid_in = valid_in;
                 req.csr_ren_in = csr_ren_in;
+                req.a_in = a_val;
+                req.b_in = b_val;
                 case (operation_index)
                         0: req.ap.lor = 1'b1;
                         1: req.ap.lxor = 1'b1;
@@ -57,7 +73,7 @@ class bmu_coverage_closure_sequence extends bmu_base_sequence;
                         13: req.ap.pack = 1'b1;
                         14: req.ap.grev = 1'b1;
                         15: req.ap.csr_write = 1'b1;
-                        16: req.csr_ren_in = 1'b0;
+                        16: req.csr_ren_in = 1'b1;
                 endcase
                 send_item(req);
         endtask : send_operation_case
