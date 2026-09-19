@@ -45,14 +45,29 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                 }
                 cp_shift_amount: coverpoint item.b_in[4:0] iff
                         (item.ap.sll || item.ap.srl || item.ap.sra || item.ap.ror || item.ap.bset || item.ap.bclr || item.ap.binv || item.ap.bext) {
-                        bins all[] = {[0:31]};
+                        bins low = {[0:7]};
+                        bins mid = {[8:23]};
+                        bins high = {[24:31]};
                 }
                 cp_binv_position: coverpoint item.b_in[4:0] iff item.ap.binv {
-                        bins all[] = {[0:31]};
+                        bins edges = {0,1,31};
+                        bins middle = {[2:30]};
                 }
                 cp_count_result: coverpoint expected_count(item) iff
                         (item.ap.ctz || item.ap.cpop) {
-                        bins all[] = {[0:32]};
+                        bins zero = {0};
+                        bins one = {1};
+                        bins mid[] = {[2:31]};
+                        bins full = {32};
+                }
+                cp_operand_pattern: coverpoint operand_pattern(item) iff legal_operation(item) {
+                        bins zero = {0};
+                        bins one_hot = {1};
+                        bins all_ones = {2};
+                        bins alternating = {3};
+                        bins msb = {4};
+                        bins lsb = {5};
+                        bins mixed = {6};
                 }
                 cp_operand_sign: coverpoint item.a_in[31] iff
                         (item.ap.siext_b || item.ap.slt || item.ap.max || item.ap.sub) {
@@ -89,11 +104,18 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                         bins clean = {0};
                         bins rejected = {1};
                 }
+                cp_control_count: coverpoint primary_count(item.ap) {
+                        bins zero = {0};
+                        bins one = {1};
+                        bins multi = {2};
+                }
                 operation_x_error: cross cp_operation, cp_error {
                         ignore_bins csr_read = binsof(cp_operation.csr_read);
                         ignore_bins invalid = binsof(cp_operation.invalid);
                 }
                 operation_x_valid: cross cp_operation, cp_valid;
+                operation_x_pattern: cross cp_operation, cp_operand_pattern;
+                operation_x_sign: cross cp_operation, cp_operand_sign;
         endgroup
 
         function new(string name, uvm_component parent);
@@ -206,6 +228,27 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                                 ap.slt + ap.ctz + ap.cpop + ap.siext_b + ap.max + ap.pack + ap.grev +
                                 ap.csr_write + (ap.sub && !ap.slt && !ap.max) + ap.zbb + ap.zba;
         endfunction : primary_count
+
+        function bit legal_operation(bmu_sequence_item item);
+                legal_operation = item.valid_in || item.rst_l || item.csr_ren_in || item.ap != '0;
+        endfunction : legal_operation
+
+        function int operand_pattern(bmu_sequence_item item);
+                if (item.a_in == 32'h00000000)
+                        operand_pattern = 0;
+                else if ((item.a_in & (item.a_in - 1)) == 0)
+                        operand_pattern = 1;
+                else if (item.a_in == 32'hFFFFFFFF)
+                        operand_pattern = 2;
+                else if ((item.a_in ^ 32'hAAAAAAAA) == 32'h00000000)
+                        operand_pattern = 3;
+                else if (item.a_in[31])
+                        operand_pattern = 4;
+                else if (item.a_in[0])
+                        operand_pattern = 5;
+                else
+                        operand_pattern = 6;
+        endfunction : operand_pattern
 
         function void report_phase(uvm_phase phase);
                 super.report_phase(phase);
