@@ -119,13 +119,21 @@ make regression
 
 ---
 
-## 6. Author
+## 6. Verification scope and project objective
+
+This repository is a specification-driven verification project for a delivered BMU RTL snapshot. The purpose is to build a credible verification environment, exercise the supported legal behavior space, reproduce specification mismatches, and document those findings in a reviewable and reproducible form.
+
+The project is intentionally scoped as a bug-finding and documentation exercise. The DUT remains in its delivered buggy state, and the repository does not claim design sign-off or RTL repair. In this context, the verification claim is bounded and honest: the project demonstrates that the supported legal model is covered and that runtime-confirmed defects are visible, reproducible, and tracked.
+
+A 100% functional coverage result in this repository therefore means that the declared in-scope bug-finding model is fully exercised, not that the BMU is release-ready or fully corrected. The final claim is validation of the verification flow and evidence capture, not production closure.
+
+## 7. Author
 
 Verification engineer (trainee project) — see presentation in
 [`docs/05_presentation/`](docs/05_presentation) for the full write-up
 and results walkthrough.
 
-## 7. License
+## 8. License
 
 See [`LICENSE`](LICENSE) — this repository's original content
 (testbench code, documentation, plans) is shared for portfolio purposes.

@@ -69,3 +69,9 @@ themselves define a code-coverage ceiling.
 ## Final training-project assessment
 
 This is functional coverage closure for the current bug-finding scope, not RTL sign-off. Open DUT findings remain intentionally visible in the regression evidence.
+
+## Project interpretation
+
+The 100% functional coverage result in this project should be read as coverage of the declared supported legal model for the BMU training exercise. It demonstrates that the verification environment can drive the relevant legal operations, corner values, and error conditions into the intended coverage bins. It does not mean that the DUT is fully verified for production release, because the repository intentionally preserves the delivered buggy RTL and uses the failing results as the basis for defect documentation.
+
+The correct long-form statement is therefore: the repository demonstrates complete coverage of the supported legal bug-finding model while retaining open runtime-confirmed defects in the bug log and regression evidence.

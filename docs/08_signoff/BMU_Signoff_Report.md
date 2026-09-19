@@ -122,3 +122,9 @@ It is not intended for a final production sign-off claim because:
 ## 8. Recommended next step
 
 The next step is to continue documenting and reviewing the confirmed findings until the training package is complete and consistent with the bug log, coverage evidence, and final summary report.
+
+## 9. Project-level interpretation
+
+This repository is not a production sign-off package. It is a disciplined verification exercise designed to demonstrate that a delivered DUT can be checked against the specification, that the supported legal behavior model can be covered, and that runtime-confirmed defects can be reproduced and documented without modifying the RTL under test.
+
+The 100% functional coverage result is therefore meaningful only within the project’s declared scope: the supported legal bug-finding model. It is not a blanket statement that the BMU is fully verified or release-ready. The verification package remains intentionally honest about the current state of the DUT and the purpose of the exercise.
