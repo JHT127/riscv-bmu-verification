@@ -17,14 +17,14 @@ The records below are based on specification-driven runtime evidence. A bug is n
 
 | Bug ID | Severity | Area | Spec Rule / Requirement | Reproducer | Expected Result | Actual Result | Evidence | Status | Closure Gate |
 |---|---|---|---|---|---|---|---|---|---|
-| BMU-BUG-001 | Major | CPOP | Count all 32 bits of a_in | TC_CPOP_004 with a_in=0xFFFF0000 | result=32, error=0 | partial or wrong count | log + scoreboard | Open | reproducer + retest |
-| BMU-BUG-002 | Major | PACK | result = {b_in[15:0], a_in[15:0]} | ap.pack=1; a_in=0x12345678; b_in=0x9ABCDEF0 | 0xDEF01234 or equivalent spec-defined ordering | reversed order | log + scoreboard | Open | reproducer + retest |
-| BMU-BUG-003 | Major | CSR write source | csr_imm selects b_in, else a_in | ap.csr_write=1, ap.csr_imm=1, a_in=0x33334444, b_in=0x11112222 | result=b_in | result=a_in or wrong path | log + scoreboard | Open | reproducer + retest |
-| BMU-BUG-005 | Major | GREV | GREV byte ordering for b_in[4:0]=24 | ap.grev=1, b_in=24, a_in=0x12345678 | byte-reversed output | byte ordering incorrect | log + scoreboard | Open | reproducer + retest |
-| BMU-BUG-006 | Critical | Invalid controls | exactly one valid primary op; conflicts must error | empty request, stray zbb, stray zba, multi-op conflicts | result=0, error=1 | invalid paths accepted | log + assertion output | Open | reproducer + retest |
-| BMU-BUG-007 | Major | SLT/MAX co-requisite | slt/max require ap.sub=1 | ap.slt=1, ap.sub=0 and ap.max=1, ap.sub=0 | result=0, error=1 | operation proceeds with no error | log + assertion output | Open | reproducer + retest |
-| BMU-BUG-008 | Major | GREV invalid encoding | invalid GREV encodings must assert error | ap.grev=1, b_in[4:0]=5 | result=0, error=1 | undefined path not rejected | log + scoreboard | Open | reproducer + retest |
-| BMU-BUG-009 | Major | CTZ | CTZ(0)=32; trailing-zero count across all bits | a_in=1 << n for n=0..31 | return n; zero returns 32 | mismatch at one-hot positions | log + scoreboard | Open | reproducer + retest |
+| BMU-BUG-001 | Major | CPOP | Count all 32 bits of a_in | TC_CPOP_004 with a_in=0xFFFF0000 | result=32, error=0 | partial or wrong count | `results/logs/bmu_gap_checks_test_1.log` + `tb/env/scoreboard/bmu_scoreboard.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-002 | Major | PACK | result = {b_in[15:0], a_in[15:0]} | ap.pack=1; a_in=0x12345678; b_in=0x9ABCDEF0 | 0xDEF01234 or equivalent spec-defined ordering | reversed order | `results/logs/bmu_gap_checks_test_1.log` + `tb/env/scoreboard/bmu_scoreboard.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-003 | Major | CSR write source | csr_imm selects b_in, else a_in | ap.csr_write=1, ap.csr_imm=1, a_in=0x33334444, b_in=0x11112222 | result=b_in | result=a_in or wrong path | `results/logs/bmu_gap_checks_test_1.log` + `tb/env/scoreboard/bmu_scoreboard.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-005 | Major | GREV | GREV byte ordering for b_in[4:0]=24 | ap.grev=1, b_in=24, a_in=0x12345678 | byte-reversed output | byte ordering incorrect | `results/logs/bmu_gap_checks_test_1.log` + `tb/env/scoreboard/bmu_scoreboard.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-006 | Critical | Invalid controls | exactly one valid primary op; conflicts must error | empty request, stray zbb, stray zba, multi-op conflicts | result=0, error=1 | invalid paths accepted | `results/logs/bmu_gap_checks_test_1.log` + `tb/assertions/bmu_protocol_assertions.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-007 | Major | SLT/MAX co-requisite | slt/max require ap.sub=1 | ap.slt=1, ap.sub=0 and ap.max=1, ap.sub=0 | result=0, error=1 | operation proceeds with no error | `results/logs/bmu_gap_checks_test_1.log` + `tb/assertions/bmu_protocol_assertions.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-008 | Major | GREV invalid encoding | invalid GREV encodings must assert error | ap.grev=1, b_in[4:0]=5 | result=0, error=1 | undefined path not rejected | `results/logs/bmu_gap_checks_test_1.log` + `tb/env/scoreboard/bmu_scoreboard.sv` + no retained waveform | Open | reproducer + retest |
+| BMU-BUG-009 | Major | CTZ | CTZ(0)=32; trailing-zero count across all bits | a_in=1 << n for n=0..31 | return n; zero returns 32 | mismatch at one-hot positions | `results/logs/bmu_gap_checks_test_1.log` + `tb/env/scoreboard/bmu_scoreboard.sv` + no retained waveform | Open | reproducer + retest |
 
 ## 4. Runtime evidence summary
 
@@ -37,6 +37,8 @@ The records below are based on specification-driven runtime evidence. A bug is n
 | bmu_corner_random_test | 201 | 18 mismatches | results/logs/bmu_corner_random_test_201.log | boundary mismatches |
 | bmu_error_random_test | 301 | 84 mismatches | results/logs/bmu_error_random_test_301.log | invalid guard mismatch burst |
 | bmu_coverage_closure_test | 4 | functional coverage=100.00% | results/logs/bmu_coverage_closure_test_4.log | coverage success only for supported legal model |
+
+Waveform status: no retained `.vcd`, `.fsdb`, or `.wlf` waveform files exist under `waveforms/` in this repo. The confirmed defect evidence is the Xcelium log, the UVM scoreboard, and the assertion output.
 
 ## 5. Detailed bug rationale
 

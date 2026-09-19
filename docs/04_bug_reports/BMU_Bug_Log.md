@@ -55,6 +55,13 @@ The current repository state confirms the following runtime evidence on Xcelium 
 | `bmu_corner_random_test` | 201 | 18 mismatches, 0 fatals | `results/logs/bmu_corner_random_test_201.log` |
 | `bmu_error_random_test` | 301 | 84 mismatches, 0 fatals | `results/logs/bmu_error_random_test_301.log` |
 
+Primary evidence references used for all open defects are:
+
+- `results/logs/bmu_gap_checks_test_1.log` — scoreboard mismatches and assertion failures for the gap-validation reproducer
+- `tb/env/scoreboard/bmu_scoreboard.sv` — DUT-vs-reference comparison and mismatch reporting
+- `tb/assertions/bmu_protocol_assertions.sv` — assertion-based invalid-control and co-requisite checks
+- `waveforms/` — no retained `.vcd`, `.fsdb`, or `.wlf` files are checked into this repo; the available evidence is log + scoreboard output only
+
 These results are evidence of open DUT defects, not proof of correct RTL behavior. The failing logs must be retained and associated with the corresponding bug records until the RTL is fixed or formally accepted.
 
 ## 5. Detailed findings
