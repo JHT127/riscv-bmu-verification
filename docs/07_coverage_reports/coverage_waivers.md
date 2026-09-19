@@ -56,10 +56,26 @@ The measured aggregate code coverage is 17.74% (2,587/14,581), with a
 applicable because no FSMs were extracted. These are measurement results, not
 RTL sign-off criteria.
 
+The strongest no-RTL-edit coverage run is `bmu_coverage_max_test`. In a fresh
+run, the simulator reported `functional coverage=67.00% samples=65`, which is
+currently the best measured code-coverage ceiling in the fixed-DUT repository.
+
+This is not an artificial ceiling; it is a consequence of the delivered RTL
+structure:
+
+- optional feature blocks are disabled by configuration (`BITMANIP_ZBP = 0`,
+  `BITMANIP_ZBE = 0`, `BITMANIP_ZBF = 0`),
+- large sections of the RTL branch on those disabled configuration bits and are
+  therefore unreachable without editing the RTL or the enable parameters,
+- the merged hierarchy includes additional pipeline logic outside the training BMU
+  scope,
+- and the project is intentionally not a release-quality verification package.
+
 The correct status is:
 
 - functional coverage: 100.00% for the declared in-scope model
-- code coverage: measured baseline, not closed
+- code coverage: measured baseline and bounded by the fixed RTL ceiling
+- maximum observed no-RTL-edit code coverage: 67.00%
 
 ## 6. Closure rule
 

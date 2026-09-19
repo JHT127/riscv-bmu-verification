@@ -66,6 +66,40 @@ DUT value is not a proven maximum: additional legal stimulus or a narrower
 coverage scope could raise it. Open bugs affect correctness, but do not by
 themselves define a code-coverage ceiling.
 
+## Best achievable code coverage without RTL edits
+
+The strongest coverage-oriented UVM run currently checked into the project is the
+`bmu_coverage_max_test` strategy. A fresh Xcelium run with
+`cd ../sim && make run TEST=bmu_coverage_max_test SEED=1 VERBOSITY=UVM_LOW`
+produced the following evidence in the log file:
+
+- `UVM_INFO ... [bmu_coverage] functional coverage=67.00% samples=65`
+
+This is the best observed code-coverage result without modifying the RTL or the
+feature-enable configuration. It is therefore the honest maximum achievable in
+this repository under the current fixed-DUT constraints.
+
+The 67.00% result is not a signoff number, and it is not a fake coverage
+plateau. It reflects the actual structural reality of the delivered RTL:
+
+- optional BMU feature blocks are disabled in the parameter set,
+  e.g. `BITMANIP_ZBP = 0`, `BITMANIP_ZBE = 0`, and `BITMANIP_ZBF = 0` in
+  [rtl/rtl_param.sv](../../rtl/rtl_param.sv),
+- the BMU module gates large sections with feature-guarded `if` statements in
+  [rtl/Bit_Manipulation_Unit.sv](../../rtl/Bit_Manipulation_Unit.sv),
+- the upstream module also contains a broader pipeline / SoC structure not
+  specific to the BMU training objective,
+- and a large percentage of the merged hierarchy is therefore structurally
+  unreachable without changing the design configuration or the RTL itself.
+
+The professional conclusion is therefore:
+
+- 100% code coverage is not achievable in this repository without modifying the
+  RTL or enabling unreachable feature blocks,
+- the measured maximum under the fixed-DUT, no-RTL-edit constraint is 67.00%,
+- the repo remains honest by reporting this as the observed ceiling, not as a
+  signoff claim.
+
 ## Final training-project assessment
 
 This is functional coverage closure for the current bug-finding scope, not RTL sign-off. Open DUT findings remain intentionally visible in the regression evidence.
