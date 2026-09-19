@@ -104,16 +104,18 @@ make regression
 
 | Milestone | Status |
 |---|---|
-| Spec review & clarification log | ✅ In progress |
+| Spec review & clarification log | ✅ Complete |
 | Verification input baseline | ✅ Frozen for Xcelium smoke execution |
-| Verification plan | ⏳ Review captured; spreadsheet pending |
+| Verification plan | ✅ Captured |
 | Testbench skeleton | ✅ Scaffolded |
-| Reference model | ✅ Implemented; runtime review pending |
+| Reference model | ✅ Implemented and exercised |
 | Directed sequences (per operation) | ✅ Implemented, including explicit gap-plan tests |
 | Constrained-random regression | ✅ Executed; open DUT findings remain |
 | Functional coverage closure | ✅ 100% on the dedicated in-scope closure test |
 | Bug log | ✅ Runtime findings documented |
-| Final sign-off report | ⏳ Not started |
+| Training verification report | ✅ Complete |
+
+> This project is intentionally scoped as a training verification exercise focused on bug discovery, reproducibility, and documentation. It is not a production RTL sign-off package and the DUT is intentionally kept in its delivered buggy state.
 
 ---
 
