@@ -33,6 +33,7 @@ help:
 	@echo "  make clean                - remove simulator artifacts"
 	@echo ""
 	@echo "Variables: SIMULATOR (default: xcelium), TEST, SEED, VERBOSITY"
+	@echo "Waveform helper: ./scripts/run_waves.sh <test> [seed] [verbosity]"
 
 compile:
 	@mkdir -p $(RESULTS_DIR)

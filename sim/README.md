@@ -23,6 +23,12 @@ make compile
 # Run the concrete smoke test
 make TEST=bmu_or_valid_test SEED=1 VERBOSITY=UVM_HIGH
 
+# Run a test with waveform dumping enabled
+make waves TEST=bmu_gap_checks_test SEED=1 VERBOSITY=UVM_LOW
+
+# Or use the dedicated script for waveform capture
+./scripts/run_waves.sh bmu_gap_checks_test 1 UVM_LOW
+
 # Full regression
 make regression
 
