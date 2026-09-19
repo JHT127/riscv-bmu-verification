@@ -1,18 +1,26 @@
-# BMU Sign-off Report
+# BMU Training Verification Report
 
 ## 1. Scope
 
-This report documents the current verification status for the BMU DUT as of the repository state captured in this project. It is intended for engineering review and closure preparation, not final design sign-off.
+This report documents the current verification status of the BMU DUT as a training exercise. The purpose is to find, reproduce, and record specification mismatches in a delivered RTL snapshot, not to fix the DUT or claim production readiness.
 
-## 2. Verification status summary
+## 2. Training objective
 
-The project has completed the required DV infrastructure work for directed checks, assertions, random verification, coverage collection, and regression reporting. However, the current DUT still shows open runtime findings and is not yet in a final sign-off state.
+The repository is intentionally scoped to:
+
+- verify behavior against the specification
+- build a reproducible verification environment
+- document runtime-confirmed DUT defects
+- collect coverage and evidence for the supported legal model
+- preserve the delivered buggy DUT as the subject of the exercise
+
+This is a bug-finding and documentation project, not a release sign-off project.
 
 ## 3. Verification evidence
 
 ### 3.1 Directed checks
 
-The repository currently contains a directed gap suite and runtime evidence for the open findings.
+The repository contains a directed gap suite and runtime evidence for the open findings.
 
 Evidence:
 
@@ -55,19 +63,15 @@ The coverage model currently reports the following functional coverage values fr
 | `bmu_corner_random_test` | 57.24% |
 | `bmu_error_random_test` | 47.57% |
 
-These are regression baselines. The dedicated `bmu_coverage_closure_test`, seed 4, reaches 100.00% functional coverage with zero uncovered covergroup bins; the open UVM errors remain DUT findings.
+These are regression baselines. The dedicated `bmu_coverage_closure_test`, seed 4, reaches 100.00% functional coverage with zero uncovered covergroup bins. The open UVM errors remain tracking evidence for the intentional DUT defects in this exercise.
 
 ## 4. Code coverage status
 
 The merged Xcelium database reports 17.74% aggregate code coverage
 (2,587/14,581), 23.54% in the type-hierarchy view, and 53.85% assertion
-status. No FSMs were extracted. These are measured baselines, not RTL
-sign-off results.
+status. No FSMs were extracted. These are measured baselines, not product sign-off results.
 
-Correct status:
-
-- functional coverage: 100.00% for the declared in-scope model
-- code coverage: measured baseline, not closed
+This is acceptable in a training project when the objective is to discover and document bug behavior, not to claim that a released design is correct.
 
 ## 5. Open bug status
 
@@ -96,26 +100,25 @@ This project uses conservative assumptions for:
 - `CLARIF-004` GREV invalid encoding
 - `CLARIF-005` CSR conflict scope
 
-These are accepted as project risk, not design-team confirmation.
+These are properly documented as training-risk assumptions, not production sign-off approvals.
 
 ## 7. Final assessment
 
-The current repository is in a professional pre-closure state.
+The repository is in a professional training-closure state.
 
-It is ready for:
+It is suitable for:
 
-- design review,
-- issue triage,
-- closure discussion with the design owner,
-- final sign-off only after the open DUT findings are fixed or formally accepted by the responsible authority.
+- design review of observed defects
+- issue triage
+- documentation of bug evidence
+- training-level verification workflow practice
 
-It is not ready for a final sign-off claim because:
+It is not intended for a final production sign-off claim because:
 
-- open runtime-confirmed issues remain,
-- open DUT findings remain despite functional coverage closure,
-- code coverage is measured but remains a baseline rather than a closed result,
-- there is no final design-owner sign-off on the accepted-risk items.
+- the delivered DUT is intentionally left in its buggy state
+- the project objective is bug discovery and reporting, not repair
+- there is no production design-owner sign-off for final closure
 
 ## 8. Recommended next step
 
-The next engineering step is to fix or formally disposition the open runtime findings, then rerun the exact reproducer and regression suite before preparing the final close-out report.
+The next step is to continue documenting and reviewing the confirmed findings until the training package is complete and consistent with the bug log, coverage evidence, and final summary report.
