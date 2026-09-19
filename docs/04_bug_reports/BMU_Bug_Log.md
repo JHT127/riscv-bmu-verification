@@ -36,7 +36,6 @@ Severity meanings:
 | `BMU-BUG-001` | Major | CPOP width | `TC_CPOP_004` | Open - runtime confirmed |
 | `BMU-BUG-002` | Major | PACK ordering | `TC_PACK_001` | Open - runtime confirmed |
 | `BMU-BUG-003` | Major | CSR write source | `TC_CSR_002`, `TC_CSR_003` | Open - runtime confirmed |
-| `BMU-BUG-004` | N/A | CSR bypass documentation | `TC_CSR_001` | Withdrawn; runtime check passed |
 | `BMU-BUG-005` | Major | GREV byte ordering | `TC_GREV_001` | Open - runtime confirmed |
 | `BMU-BUG-006` | Critical | Invalid/conflicting controls | `TC_GUARD_001` through `TC_GUARD_004` | Open - runtime confirmed |
 | `BMU-BUG-007` | Major | SLT/MAX co-requisites | `TC_SLT_005`, `TC_MAX_005` | Open - runtime confirmed |
@@ -86,12 +85,6 @@ These results are evidence of open DUT defects, not proof of correct RTL behavio
 - **Expected:** `0x11112222`, `error=0`.
 - **Likely DUT result:** `0x33334444`, `error=0`.
 - **Impact:** CSR write selects the wrong source.
-
-### BMU-BUG-004: CSR bypass claim withdrawn
-
-- **Claim:** Pure CSR bypass read did not drive `csr_rddata_in`.
-- **Current evidence:** The RTL datapath includes the CSR bypass path and the runtime check passed.
-- **Disposition:** Withdrawn. `TC_CSR_001` remains required as a runtime confirmation check, but it is not an active DUT defect.
 
 ### BMU-BUG-005: GREV byte-reverse ordering is incorrect
 

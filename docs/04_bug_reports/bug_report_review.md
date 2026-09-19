@@ -29,7 +29,6 @@ The verification team must not patch the delivered RTL locally to close a bug.
 | `BMU-BUG-001` | Major | CPOP width | Open - runtime confirmed |
 | `BMU-BUG-002` | Major | PACK ordering | Open - runtime confirmed |
 | `BMU-BUG-003` | Major | CSR write source | Open - runtime confirmed |
-| `BMU-BUG-004` | N/A | CSR bypass read | Withdrawn; runtime check passed |
 | `BMU-BUG-005` | Major | GREV byte ordering | Open - runtime confirmed |
 | `BMU-BUG-006` | Critical | Invalid and conflicting controls | Open - runtime confirmed |
 | `BMU-BUG-007` | Major | SLT/MAX co-requisites | Open - runtime confirmed |
@@ -128,40 +127,22 @@ b_in=0x11112222
 **Disposition:** `TC_CSR_002` and `TC_CSR_003` must run independently so both
 forms are covered.
 
-### BMU-BUG-004 — Pure CSR bypass read requires runtime confirmation
+### DV false lead not retained in the final bug list
 
-**Severity:** N/A
+This item was an internal verification mistake, not a DUT defect, and it is not
+kept as a project bug record.
 
-**Status:** Withdrawn; runtime check passed
+**Original claim:** Pure CSR bypass read is a defect.
 
-**Specification expectation:** Specification v1.2 Section 6.9.1 defines a
-valid bypass mode when `csr_ren_in=1` and all `ap` fields are zero. The result
-must equal `csr_rddata_in` and `error=0`.
+**Why it is not retained:** The received RTL explicitly includes the CSR bypass
+path and the runtime check passed under the project's accepted interpretation.
+This was a misclassification in the early review stage, not a specification
+violation in the DUT.
 
-**RTL evidence:** The current RTL `lout` expression explicitly includes
-`csr_ren_in & csr_rddata_in`, so the original static claim that the bypass
-path is absent is not supported by this RTL revision.
-
-**Reproducer:** `TC_CSR_001`:
-
-```text
-csr_ren_in=1
-ap=0
-csr_rddata_in=0xABCD1234
-```
-
-**Expected result:** `0xABCD1234`, `error=0`.
-
-**Likely DUT result:** Must be determined by `TC_CSR_001`; static inspection is
-insufficient because the bypass term is present and the final result is a
-wide OR of datapath terms.
-
-**Impact:** The stale finding could incorrectly report a critical defect. The
-pure bypass read remains a required runtime check, but it is not an open bug
-until the scoreboard reproduces a mismatch.
-
-**Disposition:** Run the pure bypass test before any CSR conflict test. Reopen
-as a DUT bug only if the current revision fails the specification result.
+**Disposition:** No permanent issue is filed for this item. It remains only as a
+lesson for future DV reviews: do not treat a model assumption or a stale static
+claim as a DUT bug before the pure bypass case is reproduced and checked against
+spec.
 
 ### BMU-BUG-005 — GREV byte-reverse result ordering is incorrect
 
@@ -340,10 +321,28 @@ reproduction or scope clarification:
 - The DUT emits compile warnings for its inline parameter include syntax. This
   is a packaging/style warning, not currently a behavioral bug.
 - The adopted GREV and CSR assumptions remain risks until formally confirmed.
-- `BMU-BUG-004` is a documentation correction, not an open DUT defect, until
-  the pure CSR bypass test fails.
 
-## 6. Required Bug Evidence
+## 6. Expert Bug-Document Pattern
+
+A professional bug document normally contains the following fields:
+
+1. Title and unique ID.
+2. Severity and status.
+3. Short summary of the defect.
+4. Exact specification reference.
+5. Reproducer setup and input values.
+6. Expected result.
+7. Actual result and log evidence.
+8. Root cause or affected RTL block.
+9. Impact on functionality or safety.
+10. Traceability to the test, log, and scoreboards.
+11. Owner and disposition.
+
+This keeps the record credible and reviewable. The repo should not keep stale
+internal mistakes as bug entries unless they are needed as lessons for the
+verification team.
+
+## 7. Required Bug Evidence
 
 For every runtime-confirmed bug, attach:
 
