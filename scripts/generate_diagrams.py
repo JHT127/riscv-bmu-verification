@@ -198,11 +198,88 @@ def coverage_diagram() -> str:
     """
 
 
+def timing_diagram() -> str:
+    return """
+    digraph BMU_TIMING {
+        graph [
+            rankdir=TB,
+            nodesep=0.45,
+            ranksep=0.8,
+            bgcolor="white",
+            pad=0.2,
+            fontname="Helvetica"
+        ];
+        node [shape=box, style="filled", fillcolor="#fff7e6", color="#b7862f", fontname="Helvetica", margin="0.12,0.08"];
+        edge [color="#8e6b1f", arrowsize=0.8];
+
+        clk [label="clk
+after posedge", shape=oval, fillcolor="#f4f0ff"];
+        rst [label="rst_l", shape=oval, fillcolor="#fbe8e8"];
+        valid [label="valid_in", shape=oval, fillcolor="#eaf7ee"];
+        op [label="ap / a_in / b_in", shape=oval, fillcolor="#edf3ff"];
+        result [label="result_ff", shape=oval, fillcolor="#eaf7ee"];
+        err [label="error", shape=oval, fillcolor="#fbe8e8"];
+
+        clk -> valid;
+        rst -> valid;
+        op -> result;
+        valid -> result;
+        result -> err;
+
+        subgraph cluster_timing {
+            label="key behavior";
+            color="#d9b86d";
+            hold [label="sample on valid\nupdate result_ff\nwhen valid_in is high"];
+            reset [label="Reset clears output\nstate until valid_in returns"];
+            err_case [label="illegal op / misuse\nasserts error flag"];
+        }
+
+        valid -> hold;
+        rst -> reset;
+        err -> err_case;
+    }
+    """
+
+
+def sequence_hierarchy_diagram() -> str:
+    return """
+    digraph BMU_SEQUENCE_HIERARCHY {
+        graph [
+            rankdir=TB,
+            nodesep=0.7,
+            ranksep=1.0,
+            bgcolor="white",
+            pad=0.2,
+            fontname="Helvetica"
+        ];
+        node [shape=box, style="filled,rounded", fillcolor="#f4f8ff", color="#48639c", fontname="Helvetica", margin="0.12,0.08"];
+        edge [color="#48639c", arrowsize=0.8];
+
+        base [label="bmu_base_sequence"];
+        legal [label="random_legal_seq\nvalid stimulus"];
+        corner [label="random_corner_weighted_seq\nedge / boundary"];
+        family [label="family sequences\nbit_ops / shift_ops / zba_ops / ..."];
+        smoke [label="coverage_closure_seq\ncoverage_max_seq"];
+        test [label="bmu_*_test\nrun_phase() launches sequence"];
+
+        base -> legal;
+        base -> corner;
+        base -> family;
+        family -> smoke;
+        legal -> test;
+        corner -> test;
+        smoke -> test;
+    }
+    """
+
+
 def main() -> None:
     print(f"rendering diagrams into: {OUT_DIR.relative_to(ROOT)}")
     render_dot(dut_diagram(), "bmu_dut_block_diagram")
     render_dot(uvm_env_diagram(), "bmu_uvm_environment")
     render_dot(coverage_diagram(), "bmu_coverage_overview")
+    render_dot(timing_diagram(), "bmu_timing_diagram")
+    render_dot(sequence_hierarchy_diagram(), "bmu_sequence_hierarchy")
     print("\nAll diagrams generated successfully.")
 
 
