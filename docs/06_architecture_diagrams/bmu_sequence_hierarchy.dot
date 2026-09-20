@@ -1,0 +1,34 @@
+
+    digraph BMU_SEQUENCE_HIERARCHY {
+        graph [
+            rankdir=TB,
+            nodesep=0.7,
+            ranksep=1.0,
+            bgcolor="white",
+            pad=0.2,
+            fontname="Helvetica"
+        ];
+        node [shape=box, style="filled,rounded", fillcolor="#f4f8ff", color="#48639c", fontname="Helvetica", margin="0.12,0.08"];
+        edge [color="#48639c", arrowsize=0.8];
+
+        base [label="bmu_base_sequence"];
+        legal [label="random_legal_seq
+valid stimulus"];
+        corner [label="random_corner_weighted_seq
+edge / boundary"];
+        family [label="family sequences
+bit_ops / shift_ops / zba_ops / ..."];
+        smoke [label="coverage_closure_seq
+coverage_max_seq"];
+        test [label="bmu_*_test
+run_phase() launches sequence"];
+
+        base -> legal;
+        base -> corner;
+        base -> family;
+        family -> smoke;
+        legal -> test;
+        corner -> test;
+        smoke -> test;
+    }
+    
