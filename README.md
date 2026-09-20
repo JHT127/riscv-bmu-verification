@@ -98,6 +98,18 @@ make regression
 > [`sim/README.md`](sim/README.md) for compile, smoke-test, and regression
 > commands.
 
+### 4.1 Canonical evidence layout
+
+This repo separates narrative documentation from generated artifacts:
+
+- `docs/` — project records, interpretation, planning, and review notes
+- `results/` — generated logs, coverage databases, summaries, and extracted bug evidence
+- `waveforms/` — transient waveform output only, not versioned evidence by default
+
+For coverage specifically, the generated outputs are under `results/coverage/` and
+`results/reports/`; the files under [`docs/07_coverage_reports/`](docs/07_coverage_reports)
+explain and interpret those generated results rather than duplicating them.
+
 ---
 
 ## 5. Status

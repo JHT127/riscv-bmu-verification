@@ -9,10 +9,12 @@
 | [`04_bug_reports/`](04_bug_reports) | Bug log and supporting evidence for runtime-confirmed defects |
 | [`05_presentation/`](05_presentation) | Project walkthrough, findings summary, and results presentation |
 | [`06_architecture_diagrams/`](06_architecture_diagrams) | Block diagrams and verification architecture views |
-| [`07_coverage_reports/`](07_coverage_reports) | Functional and code coverage evidence collected during the training exercise |
+| [`07_coverage_reports/`](07_coverage_reports) | Narrative coverage analysis, waivers, and summary interpretation for the training exercise |
 | [`08_signoff/`](08_signoff) | Training verification summary and closure record, not a production sign-off package |
 
 The numbered structure mirrors the working flow of the project: spec understanding
 → planning → execution → bug capture → coverage review → final training summary.
+
+Important rule: the folders under `docs/` hold the reviewable project narrative and interpretation, while generated runtime evidence and machine-readable artifacts live under `results/` and are not duplicated in the documentation tree. For coverage specifically, the canonical generated outputs are in `results/coverage/` and `results/reports/`; the files in `docs/07_coverage_reports/` explain and interpret them.
 
 This repository is intentionally structured for bug discovery and documentation. It is not a production RTL sign-off package, and it does not require a fixed DUT revision.

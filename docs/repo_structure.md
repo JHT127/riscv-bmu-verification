@@ -17,7 +17,7 @@ BMU-verification/
 │       └── docs_lint.yml              CI: lints Markdown docs on push/PR
 │
 ├── docs/
-│   ├── README.md                      Docs index
+│   ├── README.md                      Docs index and repo conventions
 │   ├── repo_structure.md              This file
 │   ├── 00_spec/                       Approved BMU specification and notes
 │   ├── 01_verification_plan/          BMU_Verification_Plan.xlsx (to be added)
@@ -26,7 +26,7 @@ BMU-verification/
 │   ├── 04_bug_reports/                Personal bug log (mirrors ClickUp board)
 │   ├── 05_presentation/               Slides + assets for the final presentation
 │   ├── 06_architecture_diagrams/      TB & DUT architecture / timing diagrams
-│   ├── 07_coverage_reports/           Exported coverage snapshots
+│   ├── 07_coverage_reports/           Narrative coverage interpretation, waivers, and summary docs
 │   └── 08_signoff/                    Final sign-off checklist + summary
 │
 ├── rtl/                                Approved DUT RTL snapshot — see rtl/README.md

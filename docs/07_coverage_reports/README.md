@@ -1,13 +1,16 @@
 # Coverage Reports
 
-Exported coverage snapshots go here (HTML export zipped, or PDF/PNG
-summary pages) — not the raw coverage databases, which belong in
-`results/coverage/` and are gitignored.
+This folder contains the human-readable interpretation, waiver record, and
+summary narrative for the project’s coverage status. It is not the canonical
+storage location for generated regression or coverage artifacts.
 
-Suggested naming: `coverage_report_<date>_<regression-tag>.pdf`
+Canonical locations:
+- `results/coverage/` — raw coverage databases and simulator-generated outputs
+- `results/reports/` — generated, readable summary reports and regression snapshots
+- `docs/07_coverage_reports/` — reviewable project documentation explaining the
+  results, exclusions, and final interpretation
 
-Keep at least:
-
-- The final coverage report used for sign-off
-- One earlier snapshot showing coverage trend/progress, if you want to
-  tell that story in the presentation
+Do not duplicate the generated reports in this folder. If a result is produced by
+Xcelium/IMC, it belongs in `results/` unless it is a deliberate source-controlled
+summary document that explains the evidence. This keeps the repo from having two
+places describing the same runtime evidence.
