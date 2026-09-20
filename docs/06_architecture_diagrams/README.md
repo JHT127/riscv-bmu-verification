@@ -18,9 +18,11 @@ This produces PNG exports in this folder and the generator source remains in `sc
 - `bmu_dut_block_diagram.png` — top-level BMU DUT block diagram showing the interface signals, core operation groups, and result/error output path.
 - `bmu_uvm_environment.png` — UVM environment architecture showing the agent, monitor, reference model, scoreboard, and coverage collector connected to the DUT interface.
 - `bmu_coverage_overview.png` — coverage model summary showing the major functional coverage groups and reporting flow.
+- `bmu_timing_diagram.png` — abstract timing view of `rst_l`, `valid_in`, `result_ff`, and `error` behavior across the operation pipeline.
+- `bmu_sequence_hierarchy.png` — sequence and test hierarchy showing how the base UVM sequence feeds family-specific, random, and coverage closure sequences.
 
 ## Notes
 
-- The current set focuses on the repo-relevant architecture and coverage view that is needed for engineering handoff and review.
+- The current set focuses on the repo-relevant architecture, coverage, and stimulus views needed for handoff and review.
 - If a new DUT block or environment feature is added, update the generator script and regenerate the PNGs rather than editing the binaries directly.
-- Additional timing-diagram views can be added later if the project needs cycle-accurate waveform annotation.
+- These visuals are intentionally simple and schematic: they are designed for fast engineering communication, not for publication-quality artwork.
