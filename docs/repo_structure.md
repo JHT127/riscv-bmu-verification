@@ -1,7 +1,7 @@
 # Annotated Repository Structure
 
 ```text
-BMU_Verification_Project/
+BMU-verification/
 │
 ├── README.md                          Project overview / entry point
 ├── LICENSE

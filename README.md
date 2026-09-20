@@ -38,7 +38,7 @@ The BMU supports:
 ## 2. Repository Structure
 
 ```text
-BMU_Verification_Project/
+BMU-verification/
 ├── docs/                     # Verification plan, test plan, bug log, presentation, sign-off
 ├── rtl/                      # Delivered DUT RTL snapshot and compile support
 ├── tb/                       # UVM testbench (env, agents, sequences, tests)
@@ -84,7 +84,7 @@ design team — a key part of the verification record, not just an aside.
 ```bash
 # Clone
 git clone <repo-url>
-cd BMU_Verification_Project
+cd BMU-verification
 
 # Run the concrete Xcelium smoke test
 cd sim
