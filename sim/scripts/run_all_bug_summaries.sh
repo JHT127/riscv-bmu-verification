@@ -5,7 +5,7 @@
 #   ./sim/scripts/run_all_bug_summaries.sh
 #
 # This script produces one summary file per bug under:
-#   results/bugs/<bug_key>/
+#   results/bugs/BMU-BUG-<n>/
 #
 # It does not require SimVision or GUI access.
 
@@ -20,14 +20,14 @@ if [[ ! -x "${EXTRACTOR}" ]]; then
 fi
 
 BUGS=(
-  bug_006_invalid_controls
-  bug_009_ctz
-  bug_002_pack
-  bug_003_csr
-  bug_005_grev
-  bug_007_slt_max
-  bug_001_cpop
-  bug_008_grev_invalid_encoding
+  BMU-BUG-006
+  BMU-BUG-009
+  BMU-BUG-002
+  BMU-BUG-003
+  BMU-BUG-005
+  BMU-BUG-007
+  BMU-BUG-001
+  BMU-BUG-008
 )
 
 for bug in "${BUGS[@]}"; do
