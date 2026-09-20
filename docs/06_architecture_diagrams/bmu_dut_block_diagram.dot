@@ -1,0 +1,81 @@
+
+    digraph BMU_DUT {
+        graph [
+            rankdir=LR,
+            splines=ortho,
+            nodesep=0.6,
+            ranksep=1.0,
+            bgcolor="white",
+            pad=0.25,
+            fontname="Helvetica"
+        ];
+        node [shape=box, style="filled,rounded", fillcolor="#eaf3ff", color="#2d5d8a", fontname="Helvetica", margin="0.15,0.08"];
+        edge [color="#2d5d8a", arrowsize=0.8];
+
+        subgraph cluster_inputs {
+            label="DUT inputs";
+            color="#8db7d9";
+            valid_in [label="valid_in"];
+            rst_l [label="rst_l"];
+            scan_mode [label="scan_mode"];
+            ap [label="ap
+control decode
+(ZBB/ZBS/ZBP/ZBA)"];
+            a_in [label="a_in
+[31:0]"];
+            b_in [label="b_in
+[31:0]"];
+            csr_ren_in [label="csr_ren_in"];
+            csr_rddata_in [label="csr_rddata_in
+[31:0]"];
+        }
+
+        subgraph cluster_core {
+            label="BitManip execution core";
+            color="#9ec4a8";
+            decoder [label="control decode
++ operation selection"];
+            zbb [label="ZBB
+clz/ctz/cpop/..." ];
+            zbs [label="ZBS
+bset/bclr/binv/bext"];
+            zbp [label="ZBP
+pack/packh/grev"];
+            zba [label="ZBA
+sh1add/sh2add/sh3add"];
+            result [label="result mux
++ shift/logic/add/sub"];
+            err [label="error flag
+invalid/illegal op"];
+        }
+
+        subgraph cluster_outputs {
+            label="DUT outputs";
+            color="#d9b37d";
+            result_ff [label="result_ff
+[31:0]"];
+            error_out [label="error"];
+        }
+
+        valid_in -> decoder;
+        rst_l -> decoder;
+        scan_mode -> decoder;
+        ap -> decoder;
+        a_in -> result;
+        b_in -> result;
+        csr_ren_in -> decoder;
+        csr_rddata_in -> result;
+
+        decoder -> zbb;
+        decoder -> zbs;
+        decoder -> zbp;
+        decoder -> zba;
+        zbb -> result;
+        zbs -> result;
+        zbp -> result;
+        zba -> result;
+        result -> result_ff;
+        result -> err;
+        err -> error_out;
+    }
+    

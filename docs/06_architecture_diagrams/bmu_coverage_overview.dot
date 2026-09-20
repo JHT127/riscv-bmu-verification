@@ -1,0 +1,49 @@
+
+    digraph BMU_COVERAGE {
+        graph [
+            rankdir=TB,
+            nodesep=0.7,
+            ranksep=1.0,
+            bgcolor="white",
+            pad=0.25,
+            fontname="Helvetica"
+        ];
+        node [shape=box, style="filled,rounded", fillcolor="#eefaf2", color="#2f7d5b", fontname="Helvetica", margin="0.12,0.08"];
+        edge [color="#2f7d5b", arrowsize=0.8];
+
+        tests [label="tests / sequences
+legal_random / coverage_closure / max_coverage", shape=box3d, fillcolor="#edf7ff"];
+        op [label="cp_operation
+operation family coverage"];
+        patt [label="cp_operand_pattern
+operand shape coverage"];
+        shift [label="cp_shift_amount
+shift amount bins"];
+        error [label="cp_error
+clean vs rejected"];
+        valid [label="cp_valid / cp_reset / cp_scan
+transaction context"];
+        cross [label="cross coverage
+operation x valid
+operation x error"];
+        db [label="coverage database
+IMC/Xcelium"];
+        report [label="coverage summary
+pass/fail closure"];
+
+        tests -> op;
+        tests -> patt;
+        tests -> shift;
+        tests -> error;
+        tests -> valid;
+        tests -> cross;
+
+        op -> db;
+        patt -> db;
+        shift -> db;
+        error -> db;
+        valid -> db;
+        cross -> db;
+        db -> report;
+    }
+    
