@@ -66,3 +66,5 @@ rtl/*.sv
 rtl/*.svh
 rtl/*.v
 !rtl/README.md
+!rtl/Bit_Manipulation_Unit_fix_v1.sv
+!rtl/rtl_lib_fix_v1.sv
