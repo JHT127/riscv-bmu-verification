@@ -29,9 +29,11 @@ fi
 if find rtl -type f \( -iname '*.sv' -o -iname '*.v' -o -iname '*.svh' \) -print -quit | grep -q .; then
   unexpected_rtl=$(find rtl -type f \( -iname '*.sv' -o -iname '*.v' -o -iname '*.svh' \) \
     ! -path 'rtl/Bit_Manipulation_Unit.sv' \
+    ! -path 'rtl/Bit_Manipulation_Unit_fix_v1.sv' \
     ! -path 'rtl/rtl_def.sv' \
     ! -path 'rtl/rtl_defines.sv' \
     ! -path 'rtl/rtl_lib.sv' \
+    ! -path 'rtl/rtl_lib_fix_v1.sv' \
     ! -path 'rtl/rtl_param.sv' \
     ! -path 'rtl/rtl_pdef.sv')
   if [[ -n "$unexpected_rtl" ]]; then
