@@ -7,7 +7,7 @@
 set -euo pipefail
 
 CONFIG="${1:-$(dirname "$0")/../../regression/configs/full.cfg}"
-SUMMARY_DIR="$(dirname "$0")/../../results/reports"
+SUMMARY_DIR="$(dirname "$0")/../../results/logs"
 mkdir -p "$SUMMARY_DIR"
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SIMULATOR="${SIMULATOR:-xcelium}"
@@ -55,4 +55,5 @@ done < "$CONFIG"
 echo "==============================" | tee -a "$SUMMARY_FILE"
 echo "Regression complete: ${PASS} passed, ${FAIL} failed" | tee -a "$SUMMARY_FILE"
 
+python3 "$(dirname "$0")/summarize_regression.py" "$CONFIG"
 [ "$PASS" -gt 0 ] && [ "$FAIL" -eq 0 ]

@@ -68,3 +68,7 @@ rtl/*.v
 !rtl/README.md
 !rtl/Bit_Manipulation_Unit_fix_v1.sv
 !rtl/rtl_lib_fix_v1.sv
+
+# Python helper bytecode
+__pycache__/
+*.pyc
