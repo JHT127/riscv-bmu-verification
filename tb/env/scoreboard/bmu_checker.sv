@@ -30,7 +30,11 @@ class bmu_checker extends uvm_object;
                 end
 
                 message = $sformatf(
-                        "expected result_ff=%h error=%0b, got result_ff=%h error=%0b",
+                        "op=%s rst_l=%b valid_in=%b scan_mode=%b ap=%h a_in=%h b_in=%h csr_ren=%b csr_data=%h expected result_ff=%h error=%0b, got result_ff=%h error=%0b",
+                        bmu_operation_code(actual_item.ap, actual_item.csr_ren_in).name(),
+                        actual_item.rst_l, actual_item.valid_in, actual_item.scan_mode,
+                        actual_item.ap, actual_item.a_in, actual_item.b_in,
+                        actual_item.csr_ren_in, actual_item.csr_rddata_in,
                         expected_item.result_ff,
                         expected_item.error,
                         actual_item.result_ff,
