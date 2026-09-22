@@ -6,13 +6,13 @@
 
 set -euo pipefail
 
-CONFIG="${1:-$(dirname "$0")/../../regression/configs/nightly.cfg}"
+CONFIG="${1:-$(dirname "$0")/../../regression/configs/full.cfg}"
 SUMMARY_DIR="$(dirname "$0")/../../results/reports"
 mkdir -p "$SUMMARY_DIR"
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SIMULATOR="${SIMULATOR:-xcelium}"
 RTL_REVISION="$(git -C "$REPO_ROOT" rev-parse --short HEAD)"
-SIMULATOR_VERSION="$(xrun -version 2>&1 | head -1)"
+SIMULATOR_VERSION="$(xrun -version 2>&1)"
 
 if [ ! -f "$CONFIG" ]; then
   echo "Regression config not found: $CONFIG"
@@ -30,10 +30,15 @@ echo "Simulator: $SIMULATOR_VERSION" | tee -a "$SUMMARY_FILE"
 echo "RTL revision: $RTL_REVISION" | tee -a "$SUMMARY_FILE"
 echo "Coverage root: $REPO_ROOT/results/coverage" | tee -a "$SUMMARY_FILE"
 
-while IFS= read -r line; do
+while IFS= read -r line || [[ -n "$line" ]]; do
   # skip comments/blank lines
-  [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
-  read -r TEST_NAME SEED <<< "$line"
+  line="${line%%#*}"
+  [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+  read -r TEST_NAME SEED EXTRA <<< "$line"
+  if [[ ! "$TEST_NAME" =~ ^bmu_[a-zA-Z0-9_]+$ || ! "$SEED" =~ ^[0-9]+$ || -n "$EXTRA" ]]; then
+    echo "Invalid regression row: $line" >&2
+    exit 2
+  fi
 
   echo "-> Running ${TEST_NAME} (seed=${SEED})" | tee -a "$SUMMARY_FILE"
   if bash "$(dirname "$0")/run_test.sh" "$TEST_NAME" "$SEED"; then
@@ -50,4 +55,4 @@ done < "$CONFIG"
 echo "==============================" | tee -a "$SUMMARY_FILE"
 echo "Regression complete: ${PASS} passed, ${FAIL} failed" | tee -a "$SUMMARY_FILE"
 
-[ "$FAIL" -eq 0 ]
+[ "$PASS" -gt 0 ] && [ "$FAIL" -eq 0 ]

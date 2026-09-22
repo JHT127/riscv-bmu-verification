@@ -25,11 +25,7 @@ EOF
 
 echo "[waves] generating SHM dump for TEST=${TEST} SEED=${SEED} VERBOSITY=${VERBOSITY}"
 
-xrun -64bit -uvm -sv -f "${SIM_DIR}/filelists/xcelium.f" \
-  -coverage all -covoverwrite \
-  -covworkdir "${SIM_DIR}/../results/coverage/${TEST}_${SEED}" \
-  +UVM_TESTNAME="${TEST}" +ntb_random_seed="${SEED}" +UVM_VERBOSITY="${VERBOSITY}" \
-  -access +rwc -input "${WAVE_SCRIPT}" \
-  -l "${RESULTS_DIR}/${TEST}_${SEED}_waves.log"
+make -C "${SIM_DIR}" run TEST="${TEST}" SEED="${SEED}" VERBOSITY="${VERBOSITY}" \
+  XRUN_EXTRA="-access +rwc -input ${WAVE_SCRIPT}"
 
 echo "Wave SHM DB: ${WAVE_DB}"

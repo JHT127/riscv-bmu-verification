@@ -13,9 +13,13 @@ RESULTS_DIR := ../results/logs
 COVERAGE_DIR := ../results/coverage
 WAVES_DIR   := ../waveforms
 XRUN        ?= xrun
+TOP         ?= bmu_tb_top
+XRUN_EXTRA  ?=
+TIMEOUT     ?= 1000000
+CONFIG      ?= ../regression/configs/full.cfg
 
 ifeq ($(SIMULATOR),xcelium)
-XRUN_BASE   := $(XRUN) -64bit -uvm -sv -f $(FILELIST)
+XRUN_BASE   := $(XRUN) -64bit -uvm -sv -top $(TOP) -f $(FILELIST)
 else
 $(error Unsupported SIMULATOR=$(SIMULATOR); use SIMULATOR=xcelium)
 endif
@@ -44,21 +48,14 @@ run: compile
 	@mkdir -p $(RESULTS_DIR)
 	@mkdir -p $(COVERAGE_DIR)/$(TEST)_$(SEED)
 	@echo "[run] TEST=$(TEST) SEED=$(SEED) VERBOSITY=$(VERBOSITY)"
-	$(XRUN_BASE) -coverage all -covoverwrite \
+	$(XRUN_BASE) $(XRUN_EXTRA) -coverage all -covoverwrite \
 		-covworkdir $(COVERAGE_DIR)/$(TEST)_$(SEED) \
-		+UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
-		+UVM_VERBOSITY=$(VERBOSITY) -l $(RESULTS_DIR)/$(TEST)_$(SEED).log
-	@if grep -Eq 'UVM_(ERROR|FATAL) :[[:space:]]+[1-9]' $(RESULTS_DIR)/$(TEST)_$(SEED).log; then \
-		echo "[run] FAIL: UVM errors or fatals recorded" >&2; \
-		exit 1; \
-	fi
+		+UVM_TESTNAME=$(TEST) -svseed $(SEED) \
+		+UVM_TIMEOUT=$(TIMEOUT),YES +UVM_VERBOSITY=$(VERBOSITY) -l $(RESULTS_DIR)/$(TEST)_$(SEED).log
+	@python3 scripts/check_result.py $(RESULTS_DIR)/$(TEST)_$(SEED).log
 
-waves: compile
-	@mkdir -p $(WAVES_DIR)
-	@echo "[waves] TEST=$(TEST) -> enabling Xcelium waveform access"
-	$(XRUN_BASE) +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
-		+UVM_VERBOSITY=$(VERBOSITY) -access +rwc \
-		-l $(RESULTS_DIR)/$(TEST)_$(SEED)_waves.log
+waves:
+	@bash scripts/run_waves.sh $(TEST) $(SEED) $(VERBOSITY)
 
 regression:
 	@echo "[regression] delegating to scripts/run_regression.sh"
