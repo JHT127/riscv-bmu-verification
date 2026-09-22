@@ -50,6 +50,34 @@ class bmu_base_sequence extends uvm_sequence #(bmu_sequence_item);
 
 
 
+        // legal stimulus controls ----------------------------------------
+        task select_operation(bmu_sequence_item req, bmu_operation_t operation);
+                req.ap = '0;
+                req.csr_ren_in = 1'b0;
+                case (operation)
+                        BMU_OR: req.ap.lor = 1'b1;
+                        BMU_XOR: req.ap.lxor = 1'b1;
+                        BMU_SRL: req.ap.srl = 1'b1;
+                        BMU_SRA: req.ap.sra = 1'b1;
+                        BMU_ROR: req.ap.ror = 1'b1;
+                        BMU_BINV: req.ap.binv = 1'b1;
+                        BMU_SH2ADD: begin req.ap.sh2add = 1'b1; req.ap.zba = 1'b1; end
+                        BMU_SUB: req.ap.sub = 1'b1;
+                        BMU_SLT: begin req.ap.slt = 1'b1; req.ap.sub = 1'b1; end
+                        BMU_CTZ: req.ap.ctz = 1'b1;
+                        BMU_CPOP: req.ap.cpop = 1'b1;
+                        BMU_SEXTB: req.ap.siext_b = 1'b1;
+                        BMU_MAX: begin req.ap.max = 1'b1; req.ap.sub = 1'b1; end
+                        BMU_PACK: req.ap.pack = 1'b1;
+                        BMU_GREV: begin req.ap.grev = 1'b1; req.b_in[4:0] = 5'd24; end
+                        BMU_CSR_WRITE: req.ap.csr_write = 1'b1;
+                        BMU_CSR_READ: req.csr_ren_in = 1'b1;
+                        default: req.ap = '0;
+                endcase
+        endtask : select_operation
+
+
+
         // send item task ----------------------------------------
         task send_item(bmu_sequence_item req);
                 start_item(req);
