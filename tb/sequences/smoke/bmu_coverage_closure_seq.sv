@@ -9,73 +9,114 @@ class bmu_coverage_closure_sequence extends bmu_base_sequence;
         endfunction : new
 
         task body();
-                int operation_index;
-                static bit [31:0] edge_values[7];
+                bmu_sequence_item req;
+                logic [31:0] edge_values[8];
 
-                edge_values[0] = 32'h00000000;
-                edge_values[1] = 32'h00000001;
-                edge_values[2] = 32'h80000000;
-                edge_values[3] = 32'h7FFFFFFF;
-                edge_values[4] = 32'hFFFFFFFF;
-                edge_values[5] = 32'hAAAAAAAA;
-                edge_values[6] = 32'h12345678;
-
+                edge_values = '{32'h00000000, 32'hFFFFFFFF, 32'h80000000, 32'h00000001,
+                                32'hAAAAAAAA, 32'h00000100, 32'h12345678, 32'h7FFFFFFF};
                 bmu_nominal_directed_sequence::type_id::create("nominal").start(m_sequencer);
                 bmu_timing_reset_sequence::type_id::create("timing_reset").start(m_sequencer);
                 bmu_error_directed_sequence::type_id::create("errors").start(m_sequencer);
-                bmu_gap_checks_sequence::type_id::create("gap_checks").start(m_sequencer);
-                bmu_or_invert_sequence::type_id::create("or_invert").start(m_sequencer);
-                bmu_xor_invert_sequence::type_id::create("xor_invert").start(m_sequencer);
-                bmu_sextb_neg_sequence::type_id::create("sextb_negative").start(m_sequencer);
-                bmu_max_signed_sequence::type_id::create("max_signed").start(m_sequencer);
-                bmu_max_reversed_sequence::type_id::create("max_reversed").start(m_sequencer);
-                bmu_ctz_zero_sequence::type_id::create("ctz_zero").start(m_sequencer);
-                bmu_ctz_ones_sequence::type_id::create("ctz_ones").start(m_sequencer);
-                bmu_cpop_corner_sequence::type_id::create("cpop_corner").start(m_sequencer);
-                bmu_grev_undefined_sequence::type_id::create("grev_undefined").start(m_sequencer);
-                bmu_sh2add_no_zba_sequence::type_id::create("sh2add_no_zba").start(m_sequencer);
+                bmu_gap_checks_sequence::type_id::create("gaps").start(m_sequencer);
+                bmu_guard_matrix_sequence::type_id::create("guards").start(m_sequencer);
 
-                for (operation_index = 0; operation_index < 17; operation_index++) begin
-                        send_operation_case(operation_index, 1'b0, 1'b0, edge_values[0], edge_values[0]);
-                        send_operation_case(operation_index, 1'b1, 1'b1, edge_values[1], edge_values[5]);
-                        send_operation_case(operation_index, 1'b1, 1'b0, edge_values[2], edge_values[3]);
-                        send_operation_case(operation_index, 1'b1, 1'b0, edge_values[4], edge_values[6]);
-                        send_operation_case(operation_index, 1'b1, 1'b0, edge_values[5], edge_values[4]);
-                        if (operation_index < 16)
-                                send_operation_case(operation_index, 1'b1, 1'b1, edge_values[6], edge_values[1]);
+                // Every supported operation, operand class, and valid state.
+                for (int operation = BMU_OR; operation <= BMU_CSR_READ; operation++) begin
+                        foreach (edge_values[index]) begin
+                                for (int valid_value = 0; valid_value < 2; valid_value++) begin
+                                        req = bmu_sequence_item::type_id::create("operation_pattern");
+                                        initialize_item(req);
+                                        req.a_in = edge_values[index];
+                                        req.b_in = ~edge_values[index];
+                                        req.csr_rddata_in = edge_values[index];
+                                        req.valid_in = valid_value;
+                                        select_operation(req, bmu_operation_t'(operation));
+                                        send_item(req);
+                                        if (operation == BMU_OR || operation == BMU_XOR) begin
+                                                req.ap.zbb = 1'b1;
+                                                send_item(req);
+                                        end
+                                        if (operation == BMU_CSR_WRITE) begin
+                                                req.ap.csr_imm = 1'b1;
+                                                send_item(req);
+                                        end
+                                end
+                        end
                 end
+
+                // All bit positions, both source-bit values, and ignored upper amount bits.
+                for (int operation = BMU_SRL; operation <= BMU_BINV; operation++) begin
+                        for (int amount = 0; amount < 32; amount++) begin
+                                foreach (edge_values[index]) begin
+                                        req = bmu_sequence_item::type_id::create("shift_position");
+                                        initialize_item(req);
+                                        req.a_in = edge_values[index];
+                                        req.b_in = amount;
+                                        select_operation(req, bmu_operation_t'(operation));
+                                        send_item(req);
+                                        req.b_in = 32'hA5A5FFE0 | amount;
+                                        send_item(req);
+                                end
+                        end
+                end
+
+                // Each count with different spatial distributions of the set bits.
+                for (int count = 0; count <= 32; count++) begin
+                        req = bmu_sequence_item::type_id::create("count_pattern");
+                        initialize_item(req);
+                        select_operation(req, BMU_CPOP);
+                        req.a_in = 32'hFFFFFFFF >> (32 - count);
+                        send_item(req);
+                        req.a_in = 32'hFFFFFFFF << (32 - count);
+                        send_item(req);
+                        select_operation(req, BMU_CTZ);
+                        req.a_in = 32'b1 << count;
+                        send_item(req);
+                        req.a_in = 32'hFFFFFFFF << count;
+                        send_item(req);
+                end
+
+                // Signed/unsigned ordering, equality, sign boundaries, borrow, and wraparound.
+                foreach (edge_values[a_index]) begin
+                        foreach (edge_values[b_index]) begin
+                                for (int operation = 0; operation < 5; operation++) begin
+                                        req = bmu_sequence_item::type_id::create("comparison_boundary");
+                                        initialize_item(req);
+                                        req.a_in = edge_values[a_index];
+                                        req.b_in = edge_values[b_index];
+                                        case (operation)
+                                                0: select_operation(req, BMU_SLT);
+                                                1: begin select_operation(req, BMU_SLT); req.ap.unsign = 1'b1; end
+                                                2: select_operation(req, BMU_MAX);
+                                                3: select_operation(req, BMU_SUB);
+                                                4: select_operation(req, BMU_SH2ADD);
+                                        endcase
+                                        send_item(req);
+                                end
+                        end
+                end
+
+                // Byte sign is independent of the discarded upper bits.
+                for (int byte_value = 0; byte_value < 256; byte_value++) begin
+                        req = bmu_sequence_item::type_id::create("sext_byte");
+                        initialize_item(req);
+                        select_operation(req, BMU_SEXTB);
+                        req.a_in = byte_value;
+                        send_item(req);
+                        req.a_in = 32'hFFFF0000 | byte_value;
+                        send_item(req);
+                end
+
+                // All GREV encodings, including the adopted invalid-encoding rule.
+                for (int amount = 0; amount < 32; amount++) begin
+                        req = bmu_sequence_item::type_id::create("grev_encoding");
+                        initialize_item(req);
+                        select_operation(req, BMU_GREV);
+                        req.a_in = 32'h12345678;
+                        req.b_in = amount;
+                        send_item(req);
+                end
+                reset_dut();
         endtask : body
-
-        task send_operation_case(int operation_index, bit valid_in, bit csr_ren_in,
-                                bit [31:0] a_val, bit [31:0] b_val);
-                bmu_sequence_item req;
-
-                req = bmu_sequence_item::type_id::create("coverage_cross");
-                initialize_item(req);
-                req.valid_in = valid_in;
-                req.csr_ren_in = csr_ren_in;
-                req.a_in = a_val;
-                req.b_in = b_val;
-                case (operation_index)
-                        0: req.ap.lor = 1'b1;
-                        1: req.ap.lxor = 1'b1;
-                        2: req.ap.srl = 1'b1;
-                        3: req.ap.sra = 1'b1;
-                        4: req.ap.ror = 1'b1;
-                        5: req.ap.binv = 1'b1;
-                        6: req.ap.sh2add = 1'b1;
-                        7: req.ap.sub = 1'b1;
-                        8: begin req.ap.slt = 1'b1; req.ap.sub = 1'b1; end
-                        9: req.ap.ctz = 1'b1;
-                        10: req.ap.cpop = 1'b1;
-                        11: req.ap.siext_b = 1'b1;
-                        12: req.ap.max = 1'b1;
-                        13: req.ap.pack = 1'b1;
-                        14: req.ap.grev = 1'b1;
-                        15: req.ap.csr_write = 1'b1;
-                        16: req.csr_ren_in = 1'b1;
-                endcase
-                send_item(req);
-        endtask : send_operation_case
 
 endclass : bmu_coverage_closure_sequence

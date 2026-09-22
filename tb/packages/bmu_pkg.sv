@@ -161,9 +161,10 @@ package bmu_pkg;
         // composite suite sequences ----------------------------------------
         `include "../sequences/smoke/bmu_directed_suite_sequences.sv"
         `include "../sequences/smoke/bmu_gap_checks_seq.sv"
+        `include "../sequences/smoke/bmu_bug_seq.sv"
         `include "../sequences/smoke/bmu_gap_plan_sequences.sv"
+        `include "../sequences/smoke/bmu_guard_matrix_seq.sv"
         `include "../sequences/smoke/bmu_coverage_closure_seq.sv"
-        `include "../sequences/smoke/bmu_coverage_max_seq.sv"
 
         // tests ----------------------------------------
         `include "../tests/bmu_base_test.sv"
@@ -171,9 +172,10 @@ package bmu_pkg;
         `include "../tests/bmu_or_valid_test.sv"
         `include "../tests/bmu_directed_suite_tests.sv"
         `include "../tests/bmu_gap_checks_test.sv"
+        `include "../tests/bmu_guard_matrix_test.sv"
+        `include "../tests/bmu_bug_tests.sv"
         `include "../tests/bmu_gap_plan_tests.sv"
         `include "../tests/bmu_coverage_closure_test.sv"
-        `include "../tests/bmu_coverage_max_test.sv"
         `include "../tests/bmu_random_tests.sv"
 
 
