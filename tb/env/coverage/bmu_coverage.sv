@@ -8,114 +8,102 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
 
         covergroup bmu_covergroup with function sample(bmu_sequence_item item);
                 option.per_instance = 1;
-                cp_operation: coverpoint operation_code(item) {
-                        bins lor = {0};
-                        bins lxor = {1};
-                        bins land = {2};
-                        bins sll = {3};
-                        bins srl = {4};
-                        bins sra = {5};
-                        bins ror = {6};
-                        bins bset = {7};
-                        bins bclr = {8};
-                        bins binv = {9};
-                        bins bext = {10};
-                        bins sh1add = {11};
-                        bins sh2add = {12};
-                        bins sh3add = {13};
-                        bins sub = {14};
-                        bins slt = {15};
-                        bins ctz = {16};
-                        bins cpop = {17};
-                        bins siext_b = {18};
-                        bins max = {19};
-                        bins pack = {20};
-                        bins grev = {21};
-                        bins csr_write = {22};
-                        bins csr_read = {23};
-                        bins invalid = {24};
+
+                cp_operation: coverpoint bmu_operation_code(item.ap, item.csr_ren_in)
+                        iff (legal_operation(item) && item.valid_in) {
+                        bins operations[] = {[BMU_OR:BMU_CSR_READ]};
                 }
-                cp_zbb: coverpoint item.ap.zbb iff (item.ap.lor || item.ap.lxor) {
-                        bins disabled = {0};
-                        bins enabled = {1};
+                cp_request: coverpoint bmu_operation_code(item.ap, item.csr_ren_in) iff (item.rst_l) {
+                        bins operations[] = {[BMU_OR:BMU_CSR_READ]};
+                        bins invalid = {BMU_INVALID};
                 }
-                cp_zba: coverpoint item.ap.zba iff (item.ap.sh1add || item.ap.sh2add || item.ap.sh3add) {
-                        bins disabled = {0};
-                        bins enabled = {1};
-                }
-                cp_shift_amount: coverpoint item.b_in[4:0] iff
-                        (item.ap.sll || item.ap.srl || item.ap.sra || item.ap.ror || item.ap.bset || item.ap.bclr || item.ap.binv || item.ap.bext) {
-                        bins low = {[0:7]};
-                        bins mid = {[8:23]};
-                        bins high = {[24:31]};
-                }
-                cp_binv_position: coverpoint item.b_in[4:0] iff item.ap.binv {
-                        bins edges = {0,1,31};
-                        bins middle = {[2:30]};
-                }
-                cp_count_result: coverpoint expected_count(item) iff
-                        (item.ap.ctz || item.ap.cpop) {
-                        bins zero = {0};
-                        bins one = {1};
-                        bins mid[] = {[2:31]};
-                        bins full = {32};
-                }
-                cp_operand_pattern: coverpoint operand_pattern(item) iff legal_operation(item) {
-                        bins zero = {0};
-                        bins one_hot = {1};
-                        bins all_ones = {2};
-                        bins alternating = {3};
-                        bins msb = {4};
-                        bins lsb = {5};
-                        bins mixed = {6};
-                }
-                cp_operand_sign: coverpoint item.a_in[31] iff
-                        (item.ap.siext_b || item.ap.slt || item.ap.max || item.ap.sub) {
-                        bins positive = {0};
-                        bins negative = {1};
-                }
-                cp_slt_unsigned: coverpoint item.ap.unsign iff item.ap.slt {
-                        bins signed_mode = {0};
-                        bins unsigned_mode = {1};
-                }
-                cp_grev_encoding: coverpoint item.b_in[4:0] iff item.ap.grev {
-                        bins valid = {24};
-                        bins invalid = default;
-                }
-                cp_csr_mode: coverpoint csr_mode(item) {
-                        bins bypass = {0};
-                        bins write_imm = {1};
-                        bins write_reg = {2};
-                        bins conflict = {3};
-                }
-                cp_valid: coverpoint item.valid_in {
-                        bins idle = {0};
-                        bins valid = {1};
-                }
-                cp_reset: coverpoint item.rst_l {
-                        bins reset = {0};
-                        bins active = {1};
-                }
-                cp_scan: coverpoint item.scan_mode {
-                        bins functional = {0};
-                        bins scan = {1};
-                }
-                cp_error: coverpoint expected_error(item) {
+                cp_error: coverpoint expected_error(item) iff (item.rst_l) {
                         bins clean = {0};
                         bins rejected = {1};
                 }
-                cp_control_count: coverpoint primary_count(item.ap) {
-                        bins zero = {0};
-                        bins one = {1};
-                        bins multi = {2};
+                request_x_error: cross cp_request, cp_error {
+                        ignore_bins read_error = binsof(cp_request) intersect {BMU_CSR_READ} && binsof(cp_error.rejected);
+                        ignore_bins invalid_clean = binsof(cp_request.invalid) && binsof(cp_error.clean);
                 }
-                operation_x_error: cross cp_operation, cp_error {
-                        ignore_bins csr_read = binsof(cp_operation.csr_read);
-                        ignore_bins invalid = binsof(cp_operation.invalid);
+                cp_valid: coverpoint item.valid_in iff (item.rst_l) {
+                        bins idle = {0};
+                        bins valid = {1};
                 }
-                operation_x_valid: cross cp_operation, cp_valid;
+                request_x_valid: cross cp_request, cp_valid;
+                cp_reset: coverpoint item.rst_l {
+                        bins reset = {0};
+                        bins active = {1};
+                        bins asserted = (1 => 0);
+                        bins released = (0 => 1);
+                }
+                cp_zbb: coverpoint item.ap.zbb iff
+                        (legal_operation(item) && item.valid_in && (item.ap.lor || item.ap.lxor)) {
+                        bins disabled = {0};
+                        bins enabled = {1};
+                }
+                cp_logic_operation: coverpoint bmu_operation_code(item.ap, item.csr_ren_in) iff
+                        (legal_operation(item) && item.valid_in && (item.ap.lor || item.ap.lxor)) {
+                        bins operations[] = {BMU_OR, BMU_XOR};
+                }
+                logic_x_zbb: cross cp_logic_operation, cp_zbb;
+                cp_shift_operation: coverpoint bmu_operation_code(item.ap, item.csr_ren_in) iff
+                        (legal_operation(item) && item.valid_in && (item.ap.srl || item.ap.sra || item.ap.ror || item.ap.binv)) {
+                        bins operations[] = {BMU_SRL, BMU_SRA, BMU_ROR, BMU_BINV};
+                }
+                cp_shift_amount: coverpoint item.b_in[4:0] iff
+                        (legal_operation(item) && item.valid_in && (item.ap.srl || item.ap.sra || item.ap.ror || item.ap.binv)) {
+                        bins amounts[] = {[0:31]};
+                }
+                shift_x_amount: cross cp_shift_operation, cp_shift_amount;
+                cp_binv_value: coverpoint item.a_in[item.b_in[4:0]] iff
+                        (legal_operation(item) && item.valid_in && item.ap.binv) {
+                        bins clear = {0};
+                        bins set = {1};
+                }
+                cp_count_operation: coverpoint bmu_operation_code(item.ap, item.csr_ren_in) iff
+                        (legal_operation(item) && item.valid_in && (item.ap.ctz || item.ap.cpop)) {
+                        bins operations[] = {BMU_CTZ, BMU_CPOP};
+                }
+                cp_count_result: coverpoint expected_count(item) iff
+                        (legal_operation(item) && item.valid_in && (item.ap.ctz || item.ap.cpop)) {
+                        bins counts[] = {[0:32]};
+                }
+                count_x_result: cross cp_count_operation, cp_count_result;
+                cp_operand_pattern: coverpoint operand_pattern(item.a_in) iff
+                        (legal_operation(item) && item.valid_in) {
+                        bins patterns[] = {[0:6]};
+                }
                 operation_x_pattern: cross cp_operation, cp_operand_pattern;
-                operation_x_sign: cross cp_operation, cp_operand_sign;
+                cp_compare_signs: coverpoint {item.a_in[31], item.b_in[31]} iff
+                        (legal_operation(item) && item.valid_in && (item.ap.slt || item.ap.max)) {
+                        bins signs[] = {[0:3]};
+                }
+                cp_compare_relation: coverpoint comparison_relation(item) iff
+                        (legal_operation(item) && item.valid_in && (item.ap.slt || item.ap.max)) {
+                        bins less = {0};
+                        bins equal = {1};
+                        bins greater = {2};
+                }
+                cp_slt_unsigned: coverpoint item.ap.unsign iff
+                        (legal_operation(item) && item.valid_in && item.ap.slt) {
+                        bins signed_mode = {0};
+                        bins unsigned_mode = {1};
+                }
+                cp_sext_signs: coverpoint {item.a_in[31], item.a_in[7]} iff
+                        (legal_operation(item) && item.valid_in && item.ap.siext_b) {
+                        bins signs[] = {[0:3]};
+                }
+                cp_grev_encoding: coverpoint item.b_in[4:0] iff
+                        (item.rst_l && item.valid_in && item.ap.grev) {
+                        bins valid = {24};
+                        bins invalid[] = {[0:23], [25:31]};
+                }
+                cp_csr_mode: coverpoint csr_mode(item) iff
+                        (legal_operation(item) && item.valid_in && (item.csr_ren_in || item.ap.csr_write)) {
+                        bins bypass = {0};
+                        bins write_reg = {1};
+                        bins write_imm = {2};
+                }
         endgroup
 
         function new(string name, uvm_component parent);
@@ -129,132 +117,50 @@ class bmu_coverage extends uvm_subscriber #(bmu_sequence_item);
                 bmu_covergroup.sample(t);
         endfunction : write
 
-        function int operation_code(bmu_sequence_item item);
-                if (item.csr_ren_in && item.ap == '0)
-                        return 23;
-                if (item.ap.csr_write)
-                        return 22;
-                if (item.ap.lor)
-                        return 0;
-                if (item.ap.lxor)
-                        return 1;
-                if (item.ap.land)
-                        return 2;
-                if (item.ap.sll)
-                        return 3;
-                if (item.ap.srl)
-                        return 4;
-                if (item.ap.sra)
-                        return 5;
-                if (item.ap.ror)
-                        return 6;
-                if (item.ap.bset)
-                        return 7;
-                if (item.ap.bclr)
-                        return 8;
-                if (item.ap.binv)
-                        return 9;
-                if (item.ap.bext)
-                        return 10;
-                if (item.ap.sh1add)
-                        return 11;
-                if (item.ap.sh2add)
-                        return 12;
-                if (item.ap.sh3add)
-                        return 13;
-                if (item.ap.sub)
-                        return 14;
-                if (item.ap.slt)
-                        return 15;
-                if (item.ap.ctz)
-                        return 16;
-                if (item.ap.cpop)
-                        return 17;
-                if (item.ap.siext_b)
-                        return 18;
-                if (item.ap.max)
-                        return 19;
-                if (item.ap.pack)
-                        return 20;
-                if (item.ap.grev)
-                        return 21;
-                return 24;
-        endfunction : operation_code
+        function bit legal_operation(bmu_sequence_item item);
+                return item.rst_l && bmu_legal_controls(item.ap, item.csr_ren_in, item.b_in[4:0]);
+        endfunction : legal_operation
+
+        function bit expected_error(bmu_sequence_item item);
+                return item.rst_l && !bmu_legal_controls(item.ap, item.csr_ren_in, item.b_in[4:0]);
+        endfunction : expected_error
 
         function int csr_mode(bmu_sequence_item item);
-                if (item.csr_ren_in && item.ap != '0)
-                        return 3;
-                if (item.csr_ren_in)
-                        return 0;
-                if (item.ap.csr_write && item.ap.csr_imm)
-                        return 1;
-                if (item.ap.csr_write)
-                        return 2;
-                return 0;
+                if (item.csr_ren_in) return 0;
+                return item.ap.csr_imm ? 2 : 1;
         endfunction : csr_mode
 
         function int expected_count(bmu_sequence_item item);
-                int index;
-
                 if (item.ap.ctz) begin
-                        expected_count = 32;
-                        for (index = 0; index < 32; index++) begin
-                                if (item.a_in[index]) begin
-                                        expected_count = index;
-                                        break;
-                                end
-                        end
+                        for (int index = 0; index < 32; index++)
+                                if (item.a_in[index]) return index;
+                        return 32;
                 end
-                else begin
-                        expected_count = 0;
-                        for (index = 0; index < 32; index++)
-                                expected_count += item.a_in[index];
-                end
+                return $countones(item.a_in);
         endfunction : expected_count
 
-        function bit expected_error(bmu_sequence_item item);
-                expected_error = 1'b0;
-                if (item.csr_ren_in && (|item.ap))
-                        expected_error = 1'b1;
-                else if (!item.csr_ren_in && (operation_code(item) == 17))
-                        expected_error = 1'b1;
-                else if (!item.csr_ren_in && (primary_count(item.ap) != 1))
-                        expected_error = 1'b1;
-        endfunction : expected_error
-
-        function int primary_count(bmu_ctrl_t ap);
-                primary_count = ap.lor + ap.lxor + ap.land + ap.sll + ap.srl + ap.sra + ap.ror +
-                                ap.bset + ap.bclr + ap.binv + ap.bext + ap.sh1add + ap.sh2add + ap.sh3add +
-                                ap.slt + ap.ctz + ap.cpop + ap.siext_b + ap.max + ap.pack + ap.grev +
-                                ap.csr_write + (ap.sub && !ap.slt && !ap.max) + ap.zbb + ap.zba;
-        endfunction : primary_count
-
-        function bit legal_operation(bmu_sequence_item item);
-                legal_operation = item.valid_in || item.rst_l || item.csr_ren_in || item.ap != '0;
-        endfunction : legal_operation
-
-        function int operand_pattern(bmu_sequence_item item);
-                if (item.a_in == 32'h00000000)
-                        operand_pattern = 0;
-                else if ((item.a_in & (item.a_in - 1)) == 0)
-                        operand_pattern = 1;
-                else if (item.a_in == 32'hFFFFFFFF)
-                        operand_pattern = 2;
-                else if ((item.a_in ^ 32'hAAAAAAAA) == 32'h00000000)
-                        operand_pattern = 3;
-                else if (item.a_in[31])
-                        operand_pattern = 4;
-                else if (item.a_in[0])
-                        operand_pattern = 5;
-                else
-                        operand_pattern = 6;
+        function int operand_pattern(logic [31:0] value);
+                if (value == 0) return 0;
+                if (value == 32'hFFFFFFFF) return 1;
+                if (value == 32'h80000000) return 2;
+                if (value == 1) return 3;
+                if (value == 32'hAAAAAAAA || value == 32'h55555555) return 4;
+                if ($onehot(value)) return 5;
+                return 6;
         endfunction : operand_pattern
+
+        function int comparison_relation(bmu_sequence_item item);
+                if (item.a_in == item.b_in) return 1;
+                if (item.ap.slt && item.ap.unsign)
+                        return item.a_in < item.b_in ? 0 : 2;
+                return $signed(item.a_in) < $signed(item.b_in) ? 0 : 2;
+        endfunction : comparison_relation
 
         function void report_phase(uvm_phase phase);
                 super.report_phase(phase);
                 `uvm_info(get_type_name(), $sformatf(
                         "functional coverage=%0.2f%% samples=%0d",
-                        bmu_covergroup.get_coverage(), sample_count), UVM_LOW)
+                        bmu_covergroup.get_inst_coverage(), sample_count), UVM_LOW)
         endfunction : report_phase
 
 endclass : bmu_coverage
