@@ -17,7 +17,8 @@ module bmu_protocol_assertions
 
         function automatic int primary_count(input rtl_alu_pkt_t controls);
                 return controls.lor + controls.lxor + controls.srl + controls.sra +
-                       controls.ror + controls.binv + controls.sh2add + controls.sub +
+                       controls.ror + controls.binv + controls.sh2add +
+                       (controls.sub && !controls.slt && !controls.max) +
                        controls.slt + controls.ctz + controls.cpop + controls.siext_b +
                        controls.max + controls.pack + controls.grev + controls.csr_write;
         endfunction
@@ -69,7 +70,7 @@ module bmu_protocol_assertions
 
         property csr_conflict;
                 @(posedge clk) disable iff (!rst_l)
-                (valid_in && csr_ren_in && primary_count(ap) != 0) |-> error;
+                (valid_in && csr_ren_in && (|ap)) |-> error;
         endproperty
         assert property (csr_conflict)
                 else $error("BMU CSR and operation controls were not rejected");
