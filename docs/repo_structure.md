@@ -24,7 +24,6 @@ BMU-verification/
 │   ├── 02_test_plan/                  BMU_Test_Plan.xlsx (to be added)
 │   ├── 03_clarifications_log/         spec_clarifications_log.md — living Q&A record
 │   ├── 04_bug_reports/                Personal bug log (mirrors ClickUp board)
-│   ├── 05_presentation/               Slides + assets for the final presentation
 │   ├── 06_architecture_diagrams/      TB & DUT architecture / timing diagrams
 │   ├── 07_coverage_reports/           Narrative coverage interpretation, waivers, and summary docs
 │   └── 08_signoff/                    Final sign-off checklist + summary

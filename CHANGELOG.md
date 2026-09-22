@@ -25,4 +25,4 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Functional coverage model
 - First regression run + coverage report
 - Bug log population
-- Final presentation + sign-off report
+- Final verification report

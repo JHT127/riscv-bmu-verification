@@ -7,7 +7,6 @@
 | [`02_test_plan/`](02_test_plan) | Test list, stimulus, expected results, and traceability across the bug-finding work |
 | [`03_clarifications_log/`](03_clarifications_log) | Spec ambiguities raised during verification and the recorded project assumptions |
 | [`04_bug_reports/`](04_bug_reports) | Bug log and supporting evidence for runtime-confirmed defects |
-| [`05_presentation/`](05_presentation) | Project walkthrough, findings summary, and results presentation |
 | [`06_architecture_diagrams/`](06_architecture_diagrams) | Block diagrams and verification architecture views |
 | [`07_coverage_reports/`](07_coverage_reports) | Narrative coverage analysis, waivers, and summary interpretation for the training exercise |
 | [`08_signoff/`](08_signoff) | Training verification summary and closure record, not a production sign-off package |

@@ -164,7 +164,6 @@ BMU-verification/
 │   ├── 02_test_plan/
 │   ├── 03_clarifications_log/
 │   ├── 04_bug_reports/
-│   ├── 05_presentation/
 │   ├── 06_architecture_diagrams/
 │   ├── 07_coverage_reports/
 │   └── 08_signoff/
@@ -257,7 +256,7 @@ The repository keeps runtime evidence under `results/` and `waveforms/` so a rev
 - the verification flow is active and real
 - known issues are tracked as Open in the bug log
 - fix-version work is isolated separately from the original RTL
-- the repo is structured for professional review and presentation
+- the repo is structured for professional review
 
 This is a valid engineering position for a training and verification project: honest evidence, traceable findings, and clear separation of original and repaired work.
 
