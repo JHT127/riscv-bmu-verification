@@ -77,236 +77,52 @@ class bmu_reference_model extends uvm_component;
                         return;
                 end
 
-                if (item.csr_ren_in && (|item.ap)) begin
+                if (!bmu_legal_controls(item.ap, item.csr_ren_in, item.b_in[4:0])) begin
                         error = 1'b1;
                         return;
                 end
 
-                if (item.csr_ren_in && !(|item.ap)) begin
-                        result = item.csr_rddata_in;
-                        return;
-                end
-
-                if (operation_count(item.ap) != 1) begin
-                        error = 1'b1;
-                        return;
-                end
-
-                if (item.ap.lor) begin
-                        if (!only_zbb(item.ap) && !item.ap.land) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in | (item.ap.zbb ? ~item.b_in : item.b_in);
-                end
-                else if (item.ap.lxor) begin
-                        if (!only_zbb(item.ap) && !item.ap.land) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in ^ (item.ap.zbb ? ~item.b_in : item.b_in);
-                end
-                else if (item.ap.land) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in & item.b_in;
-                end
-                else if (item.ap.sll) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in << shift_amount;
-                end
-                else if (item.ap.srl) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in >> shift_amount;
-                end
-                else if (item.ap.sra) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = $signed(item.a_in) >>> shift_amount;
-                end
-                else if (item.ap.ror) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = (item.a_in >> shift_amount) |
-                                 (item.a_in << ((32 - shift_amount) & 5'h1f));
-                end
-                else if (item.ap.bset) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in | (32'b1 << shift_amount);
-                end
-                else if (item.ap.bclr) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in & ~(32'b1 << shift_amount);
-                end
-                else if (item.ap.binv) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in ^ (32'b1 << shift_amount);
-                end
-                else if (item.ap.bext) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = {{31{1'b0}}, item.a_in[shift_amount]};
-                end
-                else if (item.ap.sh1add) begin
-                        if (!only_zba(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = (item.a_in << 1) + item.b_in;
-                end
-                else if (item.ap.sh2add) begin
-                        if (!only_zba(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = (item.a_in << 2) + item.b_in;
-                end
-                else if (item.ap.sh3add) begin
-                        if (!only_zba(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = (item.a_in << 3) + item.b_in;
-                end
-                else if (item.ap.slt && item.ap.sub) begin
-                        if (!only_unsign(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.ap.unsign ?
-                                 ((item.a_in < item.b_in) ? 32'd1 : 32'd0) :
-                                 (($signed(item.a_in) < $signed(item.b_in)) ? 32'd1 : 32'd0);
-                end
-                else if (item.ap.sub && !item.ap.slt && !item.ap.max) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.a_in - item.b_in;
-                end
-                else if (item.ap.ctz) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        count = 32;
-                        for (index = 0; index < 32; index++) begin
-                                if (item.a_in[index]) begin
-                                        count = index;
-                                        break;
+                case (bmu_operation_code(item.ap, item.csr_ren_in))
+                        BMU_OR: result = item.a_in | (item.ap.zbb ? ~item.b_in : item.b_in);
+                        BMU_XOR: result = item.a_in ^ (item.ap.zbb ? ~item.b_in : item.b_in);
+                        BMU_SRL: result = item.a_in >> shift_amount;
+                        BMU_SRA: result = $signed(item.a_in) >>> shift_amount;
+                        BMU_ROR: result = (item.a_in >> shift_amount) |
+                                         (item.a_in << ((32 - shift_amount) & 5'h1f));
+                        BMU_BINV: result = item.a_in ^ (32'b1 << shift_amount);
+                        BMU_SH2ADD: result = (item.a_in << 2) + item.b_in;
+                        BMU_SUB: result = item.a_in - item.b_in;
+                        BMU_SLT: result = item.ap.unsign ?
+                                         ((item.a_in < item.b_in) ? 32'd1 : 32'd0) :
+                                         (($signed(item.a_in) < $signed(item.b_in)) ? 32'd1 : 32'd0);
+                        BMU_CTZ: begin
+                                count = 32;
+                                for (index = 0; index < 32; index++) begin
+                                        if (item.a_in[index]) begin
+                                                count = index;
+                                                break;
+                                        end
                                 end
+                                result = count;
                         end
-                        result = count;
-                end
-                else if (item.ap.cpop) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
+                        BMU_CPOP: begin
+                                count = 0;
+                                for (index = 0; index < 32; index++)
+                                        count += item.a_in[index];
+                                result = count;
                         end
-                        count = 0;
-                        for (index = 0; index < 32; index++)
-                                count += item.a_in[index];
-                        result = count;
-                end
-                else if (item.ap.siext_b) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = {{24{item.a_in[7]}}, item.a_in[7:0]};
-                end
-                else if (item.ap.max && item.ap.sub) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = ($signed(item.a_in) > $signed(item.b_in)) ?
-                                 item.a_in : item.b_in;
-                end
-                else if (item.ap.pack) begin
-                        if (!no_modes(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = {item.b_in[15:0], item.a_in[15:0]};
-                end
-                else if (item.ap.grev) begin
-                        if (!no_modes(item.ap) || shift_amount != 24) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = {item.a_in[7:0], item.a_in[15:8],
-                                  item.a_in[23:16], item.a_in[31:24]};
-                end
-                else if (item.ap.csr_write) begin
-                        if (!only_csr_imm(item.ap)) begin
-                                error = 1'b1;
-                                return;
-                        end
-                        result = item.ap.csr_imm ? item.b_in : item.a_in;
-                end
-                else begin
-                        error = 1'b1;
-                end
+                        BMU_SEXTB: result = {{24{item.a_in[7]}}, item.a_in[7:0]};
+                        BMU_MAX: result = ($signed(item.a_in) > $signed(item.b_in)) ?
+                                         item.a_in : item.b_in;
+                        BMU_PACK: result = {item.b_in[15:0], item.a_in[15:0]};
+                        BMU_GREV: result = {item.a_in[7:0], item.a_in[15:8],
+                                           item.a_in[23:16], item.a_in[31:24]};
+                        BMU_CSR_WRITE: result = item.ap.csr_imm ? item.b_in : item.a_in;
+                        BMU_CSR_READ: result = item.csr_rddata_in;
+                        default: error = 1'b1;
+                endcase
         endfunction : calculate
 
-
-
-        // control helpers ----------------------------------------
-        function automatic int unsigned operation_count(bmu_ctrl_t ap);
-                operation_count = ap.lor + ap.lxor + ap.land + ap.sll + ap.srl + ap.sra + ap.ror +
-                                   ap.bset + ap.bclr + ap.binv + ap.bext + ap.sh1add + ap.sh2add + ap.sh3add +
-                                   ap.slt + ap.ctz + ap.cpop + ap.siext_b + ap.max + ap.pack + ap.grev +
-                                   ap.csr_write + (ap.sub && !ap.slt && !ap.max) + ap.zba + ap.zbb + ap.packu + ap.packh;
-        endfunction : operation_count
-
-
-        function automatic bit no_modes(bmu_ctrl_t ap);
-                no_modes = !ap.zbb && !ap.zba && !ap.unsign && !ap.csr_imm;
-        endfunction : no_modes
-
-
-        function automatic bit only_zbb(bmu_ctrl_t ap);
-                only_zbb = !ap.zba && !ap.unsign && !ap.csr_imm;
-        endfunction : only_zbb
-
-
-        function automatic bit only_zba(bmu_ctrl_t ap);
-                only_zba = ap.zba && !ap.zbb && !ap.unsign && !ap.csr_imm;
-        endfunction : only_zba
-
-
-        function automatic bit only_unsign(bmu_ctrl_t ap);
-                only_unsign = !ap.zbb && !ap.zba && !ap.csr_imm;
-        endfunction : only_unsign
-
-
-        function automatic bit only_csr_imm(bmu_ctrl_t ap);
-                only_csr_imm = !ap.zbb && !ap.zba && !ap.unsign;
-        endfunction : only_csr_imm
 
 
 endclass : bmu_reference_model
