@@ -6,19 +6,19 @@ class bmu_sequence_item extends uvm_sequence_item;
 
 
   // Declaring ------------------------------
-    // control signals
+    // control and request signals applied to the DUT
     rand logic        rst_l;
     rand logic        scan_mode;
     rand logic        valid_in;
     rand logic        csr_ren_in;
 
-    // operands and control fields
+    // operand data and packed BMU control packet
     rand logic [31:0] a_in;
     rand logic [31:0] b_in;
     rand bmu_ctrl_t   ap;
     rand logic [31:0] csr_rddata_in;
 
-    // dut outputs
+    // observed DUT response captured on the active clock edge
     logic [31:0] result_ff;
     logic        error;
 
@@ -44,6 +44,23 @@ class bmu_sequence_item extends uvm_sequence_item;
   function new(string name = "bmu_sequence_item");
     super.new(name);
   endfunction : new
+
+  // helper for readable debug output when this item is printed
+  virtual function string convert2string();
+    return $sformatf(
+      "rst_l=%0b scan_mode=%0b valid_in=%0b csr_ren_in=%0b a_in=%0h b_in=%0h ap=%p csr_rddata_in=%0h result_ff=%0h error=%0b",
+      rst_l,
+      scan_mode,
+      valid_in,
+      csr_ren_in,
+      a_in,
+      b_in,
+      ap,
+      csr_rddata_in,
+      result_ff,
+      error
+    );
+  endfunction : convert2string
 
 
 endclass : bmu_sequence_item
