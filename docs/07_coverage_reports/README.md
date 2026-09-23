@@ -1,16 +1,5 @@
 # Coverage Reports
 
-This folder contains the human-readable interpretation, waiver record, and
-summary narrative for the project’s coverage status. It is not the canonical
-storage location for generated regression or coverage artifacts.
+[final_coverage_summary.md](final_coverage_summary.md) records the current measurements and links raw IMC reports. [coverage_waivers.md](coverage_waivers.md) records scope exclusions and remaining structural gaps.
 
-Canonical locations:
-- `results/coverage/` — raw coverage databases and simulator-generated outputs
-- `results/reports/` — generated, readable summary reports and regression snapshots
-- `docs/07_coverage_reports/` — reviewable project documentation explaining the
-  results, exclusions, and final interpretation
-
-Do not duplicate the generated reports in this folder. If a result is produced by
-Xcelium/IMC, it belongs in `results/` unless it is a deliberate source-controlled
-summary document that explains the evidence. This keeps the repo from having two
-places describing the same runtime evidence.
+The database is generated locally under `results/coverage/`; reviewable text reports are retained under `results/reports/`. Functional coverage and DUT correctness are assessed separately.
