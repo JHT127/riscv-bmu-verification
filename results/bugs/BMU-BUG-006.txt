@@ -1,0 +1,14 @@
+BMU-BUG-006 — isolated reproducer evidence
+Command: make -C sim run TEST=bmu_bug_006_test SEED=1 VERBOSITY=UVM_LOW
+Source log: results/logs/bmu_bug_006_test_1.log
+Source log SHA256: 2f2803b7bf3be015d7dc455959156863d1f4009940550d44250a1d9c0d393acf
+Source/configuration hashes: results/reports/run_manifest.json
+
+SVSEED set from command line: 1
+xmsim: *E,ASRTST (../tb/assertions/bmu_protocol_assertions.sv,62): (time 15 NS) Assertion bmu_tb_top.dut.protocol_assertions_i.empty_valid_request has failed
+UVM_ERROR ../tb/include/../env/scoreboard/bmu_scoreboard.sv(81) @ 15: uvm_test_top.environment.scoreboard [bmu_scoreboard] op=BMU_INVALID rst_l=1 valid_in=1 scan_mode=0 ap=00000000000 a_in=00000000 b_in=00000000 csr_ren=0 csr_data=00000000 expected result_ff=00000000 error=1, got result_ff=00000000 error=0
+UVM_INFO ../tb/include/../env/scoreboard/bmu_scoreboard.sv(105) @ 16: uvm_test_top.environment.scoreboard [bmu_scoreboard] compared=2 matched=1 mismatched=1
+Number of demoted UVM_ERROR reports  :    0
+Number of caught UVM_ERROR reports   :    0
+UVM_ERROR :    1
+UVM_FATAL :    0

@@ -1,0 +1,6 @@
+name                                     CoverGroup Average   CoverGroup Covered   
+-----------------------------------------------------------------------------------
+uvm_pkg                                  n/a                  n/a                  
+|--uvm_test_top                          n/a                  n/a                  
+| |--environment                         n/a                  n/a                  
+| | |--coverage                          100.00%              100.00% (562/562)    

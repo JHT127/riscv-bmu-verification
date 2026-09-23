@@ -1,0 +1,46 @@
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+<> User: Trainee11
+
+Host: orionvtech
+
+Report date: Tue 22 Sep 2026 20:31:58 EEST
+
+Report options: -detail -metrics covergroup -out results/reports/functional_coverage_holes.txt -inst *... -uncovered
+
+Coverage database path: /home/Trainee11/bmu-project/BMU-verification/results/coverage/bmu_coverage_closure_test_4/scope/test_sv4
+
+Coverage model files: /home/Trainee11/bmu-project/BMU-verification/results/coverage/bmu_coverage_closure_test_4/scope/icc_0b6d88af_00e4e30d.ucm
+
+Coverage data files: /home/Trainee11/bmu-project/BMU-verification/results/coverage/bmu_coverage_closure_test_4/scope/test_sv4/icc_0b6d88af_00e4e30d.ucd
+
+CCF files:  None
+
+
+Coverage database date: Tue 22 Sep 2026 20:27:32 EEST
+
+*** There were no refinement files applied ***
+
+ <>
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+Coverage Table Legend
+---------------------
+  EXCL       excluded using refinement rule
+  P-EXCL     excluded from parent
+  U-EXCL     excluded and unreachable by IEV
+  T-EXCL     excluded from type
+  S-EXCL     smart excluded using refinement rule
+  EXCL(S)    smart indirect excluded
+  EMPTY      all children are excluded
+  CONST      marked constant during simulation
+  IGN        marked ignored during simulation
+  UNG        marked ungradeable during simulation
+  DES        marked deselected during simulation
+  UNR        marked unreachable by IEV
+  UNG-Expr   expression marked ungradeable during simulation
+  UNG-Toggle toggle marked ungradeable during simulation
+
+
+Uncovered CoverGroup Detail Report, Instance Based
+==================================================
+

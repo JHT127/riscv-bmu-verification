@@ -1,0 +1,68 @@
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+<> User: Trainee11
+
+Host: orionvtech
+
+Report date: Tue 22 Sep 2026 20:31:58 EEST
+
+Report options: -detail -metrics assertion -out results/reports/assertion_coverage.txt -inst bmu_tb_top.dut.protocol_assertions_i -both -allAssertionCounters
+
+Coverage database path: /home/Trainee11/bmu-project/BMU-verification/results/coverage/bmu_coverage_closure_test_4/scope/test_sv4
+
+Coverage model files: /home/Trainee11/bmu-project/BMU-verification/results/coverage/bmu_coverage_closure_test_4/scope/icc_0b6d88af_00e4e30d.ucm
+
+Coverage data files: /home/Trainee11/bmu-project/BMU-verification/results/coverage/bmu_coverage_closure_test_4/scope/test_sv4/icc_0b6d88af_00e4e30d.ucd
+
+CCF files:  None
+
+
+Coverage database date: Tue 22 Sep 2026 20:27:32 EEST
+
+*** There were no refinement files applied ***
+
+ <>
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+Coverage Table Legend
+---------------------
+  EXCL       excluded using refinement rule
+  P-EXCL     excluded from parent
+  U-EXCL     excluded and unreachable by IEV
+  T-EXCL     excluded from type
+  S-EXCL     smart excluded using refinement rule
+  EXCL(S)    smart indirect excluded
+  EMPTY      all children are excluded
+  CONST      marked constant during simulation
+  IGN        marked ignored during simulation
+  UNG        marked ungradeable during simulation
+  DES        marked deselected during simulation
+  UNR        marked unreachable by IEV
+  UNG-Expr   expression marked ungradeable during simulation
+  UNG-Toggle toggle marked ungradeable during simulation
+
+
+Covered+Uncovered Assertion Detail Report, Instance Based
+=========================================================
+
+Instance name: bmu_tb_top.dut.protocol_assertions_i
+Type name: bmu_protocol_assertions
+File name: /home/Trainee11/bmu-project/BMU-verification/tb/assertions/bmu_protocol_assertions.sv
+Number of covered assertions: 11 of 13
+Number of uncovered assertions: 2 of 13
+
+Finished Failed Vacuous  Attempt  Disabled Assertion                      Line  Source Code                    
+---------------------------------------------------------------------------------------------------------------
+1        0      n/a      n/a      n/a      reset_suppresses_error         29    assert property (reset_suppresses_error) 
+9        0      n/a      n/a      n/a      reset_clears_result            35    assert property (reset_clears_result) 
+887      0      n/a      n/a      n/a      result_holds_when_invalid      41    assert property (result_holds_when_invalid) 
+4131     0      n/a      n/a      n/a      valid_result_is_registered     47    assert property (valid_result_is_registered) 
+17       127    n/a      n/a      n/a      one_primary_operation          54    assert property (one_primary_operation) 
+0        1      n/a      n/a      n/a      empty_valid_request            61    assert property (empty_valid_request) 
+16       125    n/a      n/a      n/a      live_error_when_invalid        68    assert property (live_error_when_invalid) 
+2        0      n/a      n/a      n/a      csr_conflict                   75    assert property (csr_conflict) 
+1        0      n/a      n/a      n/a      sh2add_requires_zba            82    assert property (sh2add_requires_zba) 
+2        0      n/a      n/a      n/a      sub_rejects_zba                89    assert property (sub_rejects_zba) 
+1        15     n/a      n/a      n/a      slt_requires_sub               96    assert property (slt_requires_sub) 
+1        15     n/a      n/a      n/a      max_requires_sub               103   assert property (max_requires_sub) 
+0        3      n/a      n/a      n/a      grev_encoding                  110   assert property (grev_encoding) 
+

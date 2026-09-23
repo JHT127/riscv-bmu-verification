@@ -1,0 +1,13 @@
+BMU-BUG-010 — isolated reproducer evidence
+Command: make -C sim run TEST=bmu_bug_010_test SEED=1 VERBOSITY=UVM_LOW
+Source log: results/logs/bmu_bug_010_test_1.log
+Source log SHA256: 2a322172a57b80ed9660e0527786fba6527367c9699d7b07ca25dde15af5104c
+Source/configuration hashes: results/reports/run_manifest.json
+
+SVSEED set from command line: 1
+UVM_ERROR ../tb/include/../env/scoreboard/bmu_scoreboard.sv(81) @ 15: uvm_test_top.environment.scoreboard [bmu_scoreboard] op=BMU_MAX rst_l=1 valid_in=1 scan_mode=0 ap=00800000080 a_in=0000000a b_in=00000014 csr_ren=0 csr_data=00000000 expected result_ff=00000014 error=0, got result_ff=0000000a error=0
+UVM_INFO ../tb/include/../env/scoreboard/bmu_scoreboard.sv(105) @ 16: uvm_test_top.environment.scoreboard [bmu_scoreboard] compared=2 matched=1 mismatched=1
+Number of demoted UVM_ERROR reports  :    0
+Number of caught UVM_ERROR reports   :    0
+UVM_ERROR :    1
+UVM_FATAL :    0

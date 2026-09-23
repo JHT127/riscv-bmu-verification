@@ -1,0 +1,14 @@
+BMU-BUG-003 — isolated reproducer evidence
+Command: make -C sim run TEST=bmu_bug_003_test SEED=1 VERBOSITY=UVM_LOW
+Source log: results/logs/bmu_bug_003_test_1.log
+Source log SHA256: 8e6a3ee2c9000f0a8a311c6affaa194e068f235ee06fc26a2b2157af064fc7e9
+Source/configuration hashes: results/reports/run_manifest.json
+
+SVSEED set from command line: 1
+UVM_ERROR ../tb/include/../env/scoreboard/bmu_scoreboard.sv(81) @ 15: uvm_test_top.environment.scoreboard [bmu_scoreboard] op=BMU_CSR_WRITE rst_l=1 valid_in=1 scan_mode=0 ap=00000000003 a_in=33334444 b_in=11112222 csr_ren=0 csr_data=00000000 expected result_ff=11112222 error=0, got result_ff=33334444 error=0
+UVM_ERROR ../tb/include/../env/scoreboard/bmu_scoreboard.sv(81) @ 25: uvm_test_top.environment.scoreboard [bmu_scoreboard] op=BMU_CSR_WRITE rst_l=1 valid_in=1 scan_mode=0 ap=00000000002 a_in=33334444 b_in=11112222 csr_ren=0 csr_data=00000000 expected result_ff=33334444 error=0, got result_ff=11112222 error=0
+UVM_INFO ../tb/include/../env/scoreboard/bmu_scoreboard.sv(105) @ 26: uvm_test_top.environment.scoreboard [bmu_scoreboard] compared=3 matched=1 mismatched=2
+Number of demoted UVM_ERROR reports  :    0
+Number of caught UVM_ERROR reports   :    0
+UVM_ERROR :    2
+UVM_FATAL :    0
