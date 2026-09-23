@@ -1,45 +1,11 @@
 # Randomization Plan
 
-## Scope
-
-Randomized verification is required for BMU closure. The current implementation
-uses reproducible Xcelium seeds passed through `+ntb_random_seed` and records a
-per-test coverage database under `results/coverage/`.
-
-## Randomized tests
-
-| Test | Stimulus contract | Configuration |
+| Family | Stimulus | Full-regression seeds |
 |---|---|---|
-| `bmu_legal_random_test` | 100 legal transactions across every documented operation, including CSR writes and valid GREV | `regression/configs/legal_random.cfg` |
-| `bmu_corner_random_test` | 100 corner-weighted transactions across every documented operation | `regression/configs/corner_random.cfg` |
-| `bmu_error_random_test` | 100 invalid transactions across multi-primary, CSR, ZBB, CSR mode, ZBA, missing SUB, and invalid GREV classes | `regression/configs/error_random.cfg` |
+| Legal | All 17 specified operation classes; random operands, CSR data, ZBB, SLTU, and CSR write modes | 101, 102, 103 |
+| Corner | Independently selected zero, ones, extrema, one, alternating patterns, and 31 for both operands | 201, 202, 203 |
+| Invalid | Conflicting operations, CSR conflicts, stray modifiers, missing co-requisites, and unsupported GREV encoding | 301, 302, 303 |
 
-Section 8 controls remain excluded from legal and corner randomization. Invalid
-randomization intentionally exercises only documented guard violations and the
-adopted GREV invalid-encoding assumption.
+Each run sends 100 generated transactions following reset. Legal generation selects the operation after operand randomization, supplies required fields, and restricts GREV to encoding 24. Directed sweeps and the guard matrix provide systematic coverage beyond random sampling.
 
-## Baseline seed evidence
-
-| Test | Seed | Samples | Functional coverage | UVM errors | Status |
-|---|---:|---:|---:|---:|---|
-| `bmu_legal_random_test` | 101 | 101 | 66.39% | 45 | Open DUT findings |
-| `bmu_corner_random_test` | 201 | 101 | 57.24% | 18 | Open DUT findings |
-| `bmu_error_random_test` | 301 | 101 | 47.57% | 84 | Open DUT findings |
-
-These are baseline measurements, not closure results. The failures are
-expected to remain visible until the corresponding DUT bugs are fixed or
-accepted as project risk.
-
-## Reproducibility rule
-
-A failure is reproducible only when the test name, seed, simulator version,
-RTL revision, and configuration are preserved. A corrected RTL revision must
-rerun the original seed before a bug disposition changes.
-
-## Full regression baseline
-
-The full configuration was executed on Xcelium `25.03-s006` at repository
-revision `d319eba`. It completed with 2 passing tests and 4 failing tests:
-smoke and timing/reset passed; gap, legal-random, corner-random, and
-error-random failed with documented open DUT findings. The generated summary
-records the exact log and coverage paths under `results/reports/`.
+Xcelium receives `-svseed`. The regression summary verifies that the effective simulator seed matches the requested seed. Repeated seed 901 produced identical stimulus traces; seed 902 produced a different trace. Preserve the effective seed and source hashes when reproducing a failure.

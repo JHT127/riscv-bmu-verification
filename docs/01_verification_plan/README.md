@@ -1,18 +1,19 @@
 # Verification Plan
 
-**File to add here:** `BMU_Verification_Plan.xlsx`
+The supplied [BMU Verification Plan](BMU_Verification_Plan.pdf) is the original planning baseline. The implemented flow follows the same spec-driven UVM approach.
 
-## Recommended sheet structure
+## Strategy
 
-| Sheet | Contents |
+| Area | Verification method |
 |---|---|
-| `Overview` | DUT summary, verification scope, methodology, entry/exit criteria |
-| `Features` | Every feature to verify (one row per operation + per cross-cutting concern: reset, valid_in gating, error conditions, CSR bypass), each mapped to a verification technique (directed / constrained-random / assertion) |
-| `Env Architecture` | Agents, reference model, scoreboard, coverage model summary |
-| `Risk Areas` | Items from the clarifications log that carry verification risk until resolved (e.g. CLARIF-004, CLARIF-005) |
-| `Coverage Plan` | Functional coverage groups/crosses per feature |
-| `Schedule` | Milestones mapped against the test plan |
+| Expected values | Specification expressions; predictor self-test with 865 checks |
+| Legal behavior | Directed examples, boundary sweeps, legal and corner random sequences |
+| Invalid controls | Per-operation forbidden-bit matrix, missing co-requisites, CSR conflicts |
+| Timing and reset | Back-to-back operations, hold, capture-edge check, reset and recovery |
+| Protocol | Bound assertions; see [assertion plan](assertion_plan.md) |
+| Random exploration | Multiple effective seeds; see [randomization plan](randomization_plan.md) |
+| Completion | Test traceability, measured bins, isolated bug evidence, explicit remaining risks |
 
-> Keep this plan a **superset** of the test plan — the verification
-> plan says *what* needs confidence and *how* (coverage-driven), the
-> test plan says *which specific tests* deliver that confidence.
+The monitor sends sampled requests/results to the predictor, scoreboard, and coverage collector. The predictor does not read DUT internals. A scoreboard mismatch requires triage against the specification before being recorded as a DUT bug.
+
+The [test plan](../02_test_plan/BMU_Test_Plan.md) identifies executable scenarios. The [final report](../08_signoff/BMU_Signoff_Report.md) records the submission result. Open DUT bugs are expected for this training exercise and remain visible.

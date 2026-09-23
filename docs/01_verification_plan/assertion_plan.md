@@ -1,51 +1,25 @@
-# BMU Assertion Plan
+# Assertion Plan
 
-## Scope
-
-The protocol assertion module is
-`tb/assertions/bmu_protocol_assertions.sv`. It is compiled and bound through
-all simulator filelists. Assertions check interface-visible behavior and the
-project-adopted specification assumptions; they do not verify unsupported
-Section 8 controls.
-
-## Implemented properties
+Assertions are bound to the DUT through the Xcelium filelist.
 
 | Property | Requirement |
 |---|---|
-| `reset_suppresses_error` | Reset forces `error=0`. |
-| `reset_clears_result` | Synchronous reset clears `result_ff`. |
-| `result_holds_when_invalid` | `result_ff` holds when `valid_in=0`. |
-| `valid_result_is_registered` | A valid transaction does not leave an unknown registered result. |
-| `live_error_when_invalid` | Invalid controls still update `error` while `valid_in=0`. |
-| `one_primary_operation` | Multiple primary controls assert `error`. |
-| `empty_valid_request` | An empty valid request asserts `error`. |
-| `csr_conflict` | CSR read combined with a primary operation asserts `error`. |
-| `sh2add_requires_zba` | SH2ADD without ZBA asserts `error`. |
-| `sub_rejects_zba` | SUB with ZBA asserts `error`. |
-| `slt_requires_sub` | SLT without SUB asserts `error`. |
-| `max_requires_sub` | MAX without SUB asserts `error`. |
-| `grev_encoding` | GREV encoding other than 24 asserts `error`. |
+| `reset_suppresses_error` | Error is zero under reset |
+| `reset_clears_result` | Reset clears the registered result |
+| `result_holds_when_invalid` | Result remains stable while valid is low |
+| `valid_result_is_registered` | A valid capture produces a known result |
+| `one_primary_operation` | Conflicting primary controls assert error |
+| `empty_valid_request` | An empty valid request asserts error |
+| `live_error_when_invalid` | Invalid controls update error even while valid is low |
+| `csr_conflict` | CSR read plus any control field asserts error |
+| `sh2add_requires_zba` | SH2ADD requires ZBA |
+| `sub_rejects_zba` | SUB with ZBA is invalid |
+| `slt_requires_sub` | SLT requires SUB |
+| `max_requires_sub` | MAX requires SUB |
+| `grev_encoding` | Non-24 GREV encoding is invalid under CLARIF-004 |
 
-## Validation evidence
+SUB is counted independently only when SLT/MAX are absent. Mode bits are not additional primary operations. Exact data and full forbidden-field masks are checked by the predictor/scoreboard.
 
-- `bmu_timing_reset_test`, seed 3: assertions compiled and ran with zero
-  UVM errors/fatals and 15 scoreboard matches.
-- `bmu_gap_checks_test`, seed 2: assertions detected the empty-request,
-  SLT-without-SUB, and MAX-without-SUB violations on the current RTL. The
-  corresponding scoreboard failures remain open DUT findings.
-- Assertion failures are not waived merely because the DUT is known to be
-  defective. They remain visible until a corrected RTL revision passes the
-  original assertion and directed reproducer.
+The latency sequence separately checks that the result does not change before the capture edge. The “registered” assertion alone only checks for known data.
 
-## Assumption boundary
-
-GREV invalid encoding and CSR conflict scope follow the conservative project
-assumptions recorded in the clarification log. No assertion was added for
-unsupported Section 8 fields or an unconfirmed scan-mode functional effect.
-
-## Closure rule
-
-A property is closed only after the relevant directed tests and regression pass
-on the same RTL revision. A project-risk acceptance may document an ambiguity,
-but it cannot waive an assertion failure that contradicts the adopted expected
-behavior.
+Native assertion errors fail the runner even if the UVM error count is zero. [Retained assertion evidence](../../results/reports/assertion_coverage.txt) reports tool counters; a coverage grade is not an assertion pass rate.

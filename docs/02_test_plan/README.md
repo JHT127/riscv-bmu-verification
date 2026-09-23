@@ -1,35 +1,5 @@
 # Test Plan
 
-The reviewed baseline and proposed additions are documented in
-[`test_plan_review.md`](test_plan_review.md).
+[BMU_Test_Plan.md](BMU_Test_Plan.md) is the current executable plan. [traceability_matrix.md](traceability_matrix.md) maps the retained gap IDs and bug reproducers to tests.
 
-The implementation-ready Markdown handoff is
-[`BMU_Test_Plan.md`](BMU_Test_Plan.md). It preserves the 64-case baseline,
-defines the 13 required additions, and records the assumptions and evidence
-needed before coverage reporting.
-
-**File to add here:** `BMU_Test_Plan.xlsx`
-
-## Recommended sheet structure
-
-| Column | Purpose |
-|---|---|
-| `Test ID` | e.g. `TC_OR_001` |
-| `Operation` | Which BMU operation family this exercises |
-| `Description` | What scenario is being tested |
-| `Stimulus` | Control fields + operand values (or "constrained-random, N iterations") |
-| `Expected Result` | From the reference model, in `result` / `error` terms |
-| `Coverage Bin(s)` | Which functional coverage bin(s) this closes |
-| `Linked Verification Plan Feature` | Traceability back to `01_verification_plan` |
-| `Status` | Not started / In progress / Passing / Failing / Blocked |
-| `Linked Bug` | Bug ID if a failure was filed |
-
-## Suggested test categories (mirrors `tb/sequences/`)
-
-1. Directed valid-operation tests (one per instruction, nominal values)
-2. Directed corner-case tests (all-zero, all-one, max shift amount, sign boundary, CTZ(0)=32, etc.)
-3. Directed error/guard-violation tests (conflicting `ap.*` fields, CSR conflict, Zba misuse)
-4. `valid_in` gating tests (hold behavior, back-to-back valid cycles, valid_in toggling mid-stream)
-5. Reset tests (reset during a pending result, reset with `valid_in` held high)
-6. CSR bypass read/write tests (including the pure-bypass-read case from CLARIF-005)
-7. Constrained-random regression (wide operand coverage, all operation fields, weighted toward corner cases)
+The Excel workbook and organized PDFs in this directory are the supplied planning baseline. Current execution status comes from the [regression summary](../../results/reports/regression_summary.csv), not from the original workbook status columns.
