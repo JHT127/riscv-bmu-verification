@@ -1,14 +1,18 @@
 # Regression
 
-- `configs/` — regression suite definitions consumed by
-  `sim/scripts/run_regression.sh`. Add one config per suite (e.g.
-  `nightly.cfg`, `directed.cfg`, `gaps.cfg`, `legal_random.cfg`,
-  `corner_random.cfg`, `error_random.cfg`, and `full.cfg`).
-- `logs/` — raw per-run logs (gitignored; summaries go to
-  `results/reports/` instead, which *is* versioned).
+Each configuration contains `<test_name> <seed>` pairs. Blank lines and `#` comments are allowed.
 
-The current nightly configuration contains only the concrete smoke test,
-`bmu_or_valid_test`, at two seeds. The regression wrapper is structurally
-ready, but it is blocked until `sim/Makefile` has real simulator compile/run
-commands. The single-test wrapper rejects the current TODO placeholders so a
-dry run cannot be recorded as a passing regression.
+| Configuration | Purpose |
+|---|---|
+| `full.cfg` | Default 26-run submission regression |
+| `nightly.cfg` | Short legal, timing, guard, and random regression |
+| `bugs.cfg` | Nine isolated DUT bug reproducers |
+| `directed.cfg`, `gaps.cfg` | Focused directed/gap tests |
+| `legal_random.cfg`, `corner_random.cfg`, `error_random.cfg` | Focused random families |
+
+```bash
+make -C sim regression
+make -C sim regression CONFIG=../regression/configs/bugs.cfg
+```
+
+The full regression returns nonzero on the original buggy DUT. Review individual test status, scoreboard transactions, and assertion failures. Current submission results are retained in [regression_summary.csv](../results/reports/regression_summary.csv); effective seeds and source/log hashes are checked and recorded.

@@ -1,9 +1,6 @@
 # Utility Scripts
 
-Misc helper scripts that don't belong under `sim/scripts/` (which is
-specifically for compile/run/regression). Examples of what might live
-here as the project grows:
+- `lint_docs.sh` — Markdown lint and approved specification/RTL file checks.
+- `generate_diagrams.py` — regenerate the existing DOT/PNG architecture diagrams using Graphviz.
 
-- Log-parsing helpers (extract pass/fail summary from raw sim logs)
-- Coverage report post-processing
-- Bug-log <-> ClickUp sync helper (if ever automated)
+Simulation, regression, evidence extraction, and coverage helpers are under [sim/scripts](../sim/scripts).

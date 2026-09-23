@@ -1,9 +1,0 @@
-Bug_ID,Severity,Area,Spec_Requirement,Reproducer,Expected_Result,Actual_Result,Evidence,Status,Closure_Gate
-BMU-BUG-001,Major,CPOP,Count all 32 bits of a_in,TC_CPOP_004 with a_in=0xFFFF0000,"result=32, error=0",partial or wrong count,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-002,Major,PACK,"result = {b_in[15:0], a_in[15:0]}",ap.pack=1; a_in=0x12345678; b_in=0x9ABCDEF0,spec-defined half-word ordering,reversed order,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-003,Major,CSR write source,csr_imm selects b_in; otherwise selects a_in,ap.csr_write=1; ap.csr_imm=1; a_in=0x33334444; b_in=0x11112222,result=b_in,wrong source selected,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-005,Major,GREV,GREV byte ordering for b_in[4:0]=24,ap.grev=1; b_in=24; a_in=0x12345678,byte-reversed output,byte ordering incorrect,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-006,Critical,Invalid controls,Exactly one valid primary op; conflicts must error,empty request; stray zbb; stray zba; multi-op conflicts,"result=0, error=1",invalid paths accepted,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-007,Major,SLT/MAX co-requisite,slt/max require ap.sub=1,"ap.slt=1, ap.sub=0; ap.max=1, ap.sub=0","result=0, error=1",operation proceeds with no error,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-008,Major,GREV invalid encoding,invalid GREV encodings must assert error,ap.grev=1; b_in[4:0]=5,"result=0, error=1",undefined path not rejected,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest
-BMU-BUG-009,Major,CTZ,CTZ(0)=32; trailing-zero count across all bits,a_in = 1 << n for n=0..31,return n; zero returns 32,mismatch at one-hot positions,results/logs/bmu_gap_checks_test_1.log,Open,reproducer + retest

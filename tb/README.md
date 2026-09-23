@@ -1,27 +1,15 @@
-# Testbench (`tb/`)
+# UVM Testbench
 
-UVM class-based verification environment. See
-[`../docs/06_architecture_diagrams/`](../docs/06_architecture_diagrams)
-for the full architecture diagram once added.
+## Components
 
-| Folder | Role |
-|---|---|
-| `top/` | Top-level TB module: clock/reset generation, DUT + interface instantiation, UVM run |
-| `interface/` | SystemVerilog interface(s) connecting the TB to DUT ports |
-| `include/` | Global macros/defines (`uvm_def.sv`, etc.) |
-| `packages/` | UVM package(s) — import order and compile glue |
-| `env/agents/bmu_agent/` | Driver, monitor, sequencer for the BMU pin-level interface |
-| `env/reference_model/` | Independent, spec-driven golden model (see repo root README — built from spec, not RTL) |
-| `env/scoreboard/` | Compares DUT transactions against the reference model |
-| `env/coverage/` | Functional coverage collector(s) |
-| `sequences/*` | One folder per operation family — keeps directed + randomized stimulus organized the same way the spec is organized |
-| `tests/` | Top-level UVM test classes (assemble env + sequences + config) |
+- `bmu_sequence_item`: request controls, operands, CSR data, and sampled outputs.
+- `bmu_driver`: drives requests on the falling edge through the interface clocking block.
+- `bmu_monitor`: samples requests and post-update outputs on the rising edge.
+- `bmu_reference_model`: specification expressions and stateful result hold/reset.
+- `bmu_scoreboard` / `bmu_checker`: compare result/error, report complete mismatches, and check pending/no-stimulus conditions.
+- `bmu_coverage`: stimulus-based functional bins and crosses.
+- `bmu_protocol_assertions`: reset, hold, and guard properties bound to the DUT.
 
-## Adding a new sequence
+The package includes family sequences, systematic guard/boundary suites, random tests, isolated bug tests, and the predictor self-test. The [test plan](../docs/02_test_plan/BMU_Test_Plan.md) records supported behavior and executable scenarios.
 
-1. Create it under the matching `sequences/<family>/` folder.
-2. Extend the base sequence in `sequences/base/`.
-3. Reference it from a test in `tests/`.
-4. Add its coverage goal to the test plan
-   (`docs/02_test_plan/`) and, if it closes a new bin, note it in
-   `env/coverage/`.
+The complete control struct remains driveable for guard testing. Standalone behavior is predicted only for specified operations. The delivered RTL is not used to derive expected values.

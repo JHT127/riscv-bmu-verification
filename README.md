@@ -2,282 +2,108 @@
 
 <div align="center">
 
-![Status](https://img.shields.io/badge/status-verification%20in%20progress-yellow)
-![Methodology](https://img.shields.io/badge/UVM-based%20verification-blue)
-![Simulator](https://img.shields.io/badge/xcelium-supported-green)
-![License](https://img.shields.io/badge/license-portfolio-lightgrey)
+![Status](https://img.shields.io/badge/status-training%20submission-blue)
+![Methodology](https://img.shields.io/badge/Methodology-UVM-blue)
+![Simulator](https://img.shields.io/badge/Simulator-Xcelium-green)
 
 </div>
 
-A polished verification package for a RISC-V Bit Manipulation Unit (BMU), built to validate the delivered RTL against the frozen specification, exercise real test scenarios, and document open functional issues with clear evidence.
+A UVM verification project for the delivered RISC-V Bit Manipulation Unit (BMU). The training objective is to find, reproduce, and document RTL bugs against BMU Specification v1.2.
 
-This project is aimed at demonstrating professional design verification practice: spec-driven testing, independent reference model checks, assertion-based validation, gap tracking, and traceable bug documentation.
-
----
-
-## Index
-
-1. [Executive summary](#1-executive-summary)
-2. [What this project verifies](#2-what-this-project-verifies)
-3. [Verification strategy](#3-verification-strategy)
-4. [Test architecture](#4-test-architecture)
-5. [Assertion and bug story](#5-assertion-and-bug-story)
-6. [Repository map](#6-repository-map)
-7. [How to run the checks](#7-how-to-run-the-checks)
-8. [Evidence and status](#8-evidence-and-status)
-9. [License and notes](#9-license-and-notes)
+The delivered DUT is preserved. The submission contains nine open DUT findings, isolated reproducers, directed and random tests, assertions, and measured coverage.
 
 ---
 
-## 1. Executive summary
+## 1. Verification scope
 
-This repo is a complete verification project for a BMU RTL snapshot. It contains:
+- OR / XOR, including ZBB inversion
+- SRL / SRA / ROR and BINV
+- SH2ADD, SUB, SLT / SLTU, and signed MAX
+- CTZ, CPOP, and SEXT.B
+- PACK and the specified GREV byte-reverse encoding
+- CSR bypass read and both write-data modes
+- Reset, result capture, valid hold, live error, and forbidden control combinations
 
-- a real UVM testbench
-- a spec-driven reference model and scoreboard
-- directed and constrained-random tests
-- protocol assertions for guard and validity conditions
-- a structured bug log with runtime-confirmed defects
-- documentation for verification planning, testing, and findings
+Standalone operations without a behavior table in the supplied specification are outside the functional scope. Their control bits are still exercised as forbidden fields of specified operations. Timing/scan, GREV invalid encodings, and CSR conflict assumptions are recorded in the [clarification log](docs/03_clarifications_log/spec_clarifications_log.md).
 
-The important distinction is that the repository preserves the original delivered DUT and documents the issues found against it. It does not claim the original RTL is production-ready. The purpose is to demonstrate high-quality verification discipline and evidence capture.
-
----
-
-## 2. What this project verifies
-
-The BMU covers key bit-manipulation behaviors from the RISC-V BitManip space, including:
-
-- Zbb: CLZ, CTZ, CPOP, MIN, MAX, SEXT.B, SEXT.H, ROL, ROR
-- Zbs: BSET, BCLR, BINV, BEXT
-- Zbp: PACK, PACKU, PACKH, GREV, and GREV subset validation
-- Zba: SH1ADD, SH2ADD, SH3ADD
-- CSR read/write bypass behavior
-- logic operations and shift variants
-- reset, valid gating, and invalid-control rejection
-
-The verification scope is deliberately broad enough to cover legal functionality as well as guard conditions and illegal control combinations.
-
----
-
-## 3. Verification strategy
-
-The verification effort follows a standard, credible UVM flow:
-
-- spec baseline is treated as the expected behavior authority
-- the RTL under test is treated as a design input, not a source of truth
-- the reference model independently predicts expected outputs
-- the scoreboard compares actual DUT results to the reference model
-- directed tests target known risky behaviors and corner cases
-- constrained-random tests expand behavioral coverage over legal and illegal conditions
-- assertions monitor protocol-level correctness in real time
-
-This provides both functional confidence and traceability from a failing test to a specific bug declaration or guard violation.
-
----
-
-## 4. Test architecture
-
-The project includes a full UVM testbench structure under `tb/`.
-
-### Core test categories
-
-- base and smoke tests
-- directed behavior tests
-- gap-check reproducer tests
-- gap-plan and custom sweep tests
-- random legal and illegal cases
-- coverage-closure tests
-
-### Real tests present in the repo
-
-The repo contains actual test files under `tb/tests/`, including:
-
-- `bmu_base_test.sv`
-- `bmu_gap_checks_test.sv`
-- `bmu_gap_plan_tests.sv`
-- `bmu_directed_suite_tests.sv`
-- `bmu_or_valid_test.sv`
-- `bmu_random_tests.sv`
-- `bmu_coverage_closure_test.sv`
-- `bmu_coverage_max_test.sv`
-
-These are not placeholders; they are real test classes wired into the UVM package and simulator flow.
-
-### What the tests do
-
-- verify valid operations match ref-model expectations
-- exercise corner cases like zero, all-ones, one-hot patterns, and bit-position sweeps
-- ensure invalid combinations trigger error behavior
-- confirm reset and hold semantics
-- validate the regression and bug-reproduction flow end-to-end
-
----
-
-## 5. Assertion and bug story
-
-### Assertion story
-
-The repository includes assertion-based checks in `tb/assertions/bmu_protocol_assertions.sv` and the fix-variant companion file.
-
-These assertions validate:
-
-- reset clears error and result state
-- `result_ff` holds when `valid_in` is low
-- illegal control combinations are rejected
-- `SLT` and `MAX` require the `SUB` co-requisite
-- GREV invalid encodings must fail
-- CSR and operation conflicts are caught
-- empty requests are flagged as invalid
-
-Assertions are a key part of the verification story because they expose protocol-level violations even before the scoreboard catches a mismatch.
-
-### Bug story
-
-The project contains a real bug log showing open runtime-confirmed issues. The bug record tracks issues such as:
-
-- CPOP width/count mismatch
-- PACK ordering error
-- CSR write source selection issue
-- GREV byte-ordering bug
-- invalid control handling problems
-- SLT/MAX guard omission
-- GREV invalid encoding acceptance
-- CTZ issue for one-hot positions
-
-Those defects are recorded as Open and remain traceable to the test evidence and logs in the project.
-
-The repo intentionally keeps the original DUT and the bug findings separate from any fix investigation work, which is important for honest engineering documentation.
-
----
-
-## 6. Repository map
+## 2. Test architecture
 
 ```text
-BMU-verification/
-├── README.md
-├── LICENSE
-├── CHANGELOG.md
-├── docs/
-│   ├── 00_spec/
-│   ├── 01_verification_plan/
-│   ├── 02_test_plan/
-│   ├── 03_clarifications_log/
-│   ├── 04_bug_reports/
-│   ├── 06_architecture_diagrams/
-│   ├── 07_coverage_reports/
-│   └── 08_signoff/
-├── rtl/
-│   ├── Bit_Manipulation_Unit.sv
-│   ├── Bit_Manipulation_Unit_fix_v1.sv
-│   ├── rtl_lib.sv
-│   ├── rtl_lib_fix_v1.sv
-│   ├── rtl_def.sv
-│   ├── rtl_param.sv
-│   └── ...
-├── tb/
-│   ├── assertions/
-│   ├── env/
-│   ├── include/
-│   ├── interface/
-│   ├── packages/
-│   ├── sequences/
-│   ├── tests/
-│   └── top/
-├── sim/
-│   ├── Makefile
-│   ├── filelists/
-│   └── scripts/
-├── regression/
-├── results/
-├── waveforms/
-├── scripts/
-├── xcelium.d/
-└── .gitignore
+sequence -> sequencer -> driver -> interface -> DUT
+                                     |
+                                  monitor
+                                  /     \
+                        reference model  actual
+                                  \     /
+                                 scoreboard
+                                     |
+                                  checker
 ```
 
-This structure separates:
+The monitor also feeds functional coverage. The predictor uses specification expressions and explicit control masks. Its self-test checks 865 legal, illegal, boundary, and state cases. Assertions check reset, hold, and control guards; the scoreboard compares both `result_ff` and `error` and records complete failing transactions.
 
-- design input and preserved original DUT
-- verification environment and testbench
-- documentation and project plan
-- generated evidence and logs
-- isolated fix-version work
+The expanded suite includes every shift/index position, CTZ/CPOP counts 0–32, independent operand corners, signed comparisons, byte-extension boundaries, a forbidden-control matrix, and multiple effective random seeds.
 
----
+## 3. Run the verification
 
-## 7. How to run the checks
+Prerequisites: Cadence Xcelium 25.03-s006 with UVM 1.1d and a working license, GNU Make, Bash, and Python 3.6 or later. IMC 25.09-a020 is used for coverage extraction.
 
-### Prerequisites
-
-- Cadence Xcelium installed and available in PATH
-- a Linux shell environment
-- repo access via Git
-
-### Standard compile and smoke run
+Run from the repository root:
 
 ```bash
-cd BMU-verification/sim
-make TEST=bmu_or_valid_test SEED=1 VERBOSITY=UVM_MEDIUM
+# Predictor self-check and passing interface checks
+make -C sim run TEST=bmu_model_self_test SEED=1
+make -C sim run TEST=bmu_or_valid_test SEED=1
+make -C sim run TEST=bmu_timing_reset_test SEED=1
+
+# Full regression, including nine isolated bug reproducers
+make -C sim regression
+
+# Reproduce the MAX data-selection bug
+make -C sim run TEST=bmu_bug_010_test SEED=1
+
+# Capture waveforms
+make -C sim waves TEST=bmu_or_valid_test SEED=1
+
+# Extract coverage after the full regression
+imc -exec sim/scripts/report_coverage.tcl
 ```
 
-### Directed bug reproducer
+**The full regression returns a failure status on the original buggy DUT.** Errors are retained, not suppressed or converted to passes. Xcelium uses `-svseed`; the report records the effective seed. VCS and Questa are not supported by the Makefile.
 
-```bash
-cd BMU-verification/sim
-make TEST=bmu_gap_checks_test SEED=1 VERBOSITY=UVM_LOW
+## 4. Submission results
+
+The 22 September 2026 regression completed 26 runs: three passed and 23 reported DUT failures, with zero UVM fatals. The predictor self-test, OR smoke, and timing/reset tests passed.
+
+| Measurement | Result |
+|---|---:|
+| Functional coverage | 100.00% — 562/562 bins |
+| Coverage-run comparisons | 5,036 |
+| Coverage-run scoreboard mismatches | 1,548 |
+| DUT hierarchy block coverage | 100.00% — 16/16 |
+| DUT hierarchy scored expression coverage | 100.00% — 3/3 |
+| DUT hierarchy toggle coverage | 65.01% — 1,230/1,892 |
+| Open DUT bugs | 9 |
+
+Functional coverage measures exercised scenarios, not correct DUT behavior. Code coverage uses the default Xcelium instrumentation and is scoped to `bmu_tb_top.dut`; it is not a claim of complete expression, branch, or design verification.
+
+- [Bug log and isolated evidence](docs/04_bug_reports/BMU_Bug_Log.md)
+- [Test plan](docs/02_test_plan/BMU_Test_Plan.md)
+- [Coverage summary](docs/07_coverage_reports/final_coverage_summary.md)
+- [Regression results](results/reports/regression_summary.csv)
+- [Source and log hashes](results/reports/run_manifest.json)
+- [Training verification report](docs/08_signoff/BMU_Signoff_Report.md)
+
+## 5. Repository map
+
+```text
+rtl/         delivered DUT and separate exploratory fix variant
+tb/         UVM environment, assertions, sequences, and tests
+sim/         Xcelium flow and result/coverage helpers
+regression/  full, short, random, and bug-reproducer configurations
+results/     retained evidence and measured reports
+docs/       specification, plans, clarifications, bugs, and final report
+waveforms/   generated waveform databases (ignored by Git)
 ```
 
-### Regression entry point
-
-```bash
-cd BMU-verification/sim
-make regression
-```
-
-### Summary command
-
-```bash
-echo "=== BMU repo summary ===" && \
-git --no-pager status --short --branch && \
-find tb/tests -maxdepth 1 -type f -name "*.sv" | sort && \
-find results/logs -maxdepth 1 -type f | sort | tail -n 12
-```
-
----
-
-## 8. Evidence and status
-
-The repository keeps runtime evidence under `results/` and `waveforms/` so a reviewer can see the real failure signatures and not just narrative conclusions.
-
-### Current project stance
-
-- the delivered DUT is preserved and documented as the original RTL snapshot
-- the verification flow is active and real
-- known issues are tracked as Open in the bug log
-- fix-version work is isolated separately from the original RTL
-- the repo is structured for professional review
-
-This is a valid engineering position for a training and verification project: honest evidence, traceable findings, and clear separation of original and repaired work.
-
----
-
-## 9. License and notes
-
-See [LICENSE](LICENSE).
-
-This project is designed for verification and portfolio use. It is not a vendor sign-off or production release artifact, and it intentionally keeps the original RTL and the fixed investigation separate.
-
----
-
-## 10. Final note
-
-This repository is a strong example of professional verification engineering because it shows the full story:
-
-- what was intended
-- what was tested
-- what was observed
-- what remains open
-- where the evidence is kept
-
-That is the foundation of a credible, presentable verification project.
+The default flow uses the original DUT. The existing `fix_v1` files are exploratory and are not used as submission evidence. See [LICENSE](LICENSE).

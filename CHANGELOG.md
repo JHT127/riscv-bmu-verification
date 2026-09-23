@@ -1,28 +1,28 @@
 # Changelog
 
-All notable changes to this project are documented here.
-Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-
-## [Unreleased]
+## [Submission] — 2026-09-22
 
 ### Added
 
-- Initial professional repository scaffold: docs structure, UVM
-  testbench directory layout, sim/regression/results/waveforms folders.
-- Spec clarifications log (`docs/03_clarifications_log/`) seeded with
-  the first five clarification items raised during spec review.
-- `.gitignore` tuned for UVM/simulator artifacts and confidential
-  spec/RTL exclusion.
-- Issue templates for bug reports and TB feature requests.
-- Markdown-lint CI workflow.
+- Predictor self-test with 865 specification and guard checks.
+- Systematic forbidden-control matrix, boundary sweeps, and isolated bug reproducers.
+- Complete failing transactions, comparison totals, effective seed checks, and source/log hashes.
+- Measured functional, DUT code, and assertion coverage reports.
+- MAX data-selection finding, BMU-BUG-010.
 
-### Planned
+### Fixed
 
-- Verification plan (Excel) — `docs/01_verification_plan/`
-- Test plan (Excel) — `docs/02_test_plan/`
-- Reference model implementation — `tb/env/reference_model/`
-- Directed sequences per operation family
-- Functional coverage model
-- First regression run + coverage report
-- Bug log population
-- Final verification report
+- ZBB/ZBA mode classification and complete forbidden-field checks.
+- SLT/MAX co-requisite assertions.
+- Xcelium seed selection and native assertion/incomplete-run failure detection.
+- Coverage classification, individual shift/count bins, and byte-sign coverage.
+- Reset recovery and capture-edge checks.
+- Incorrect CPOP/GREV bug examples and stale coverage claims.
+
+### Removed
+
+- Slides and their generator/assets.
+- Duplicate handoff documents and stale result summaries.
+- Unsupported-operation coverage-max stimulus and broken duplicate debug helpers.
+
+The original delivered DUT remains unchanged. All confirmed DUT defects remain open.
