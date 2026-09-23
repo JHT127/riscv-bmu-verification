@@ -67,9 +67,9 @@ Impact on reference model.**
   the safe invalid-control interpretation: GREV with `b_in[4:0] != 24` is
   `result=0`, `error=1`. This remains an accepted project risk, not a
   design-team confirmation.
-- **Impact on reference model:** Currently modeled as `result=0`,
-  `error=0` pending confirmation. **Flagged as a risk** — will require
-  a reference-model + testcase update if resolved the other way.
+- **Impact on reference model:** Modeled as `result=0`, `error=1` under the adopted
+  assumption. The predictor, tests, coverage, and BUG-008 use this rule;
+  a later design-owner clarification requires updating them together.
 
 ## CLARIF-005 — AND vs. OR scope in CSR-conflict invalid conditions
 

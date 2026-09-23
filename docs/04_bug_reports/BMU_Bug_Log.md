@@ -1,161 +1,118 @@
 # BMU Bug Log
 
-## 1. Purpose and rules
+## 1. Baseline and evidence
 
-This log records specification-based DUT risks for BMU Specification v1.2.
-Expected behavior comes from the specification and the independent reference
-model. RTL inspection identifies candidates; it does not close a bug. The
-verification environment must reproduce a candidate before it is reported as
-runtime-confirmed.
+All active findings below were reproduced on the original delivered DUT with Xcelium 25.03-s006, effective seed 1, on 22 September 2026. [run_manifest.json](../../results/reports/run_manifest.json) records source/configuration and log hashes. No delivered RTL behavior was changed.
 
-The verification team must not patch the delivered RTL locally to close a
-finding. Every confirmed finding requires a failing reproducer, scoreboard
-evidence, the RTL revision, and a retest result after the design fix.
+Each `bmu_bug_NNN_test` resets the DUT, then drives one isolated reproducer (two transactions for BUG-003 and BUG-007). Unless stated otherwise: `rst_l=1`, `valid_in=1`, `scan_mode=0`, `csr_ren_in=0`, `csr_rddata_in=0`, and every unlisted control/operand is zero. The first failing capture is at 15 ns; a second transaction is at 25 ns.
 
-## 2. Status and severity rules
+Expected values come from BMU Specification v1.2. The predictor passes 865 separate self-checks. Evidence extracts retain complete controls, operands, expected/actual result and error, timestamps, effective seed, and source-log hash. Full logs can be regenerated with the command in each extract.
 
-Status meanings:
-
-- `Open - static finding`: implementation evidence exists; runtime reproduction is still required.
-- `Open - runtime confirmed`: the scoreboard reproduced a specification mismatch on the delivered DUT.
-- `Withdrawn`: the original claim is not supported by the current RTL or was a documentation error.
-- `Accepted`: written design/specification approval accepts the behavior.
-- `Accepted project risk`: the design team is unavailable; the behavior is frozen under the safest documented interpretation and recorded as residual risk.
-- `Fixed`: a new DUT revision passes the reproducer and relevant regression.
-
-Severity meanings:
-
-- `Critical`: blocks sign-off or permits broad invalid behavior.
-- `Major`: incorrect result or error behavior under plausible conditions.
-- `Minor`: limited impact or low-risk boundary condition.
-
-## 3. Summary
+## 2. Summary
 
 | ID | Severity | Area | Reproducer | Status |
 |---|---|---|---|---|
-| `BMU-BUG-001` | Major | CPOP width | `TC_CPOP_004` | Open - runtime confirmed |
-| `BMU-BUG-002` | Major | PACK ordering | `TC_PACK_001` | Open - runtime confirmed |
-| `BMU-BUG-003` | Major | CSR write source | `TC_CSR_002`, `TC_CSR_003` | Open - runtime confirmed |
-| `BMU-BUG-005` | Major | GREV byte ordering | `TC_GREV_001` | Open - runtime confirmed |
-| `BMU-BUG-006` | Critical | Invalid/conflicting controls | `TC_GUARD_001` through `TC_GUARD_004` | Open - runtime confirmed |
-| `BMU-BUG-007` | Major | SLT/MAX co-requisites | `TC_SLT_005`, `TC_MAX_005` | Open - runtime confirmed |
-| `BMU-BUG-008` | Major | GREV undefined encoding | `TC_GREV_002` | Open - runtime confirmed; assumption-tagged |
-| `BMU-BUG-009` | Major | CTZ bit reversal | `TC_CTZ_005` | Open - runtime confirmed |
+| BMU-BUG-001 | Major | CPOP ignores the upper operand half | `bmu_bug_001_test` | Open — runtime confirmed |
+| BMU-BUG-002 | Major | PACK reverses the halfword order | `bmu_bug_002_test` | Open — runtime confirmed |
+| BMU-BUG-003 | Major | CSR write selects the wrong source | `bmu_bug_003_test` | Open — runtime confirmed |
+| BMU-BUG-005 | Major | GREV byte ordering is incorrect | `bmu_bug_005_test` | Open — runtime confirmed |
+| BMU-BUG-006 | Critical | Invalid controls are accepted | `bmu_bug_006_test` | Open — runtime confirmed |
+| BMU-BUG-007 | Major | SLT/MAX do not enforce the SUB co-requisite | `bmu_bug_007_test` | Open — runtime confirmed |
+| BMU-BUG-008 | Major | Undefined GREV encoding does not assert error | `bmu_bug_008_test` | Open — runtime confirmed; assumption-tagged |
+| BMU-BUG-009 | Major | CTZ bit reversal produces the wrong count | `bmu_bug_009_test` | Open — runtime confirmed |
+| BMU-BUG-010 | Major | MAX selects the smaller operand | `bmu_bug_010_test` | Open — runtime confirmed |
 
-## 4. Current runtime evidence
+BMU-BUG-004, the earlier CSR-bypass claim, remains withdrawn; the legal bypass check passes. The ID is not reused. Design fixes and design-owner dispositions are pending for all active findings.
 
-The current repository state confirms the following runtime evidence on Xcelium `25.03-s006`:
+## 3. Detailed findings
 
-| Run | Seed | Result | Evidence |
-|---|---:|---|---|
-| `bmu_gap_checks_test` | 1 | 131 matches, 41 mismatches, 0 fatals | `results/logs/bmu_gap_checks_test_1.log` |
-| `bmu_nominal_directed_test` | 1 | 7 mismatches, 0 fatals | `results/logs/bmu_nominal_directed_test_1.log` |
-| `bmu_error_directed_test` | 1 | 7 mismatches, 0 fatals | `results/logs/bmu_error_directed_test_1.log` |
-| `bmu_legal_random_test` | 101 | 45 mismatches, 0 fatals | `results/logs/bmu_legal_random_test_101.log` |
-| `bmu_corner_random_test` | 201 | 18 mismatches, 0 fatals | `results/logs/bmu_corner_random_test_201.log` |
-| `bmu_error_random_test` | 301 | 84 mismatches, 0 fatals | `results/logs/bmu_error_random_test_301.log` |
+### BMU-BUG-001: CPOP ignores the upper operand half
 
-Primary evidence references used for all open defects are:
+- **Specification:** v1.2 section 6.5.2.
+- **Stimulus:** `cpop=1`, `a=0xFFFF0000`.
+- **Expected result, error:** `16`, `0`.
+- **Observed result, error:** `0`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-001.txt).
+- **Impact and retest:** The population-count loop stops at bit 15. Upper-half set bits do not contribute. Retest zero, all ones, both halves, and count/position sweeps.
 
-- `results/logs/bmu_gap_checks_test_1.log` — scoreboard mismatches and assertion failures for the gap-validation reproducer
-- `tb/env/scoreboard/bmu_scoreboard.sv` — DUT-vs-reference comparison and mismatch reporting
-- `tb/assertions/bmu_protocol_assertions.sv` — assertion-based invalid-control and co-requisite checks
-- `waveforms/` — no retained `.vcd`, `.fsdb`, or `.wlf` files are checked into this repo; the available evidence is log + scoreboard output only
+### BMU-BUG-002: PACK reverses the halfword order
 
-These results are evidence of open DUT defects, not proof of correct RTL behavior. The failing logs must be retained and associated with the corresponding bug records until the RTL is fixed or formally accepted.
+- **Specification:** v1.2 section 6.8.1.
+- **Stimulus:** `pack=1`, `a=0x00001234`, `b=0x00005678`.
+- **Expected result, error:** `0x56781234`, `0`.
+- **Observed result, error:** `0x12345678`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-002.txt).
+- **Impact and retest:** The RTL concatenates A before B. The specification requires `{b[15:0], a[15:0]}`. Retest distinct, equal, zero, and discarded-upper-half patterns.
 
-## 5. Detailed findings
+### BMU-BUG-003: CSR write selects the wrong source
 
-### BMU-BUG-001: CPOP ignores bits 16 through 31
+- **Specification:** v1.2 section 6.9.2.
+- **Stimulus:** `csr_write=1`, `a=0x33334444`, `b=0x11112222`; immediate then register mode.
+- **Expected result, error:** Immediate: `0x11112222`, `0`; register: `0x33334444`, `0`.
+- **Observed result, error:** Immediate: `0x33334444`, `0`; register: `0x11112222`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-003.txt).
+- **Impact and retest:** The source mux is reversed. Immediate mode must select B; register mode must select A. Retest both modes with distinct nonzero data and CSR conflicts.
 
-- **Specification expectation:** CPOP counts set bits in the complete 32-bit `a_in` operand.
-- **RTL evidence:** The population-count loop only iterates across the lower half of the operand.
-- **Reproducer:** `ap.cpop=1`, `a_in=0xFFFF0000`.
-- **Expected:** `result=32`, `error=0`.
-- **Likely DUT result:** `result=0`, `error=0`.
-- **Impact:** Upper-half population count is incorrect.
+### BMU-BUG-005: GREV byte ordering is incorrect
 
-### BMU-BUG-002: PACK concatenates operands in the wrong order
+- **Specification:** v1.2 section 6.8.2.
+- **Stimulus:** `grev=1`, `a=0x12345678`, `b=24`.
+- **Expected result, error:** `0x78563412`, `0`.
+- **Observed result, error:** `0x56781234`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-005.txt).
+- **Impact and retest:** The RTL swaps halfwords instead of reversing all four bytes. Retest distinct bytes and variation in ignored upper amount bits.
 
-- **Specification expectation:** `result={b_in[15:0],a_in[15:0]}`.
-- **RTL evidence:** The current implementation returns the reversed half-word ordering.
-- **Reproducer:** `ap.pack=1`, `a_in=0x00001234`, `b_in=0x00005678`.
-- **Expected:** `0x56781234`, `error=0`.
-- **Likely DUT result:** `0x12345678`, `error=0`.
-- **Impact:** Data ordering is wrong for non-symmetric PACK operands.
+### BMU-BUG-006: Invalid controls are accepted
 
-### BMU-BUG-003: CSR write source selection is reversed
+- **Specification:** v1.2 section 4–5.
+- **Stimulus:** Empty control packet, `ap=0`, `csr_ren=0`.
+- **Expected result, error:** `0`, `1`.
+- **Observed result, error:** `0`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-006.txt).
+- **Impact and retest:** The error logic does not enforce the complete operation guards. The guard-matrix suite additionally exercises each forbidden field with valid high and low. Retest the complete matrix and result hold during idle failures.
 
-- **Specification expectation:** `ap.csr_imm=1` selects `b_in`; otherwise it selects `a_in`.
-- **RTL evidence:** The source-selection logic is inverted.
-- **Reproducer:** `ap.csr_write=1`, `ap.csr_imm=1`, `a_in=0x33334444`, `b_in=0x11112222`.
-- **Expected:** `0x11112222`, `error=0`.
-- **Likely DUT result:** `0x33334444`, `error=0`.
-- **Impact:** CSR write selects the wrong source.
+### BMU-BUG-007: SLT/MAX do not enforce the SUB co-requisite
 
-### BMU-BUG-005: GREV byte-reverse ordering is incorrect
+- **Specification:** v1.2 section 6.4.2 / 6.7.1.
+- **Stimulus:** SLT: `slt=1`, `sub=0`, `a=0xFFFFFFFF`, `b=1`; MAX: `max=1`, `sub=0`, `a=10`, `b=20`.
+- **Expected result, error:** Both: `0`, `1`.
+- **Observed result, error:** SLT: `0`, `0`; MAX: `20`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-007.txt).
+- **Impact and retest:** The missing-SUB guard is absent. These requests are invalid even when a numerical result looks plausible. Retest each missing co-requisite and legal SLT/MAX controls separately.
 
-- **Specification expectation:** For `b_in[4:0]=24`, reverse the four bytes in the documented byte order.
-- **RTL evidence:** The current implementation reorders the bytes incorrectly.
-- **Reproducer:** `ap.grev=1`, `a_in=0x12345678`, `b_in[4:0]=24`.
-- **Expected:** `0x78563412`, `error=0`.
-- **Likely DUT result:** `0x34127856`, `error=0`.
-- **Impact:** GREV does not match the specification.
+### BMU-BUG-008: Undefined GREV encoding does not assert error
 
-### BMU-BUG-006: Invalid and conflicting controls are not rejected generally
+- **Specification:** v1.2 section 6.8.2 / 7.1.
+- **Stimulus:** `grev=1`, `a=0x12345678`, `b=5`.
+- **Expected result, error:** `0`, `1`.
+- **Observed result, error:** `0`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-008.txt).
+- **Impact and retest:** Assumption-tagged under CLARIF-004: the adopted contract rejects every non-24 low-five-bit encoding. The datapath returns zero but does not signal the invalid encoding. Retest all 31 rejected encodings.
 
-- **Specification expectation:** Invalid control combinations force `result=0`, `error=1`.
-- **RTL evidence:** The DUT accepts empty requests and stray modes without reproducing the expected invalid behavior.
-- **Reproducers:** Empty request, stray `zbb`, stray `zba`, invalid CSR mode, and multiple primary controls.
-- **Expected:** `result=0`, `error=1` for every invalid row.
-- **Impact:** Invalid decode paths can silently pass.
+### BMU-BUG-009: CTZ bit reversal produces the wrong count
 
-### BMU-BUG-007: SLT and MAX do not enforce the SUB co-requisite
+- **Specification:** v1.2 section 6.5.1.
+- **Stimulus:** `ctz=1`, `a=1`.
+- **Expected result, error:** `0`, `0`.
+- **Observed result, error:** `1`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-009.txt).
+- **Impact and retest:** The reversed operand used for CTZ is not a correct full-width bit reversal. The one-hot sweep exposes further positions. Retest all 32 positions, zero (expected 32), and multi-bit patterns.
 
-- **Specification expectation:** SLT and MAX require `ap.sub=1`.
-- **RTL evidence:** The comparison and max datapaths do not assert the expected error when `sub` is absent.
-- **Reproducers:** `ap.slt=1, ap.sub=0` and `ap.max=1, ap.sub=0`.
-- **Expected:** `result=0`, `error=1` in both cases.
-- **Likely DUT result:** Result is produced with `error=0`.
+### BMU-BUG-010: MAX selects the smaller operand
 
-### BMU-BUG-008: GREV undefined encoding does not assert error
+- **Specification:** v1.2 section 6.7.1.
+- **Stimulus:** `max=1`, `sub=1`, `a=10`, `b=20`.
+- **Expected result, error:** `20`, `0`.
+- **Observed result, error:** `10`, `0`.
+- **Evidence:** [isolated runtime extract](../../results/bugs/BMU-BUG-010.txt).
+- **Impact and retest:** The operand selector `ge ^ ap_max` reverses the signed MAX choice. This legal-data defect is separate from BUG-007. Retest swapped/equal operands, both sign combinations, and signed extrema.
 
-- **Specification expectation (adopted assumption):** `ap.grev=1` with `b_in[4:0] != 24` yields `result=0`, `error=1`.
-- **RTL evidence:** The datapath does not reject the undefined encoding path.
-- **Reproducer:** `ap.grev=1`, `a_in=0x12345678`, `b_in[4:0]=5`.
-- **Expected:** `0`, `error=1`.
-- **Status:** assumption-tagged until the clarification is formally closed.
+## 4. Reproduce and close
 
-### BMU-BUG-009: CTZ is wrong for one-hot positions
+```bash
+make -C sim regression CONFIG=../regression/configs/bugs.cfg
+# Example: reproduce the legal MAX failure
+make -C sim run TEST=bmu_bug_010_test SEED=1
+```
 
-- **Specification expectation:** CTZ returns the number of trailing zero bits in the complete 32-bit operand.
-- **RTL evidence:** The CTZ logic does not correctly reverse the full operand and fails one-hot positions.
-- **Reproducer:** `ap.ctz=1`, `a_in=1 << n` for every `n` from 0 through 31.
-- **Expected:** `result=n`, `error=0`; `CTZ(0)=32`.
-- **Likely DUT result:** Adjacent bit positions are mismatched.
-
-## 6. Required confirmation record
-
-For every confirmed issue, the recorder must include:
-
-1. Test ID, sequence/class name, simulator, seed, and RTL revision.
-2. Complete input transaction and active control fields.
-3. Independent expected value and specification reference.
-4. Actual `result_ff` and `error`, including the cycle observed.
-5. Scoreboard message and log path.
-6. Waveform or relevant trace path.
-7. Severity, owner, status, and design disposition.
-8. Fixed-revision retest result and regression impact.
-
-The project closure policy keeps unresolved clarifications as accepted project risk, not as design-team confirmation.
-
-## 7. Closure gate
-
-This bug log is ready for the next step only when the project has:
-
-- a verified reproducer for every open issue,
-- a written design or specification disposition, or an accepted project-risk note,
-- a retest on a revised DUT revision, and
-- a current status that is consistent with the final sign-off report.
-
-At the moment, the repository is in a professional pre-closure state: the defects are documented, reproduced, and traceable, but the RTL is not yet fixed or accepted for sign-off.
+Every active reproducer returns failure on the original DUT. A finding closes only after a supplied revised DUT passes its reproducer and related regression, or a written specification disposition explicitly accepts the behavior. Coverage completion does not close any of these bugs. Assumption changes must update the clarification log, predictor, tests, and evidence together.
