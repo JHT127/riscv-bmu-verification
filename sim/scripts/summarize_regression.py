@@ -83,7 +83,7 @@ def summarize(config):
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, universal_newlines=True).strip(),
         "source_worktree_status": subprocess.check_output(
-            ["git", "status", "--porcelain", "--", "rtl", "tb", "sim", "regression/configs"], cwd=ROOT, universal_newlines=True).strip(),
+            ["git", "status", "--porcelain", "--"] + sorted(sources), cwd=ROOT, universal_newlines=True).strip(),
         "config": str(config.resolve().relative_to(ROOT)),
         "simulator": match(text, r"TOOL:\s+(xrun.*): Started"),
         "top": "bmu_tb_top", "dut": "bmu_tb_top.dut",
