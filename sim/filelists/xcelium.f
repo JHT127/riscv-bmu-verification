@@ -1,5 +1,4 @@
-# VCS filelist — RTL + UVM testbench sources
-# Fill in once RTL is dropped into ../../rtl/ locally (not committed).
+# Xcelium filelist — delivered RTL + UVM testbench sources
 
 # ----- RTL (design team supplied, not modified) -----
 -f ../rtl/rtl_filelist.f

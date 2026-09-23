@@ -56,7 +56,7 @@ def summarize(config):
     sources = {}
     for directory in ["rtl", "tb", "sim", "regression/configs"]:
         for path in sorted((ROOT / directory).rglob("*")):
-            if path.is_file() and (path.suffix in {".sv", ".svh", ".vh", ".f", ".py", ".sh", ".cfg"} or path.name == "Makefile"):
+            if path.is_file() and (path.suffix in {".sv", ".svh", ".vh", ".f", ".py", ".sh", ".tcl", ".cfg"} or path.name == "Makefile"):
                 if any(part in {"xcelium.d", "__pycache__"} for part in path.parts):
                     continue
                 sources[str(path.relative_to(ROOT))] = hashlib.sha256(path.read_bytes()).hexdigest()

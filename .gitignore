@@ -46,6 +46,8 @@ xrun.*
 xcelium.d/
 .simvision/
 *.history
+imc.key
+mdv.key
 
 # ===== Office temp files (Excel/PowerPoint lock files) =====
 ~$*.xlsx
