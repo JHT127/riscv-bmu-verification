@@ -45,6 +45,23 @@ def summarize(config):
             "model_checks": match(text, r"model checks=(\d+)"),
         }
         rows.append(row)
+        bug_test = re.fullmatch(r"bmu_bug_(\d{3})_test", test)
+        if bug_test:
+            bug_id = "BMU-BUG-" + bug_test.group(1)
+            evidence_dir = ROOT / "results/bugs"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+            lines = [line for line in text.splitlines() if
+                     "UVM_ERROR " in line or "*E,ASRTST" in line or
+                     "compared=" in line or "SVSEED " in line or
+                     re.match(r"^UVM_(ERROR|FATAL)\s*:", line)]
+            header = (
+                f"{bug_id} — isolated reproducer evidence\n"
+                f"Command: make -C sim run TEST={test} SEED={seed} VERBOSITY=UVM_LOW\n"
+                f"Source log: results/logs/{test}_{seed}.log\n"
+                f"Source log SHA256: {hashlib.sha256(log_path.read_bytes()).hexdigest()}\n"
+                "Source/configuration hashes: results/reports/run_manifest.json\n\n"
+            )
+            (evidence_dir / f"{bug_id}.txt").write_text(header + "\n".join(lines) + "\n")
     if not rows:
         raise ValueError("empty regression")
     out = ROOT / "results/reports"
