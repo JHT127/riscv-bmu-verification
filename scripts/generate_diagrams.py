@@ -170,13 +170,13 @@ def coverage_diagram() -> str:
         node [shape=box, style="filled,rounded", fillcolor="#eefaf2", color="#2f7d5b", fontname="Helvetica", margin="0.12,0.08"];
         edge [color="#2f7d5b", arrowsize=0.8];
 
-        tests [label="tests / sequences\nlegal_random / coverage_closure / max_coverage", shape=box3d, fillcolor="#edf7ff"];
+        tests [label="tests / sequences\nlegal_random / coverage_closure / guard_matrix", shape=box3d, fillcolor="#edf7ff"];
         op [label="cp_operation\noperation family coverage"];
         patt [label="cp_operand_pattern\noperand shape coverage"];
         shift [label="cp_shift_amount\nshift amount bins"];
         error [label="cp_error\nclean vs rejected"];
-        valid [label="cp_valid / cp_reset / cp_scan\ntransaction context"];
-        cross [label="cross coverage\noperation x valid\noperation x error"];
+        valid [label="cp_valid / cp_reset\ntransaction context"];
+        cross [label="cross coverage\nrequest x valid\nrequest x error\noperation x pattern"];
         db [label="coverage database\nIMC/Xcelium"];
         report [label="coverage summary\npass/fail closure"];
 
@@ -259,7 +259,7 @@ def sequence_hierarchy_diagram() -> str:
         legal [label="random_legal_seq\nvalid stimulus"];
         corner [label="random_corner_weighted_seq\nedge / boundary"];
         family [label="family sequences\nbit_ops / shift_ops / zba_ops / ..."];
-        smoke [label="coverage_closure_seq\ncoverage_max_seq"];
+        smoke [label="coverage_closure_seq\nguard_matrix_seq"];
         test [label="bmu_*_test\nrun_phase() launches sequence"];
 
         base -> legal;

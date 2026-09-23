@@ -19,7 +19,7 @@ edge / boundary"];
         family [label="family sequences
 bit_ops / shift_ops / zba_ops / ..."];
         smoke [label="coverage_closure_seq
-coverage_max_seq"];
+guard_matrix_seq"];
         test [label="bmu_*_test
 run_phase() launches sequence"];
 

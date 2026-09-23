@@ -12,7 +12,7 @@
         edge [color="#2f7d5b", arrowsize=0.8];
 
         tests [label="tests / sequences
-legal_random / coverage_closure / max_coverage", shape=box3d, fillcolor="#edf7ff"];
+legal_random / coverage_closure / guard_matrix", shape=box3d, fillcolor="#edf7ff"];
         op [label="cp_operation
 operation family coverage"];
         patt [label="cp_operand_pattern
@@ -21,11 +21,12 @@ operand shape coverage"];
 shift amount bins"];
         error [label="cp_error
 clean vs rejected"];
-        valid [label="cp_valid / cp_reset / cp_scan
+        valid [label="cp_valid / cp_reset
 transaction context"];
         cross [label="cross coverage
-operation x valid
-operation x error"];
+request x valid
+request x error
+operation x pattern"];
         db [label="coverage database
 IMC/Xcelium"];
         report [label="coverage summary
