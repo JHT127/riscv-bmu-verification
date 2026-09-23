@@ -21,7 +21,7 @@
 
 ### Removed
 
-- Slides and their generator/assets.
+- Obsolete slide generator/assets; the final presentation exports are retained under `docs/09_presentation/`.
 - Duplicate handoff documents and stale result summaries.
 - Unsupported-operation coverage-max stimulus and broken duplicate debug helpers.
 
