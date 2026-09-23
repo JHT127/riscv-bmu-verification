@@ -321,13 +321,15 @@ This runs the configured regression suite and returns nonzero status when the or
 make -C sim run TEST=bmu_bug_010_test SEED=1 VERBOSITY=UVM_LOW
 ```
 
-### Coverage and waveforms
+### Coverage and optional waveforms
 
 ```bash
 imc -exec sim/scripts/report_coverage.tcl
 make -C sim waves TEST=bmu_or_valid_test SEED=1
 python3 sim/scripts/summarize_regression.py regression/configs/full.cfg
 ```
+
+Waveforms are generated on demand by the `waves` target and are not part of the submitted baseline.
 
 ### Documentation generation
 
@@ -368,7 +370,6 @@ BMU-verification/
 │   ├── 07_coverage_reports/     Coverage summaries and limitations
 │   └── 08_signoff/              Final signoff report
 ├── scripts/                     Documentation checks and diagram generation
-├── waveforms/                   Generated waveform databases
 ├── LICENSE
 ├── CHANGELOG.md
 ├── README.md

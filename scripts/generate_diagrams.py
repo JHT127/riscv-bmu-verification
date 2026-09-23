@@ -2,10 +2,11 @@
 """Generate architecture and coverage diagrams for the BMU DUT and UVM verification environment.
 
 This script uses the Graphviz `dot` executable, which is already available in the repo environment.
-It writes .dot source files and renders matching .png image outputs under docs/06_architecture_diagrams/.
+It renders .png image outputs under docs/06_architecture_diagrams/ without retaining intermediate source files.
 """
 
 import subprocess
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,16 +15,11 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def render_dot(dot_text: str, stem: str) -> Path:
-    dot_path = OUT_DIR / f"{stem}.dot"
     png_path = OUT_DIR / f"{stem}.png"
-    dot_path.write_text(dot_text, encoding="utf-8")
-    subprocess.run([
-        "dot",
-        "-Tpng",
-        str(dot_path),
-        "-o",
-        str(png_path),
-    ], check=True)
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".dot", encoding="utf-8") as source:
+        source.write(dot_text)
+        source.flush()
+        subprocess.run(["dot", "-Tpng", source.name, "-o", str(png_path)], check=True)
     print(f"generated: {png_path.relative_to(ROOT)}")
     return png_path
 
